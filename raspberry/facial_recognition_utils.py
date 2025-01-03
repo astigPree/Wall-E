@@ -1,6 +1,6 @@
 from deepface import DeepFace
 import cv2
-
+import os
 
 class FacialRecognition:
     
@@ -34,7 +34,34 @@ class FacialRecognition:
             print(f"An error occurred during comparison: {e}")
             return False
 
+    def check_face_exists_in_frame(face_image) -> str:
+        try:
+            # Check if there is a face
+            faces = DeepFace.extract_faces(img_path=None, img=face_image, enforce_detection=False)
+            if len(faces) == 0:
+                print("No faces detected.")
+                return 'empty'
+            if len(faces) > 1:
+                print("Multiple faces detected. Please ensure only one face is present.")
+                return 'multiple'
+            else:
+                return 'face'
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return 'error'
 
+    
+    def save_face_to_database(self, face_image, face_name):
+        try:
+            if face_image is not None: 
+                cv2.imwrite(os.path.join( os.path.dirname(__file__), "images", f"{face_name}.jpg"), face_image)
+                return True
+            return False
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
+    
+    
 # import cv2
 # from deepface import DeepFace
 

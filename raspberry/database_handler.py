@@ -42,5 +42,6 @@ class DataHandler:
         for patient in self.patients:
             yield self.patients[patient]
             
-        
     
+    # ----------------------------------------------------------------
+    # BELOW: Related to saving data
