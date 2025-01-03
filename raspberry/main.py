@@ -2,7 +2,11 @@ import asyncio
 from speech_recognition_utils import SpeechRecognitionUtils
 from voice_utils import VoiceUtils
 from brain_utils import BrainUtils
+from facial_recognition_utils import FacialRecognition
+from events_handler import EventHandler
 import sys
+import time
+import threading
 
 # Set the event loop policy conditionally for Windows 
 if sys.platform == 'win32': 
@@ -11,10 +15,12 @@ if sys.platform == 'win32':
 
 
 
-
+eyes = FacialRecognition()
 voice = VoiceUtils()
 recognizer = SpeechRecognitionUtils()
 brain = BrainUtils()
+event =  EventHandler()
+
 
 async def sample_function():
     while True:
@@ -27,10 +33,40 @@ async def sample_function():
             print("--------------------------------")
         await asyncio.sleep(2)  # Add a short delay between iterations
 
+
+
+
+
+def eyes_loop():
+    while True:
+        
+        if not event.open_eyes:
+            continue
+        
+        
+        frame = eyes.get_face_by_camera()
+        if frame is not None:
+            frame = eyes.check_face_exists_in_database(frame, "face.jpg")
+            if frame:
+                event.has_face_scanned = True
+                # TODO: Create a logic here
+                print("Face recognized")
+            else:
+                print("Face not recognized")
+                
+        time.sleep(0.5)
+
+
 async def main_loop():
+    
+    threading.Thread(target=eyes_loop).start()
     
     while True:
         pass
+    
+    
+    
+    
 
 if __name__ == '__main__':
     try:

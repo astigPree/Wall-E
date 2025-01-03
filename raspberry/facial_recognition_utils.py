@@ -7,7 +7,7 @@ class FacialRecognition:
     def __init__(self , camera=0):
         self.cap = cv2.VideoCapture(camera)
     
-    def get_face_by_camera(self) -> object | None:
+    def get_face_by_camera(self):
         ret, frame = self.cap.read()
         if not ret:
             return None
@@ -17,6 +17,8 @@ class FacialRecognition:
         self.cap.release()
         cv2.destroyAllWindows()
     
+    def start_camera(self, camera=0):
+        self.cap = cv2.VideoCapture(camera)
             
     def check_face_exists_in_database(self, face_image , face_in_database) -> bool:
         try:
