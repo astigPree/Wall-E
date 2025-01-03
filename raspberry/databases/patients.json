@@ -1,0 +1,30 @@
+{
+    "1" :{
+        "name" : "Eric",
+        "face" : "Eric.jpg",
+        "schedule" : [
+            {
+                "day": "Monday",
+                "time": "9:00 AM - 11:00 AM"
+            },
+            {
+                "day": "Thursday",
+                "time": "1:00 PM - 3:00 PM"
+            }
+        ]
+    },
+    "2" :{
+        "name" : "Eric",
+        "face" : "Eric.jpg",
+        "schedule" : [
+            {
+                "day": "Monday",
+                "time": "9:00 AM - 11:00 AM"
+            },
+            {
+                "day": "Thursday",
+                "time": "1:00 PM - 3:00 PM"
+            }
+        ]
+    }
+}
