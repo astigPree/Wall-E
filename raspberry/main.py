@@ -16,7 +16,7 @@ voice = VoiceUtils()
 recognizer = SpeechRecognitionUtils()
 brain = BrainUtils()
 
-async def main_loop():
+async def sample_function():
     while True:
         text = recognizer.recognize_speech()
         if text:
@@ -26,6 +26,11 @@ async def main_loop():
             print(f"You said: {response}")
             print("--------------------------------")
         await asyncio.sleep(2)  # Add a short delay between iterations
+
+async def main_loop():
+    
+    while True:
+        pass
 
 if __name__ == '__main__':
     try:
