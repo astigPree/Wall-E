@@ -1,14 +1,17 @@
 {
     "1" : {
         "name" : "James",
-        "face" : "James.jpg"
+        "face" : "James.jpg",
+        "type" : "Nurse"
     },
     "2" : {
         "name" : "James",
-        "face" : "James.jpg"
+        "face" : "James.jpg",
+        "type" : "Nurse"
     },
     "3" : {
         "name" : "James",
-        "face" : "James.jpg"
+        "face" : "James.jpg",
+        "type" : "Nurse"
     }
 }
