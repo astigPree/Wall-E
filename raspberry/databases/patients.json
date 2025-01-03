@@ -1,5 +1,6 @@
 {
     "1" :{
+        "id" : "1",
         "name" : "Eric",
         "face" : "Eric.jpg",
         "type" : "Patient",
@@ -17,6 +18,7 @@
         ]
     },
     "2" :{
+        "id": "2",
         "name" : "Eric",
         "face" : "Eric.jpg",
         "type" : "Patient",
