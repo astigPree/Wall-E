@@ -1,3 +1,7 @@
 [/] Create function to save new face and information
 [/] Create function to check the time if there is a scheduled to take the pills
-[] Make progress in the main program
+[] Create a rule for moving of the robot
+[] Create a rule for dispensing the medication in the robot
+[] Create a rule for locking system for the robot
+[] Create a rule for the light indicator in the robot for the medication
+[] Create a rule for the body temperature in the robot
