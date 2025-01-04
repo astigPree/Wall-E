@@ -76,8 +76,13 @@ async def main_loop():
     
     threading.Thread(target=eyes_loop).start()
     
-    while not event.close_down:
-        pass
+    while not event.close_down: 
+        text = recognizer.recognize_speech()
+        if text:
+            response = await brain.generate_response(text)
+            
+            
+        await asyncio.sleep(0.5)  # Add a short delay between iterations
     
     
     
