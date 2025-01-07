@@ -1,6 +1,6 @@
 from speech_recognition_utils import SpeechRecognitionUtils
 from voice_utils import VoiceUtils
-from brain_utils import BrainUtils
+from brain_utils import *
 from facial_recognition_utils import FacialRecognition
 from events_handler import EventHandler
 from database_handler import DataHandler
@@ -37,9 +37,6 @@ async def sample_function():
         await asyncio.sleep(2)  # Add a short delay between iterations
 
 
-
-
-
 def eyes_loop():
     while not event.close_down:
         
@@ -74,13 +71,13 @@ def eyes_loop():
 
 async def main_loop():
     
-    threading.Thread(target=eyes_loop).start()
+    # threading.Thread(target=eyes_loop).start() # For facial recognition
     
     while not event.close_down: 
         text = recognizer.recognize_speech()
         if text:
-            response = await brain.generate_response(text)
-            
+            response = await brain.generate_response(rule_for_identifiying_command.format(text=text))
+            print(f"The response is: {response}")
             
         await asyncio.sleep(0.5)  # Add a short delay between iterations
     

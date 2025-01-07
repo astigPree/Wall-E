@@ -8,12 +8,6 @@ g4f.debug.version_check = False
 
 import time
 
-rule = """
-When generating a text, you should English language but it depends on the user command below if the language is not specified.
-Also make the generated text words shorter as necessary but it depends on the user command
-when the text is not specified how long it will be.
-
-Command :"""
 
 
 class BrainUtils:
@@ -29,7 +23,7 @@ class BrainUtils:
 
 
 
-    async def generate_response(self, text : str):
+    async def generate_response(self, command : str):
         """
         Generates a response based on the provided text.
         """
@@ -37,14 +31,47 @@ class BrainUtils:
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
-                messages=[{"role": "user", "content": rule +text}],
+                messages=[{"role": "user", "content": command}],
             )
             self.debounce = 2 # Reset the delay
-            print(f"The response is: {response.choices[0].message.content}")
+            # print(f"The response is: {response.choices[0].message.content}")
             return str(response.choices[0].message.content)
         except Exception as e:
             print(f"Error: {e}")
             time.sleep(self.debounce)
             self.debounce  = self.debounce * self.debounce
-            return await self.generate_response(text)
+            return await self.generate_response(command)
     
+
+
+
+
+
+
+
+
+rule_for_identifiying_command = """
+    You are a machine that is controlled by a user. Given a user response;
+        "{text}"
+    Identify what user want and return to me what action does user want.
+    Here are the list of the action;
+        1. User want the machine to walk.
+        2. User want to open the back of the machine or add a pills in the machine.
+        3. User want to request a pills or ask when the pills will be distributed.
+        4. User want to add new schedule for the pills or add new patient.
+        5. User want to check the body temperature of the patient.
+        6. User want to talk to you.
+        7. You don't know what user want or the command is not in the list.
+        8. User want to close the back of the machine.
+    
+    Return the number of the action. If the command is not in the list, return 7.
+    IMPORTANT: Only return the number of the action. for example if the user want to add new schedule for the pills, return 4.
+"""
+
+
+
+
+
+
+
+
