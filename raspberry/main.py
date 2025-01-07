@@ -10,6 +10,8 @@ import sys
 import time
 import threading
 import os
+import json
+import re
 
 # Set the event loop policy conditionally for Windows 
 if sys.platform == 'win32': 
@@ -78,6 +80,23 @@ async def main_loop():
         if text:
             response = await brain.generate_response(rule_for_identifiying_command.format(text=text))
             print(f"The response is: {response}")
+            try:
+                json.loads(response)
+                print(json.loads(response))
+            except json.JSONDecodeError:
+                match = re.search(r'\{.*?\}', response) 
+                if match:
+                    # Extracted text
+                    json_text = match.group(0)
+                    
+                    # Convert to dictionary
+                    data_dict = json.loads(json_text)
+                    
+                    # Print the dictionary
+                    print(data_dict)
+                else:
+                    print("No match found")
+
             
         await asyncio.sleep(0.5)  # Add a short delay between iterations
     

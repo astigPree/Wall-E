@@ -18,6 +18,8 @@ class EventHandler:
     patients_to_take_medication = [] # List of patients to take medication ; patients_to_take_medication = [ id, id, id, id, id, id, id]
     there_is_patient_need_to_take_medication = False # True if here is a patient need to take medication
     
+    stop_proccess = False # True if we are stopping the procedure and we are not waiting for it to complete
+    
     def update_patients(self, patients):
         self.patients = patients
          

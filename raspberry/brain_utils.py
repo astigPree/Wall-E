@@ -64,8 +64,26 @@ rule_for_identifiying_command = """
         7. You don't know what user want or the command is not in the list.
         8. User want to close the back of the machine.
     
-    Return the number of the action. If the command is not in the list, return 7.
-    IMPORTANT: Only return the number of the action. for example if the user want to add new schedule for the pills, return 4.
+    IMPORTANT: 
+        You MUST return to me a python dictionary that contains the following;
+        - action: The action that user want for example; "1".
+        - message: The message that user want to send to the machine.
+        - data : Additional data based on the additional requirements.
+        
+        Here is the response MUST look like this dictionary and Don't add any further information or text outside the dictionary because i will parse it to dictionary;
+            {{"action":"1","message":"message","data":"data"}}
+        
+            
+            
+    Here is the bases of message each action;
+        1 = message value are message that "asking where to go" if there is no distance provided. If there is distance provided, the message should be like "successfully moved to the `distance` meters".
+        2 = message value are message that "asking for verification of the face of the user if the user is a nurse/doctor/admin"
+        3 = message value are message that "asking for verification of the face of the user if the user is a patient".
+        4 = message value are message that "asking for verification of the face of the user if the user is a nurse/doctor/admin".
+        5 = message value are message that "waiting for scanning the body temperature of the patient".
+        6 = message value are message that "response or the answer of the user".
+        7 = message value are message that "You don't know what user want or the command is not recognized".
+        8 = message value are message that "closing the back of the machine".
 """
 
 
