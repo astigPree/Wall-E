@@ -5,6 +5,7 @@ from facial_recognition_utils import FacialRecognition
 from events_handler import EventHandler
 from database_handler import DataHandler
 from my_tools import text_to_dictionary
+from algorithm_handler import algo_open_back_of_the_machine
 
 import asyncio
 import sys
@@ -57,9 +58,7 @@ def eyes_loop():
             
             for person in people:
                 
-                people_image_path = os.path.join(database.images_path, person["face"])
-                
-                event.has_face_scanned = eyes.check_face_exists_in_database(frame, people_image_path)
+                event.has_face_scanned = eyes.check_face_exists_in_database(frame, event.selected_face)
                 
                 if event.has_face_scanned:
                     # TODO: Create a logic here
@@ -79,9 +78,16 @@ async def main_loop():
         if text:
             response = await brain.generate_response(rule_for_identifiying_command.format(text=text))
             print(f"The response is: {response}")
-            data = text_to_dictionary(response)
+            data : dict = text_to_dictionary(response)
             if data is not None:
-                print(data)
+                # data = { action , message, data }
+                if data.get('action') == '2' or data.get('action') == 2:
+                    algo_open_back_of_the_machine(
+                        event=event, voice=voice, 
+                        db=database, brain=brain, 
+                        recognizer=recognizer, eyes=eyes, 
+                        data=data
+                    )
 
             
         await asyncio.sleep(0.5)  # Add a short delay between iterations
