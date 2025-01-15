@@ -1,0 +1,16 @@
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #F2F2F2;
+    display: flex; 
+    justify-content: center;
+}
+
+main{
+    display: flex;
+    width: clamp(320px , 500px , 500px );
+    height: fit-content;  
+    flex-direction: column;
+    justify-content: center; 
+}
+

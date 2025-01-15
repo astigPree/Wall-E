@@ -1,118 +1,143 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Well-E: Personal Health Care Assistant</title>
-    <link rel="stylesheet" href="{% static 'homepage.css' %}">
-</head>
-<body>
-    <header>
-        <img src="{% static 'images/logo.png' %}" alt="Well-E Logo" class="logo">
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#how-it-works">How It Works</a></li>
-                <li><a href="#testimonials">Testimonials</a></li>
-                <li><a href="#about-us">About Us</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <section id="home">
-        <h1>Meet Well-E: Your Personal Health Care Assistant</h1>
-        <p>Transforming Health Care Management with AI</p>
-        <a href="#features" class="cta">Get Started</a>
+
+{% block headblock %}
+    <link rel="stylesheet" href="{% static 'homepage.css' %}">
+{% endblock headblock %}
+    
+
+{% block bodyblock %}
+    <section class="header-icon">
+        <svg onclick="navigateToSection('title-section')" width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24.0698 0.00195312H20.5815C20.1962 0.00195312 19.8838 0.314315 19.8838 0.699626V0.781826L24.7675 4.6888V0.699626C24.7675 0.314315 24.4552 0.00195312 24.0698 0.00195312Z" fill="#F2F2F2"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M13.2559 9.0717C13.2559 8.10841 14.0368 7.32751 15 7.32751C15.9634 7.32751 16.7442 8.10841 16.7442 9.0717C16.7442 10.035 15.9634 10.8159 15 10.8159C14.0368 10.8159 13.2559 10.035 13.2559 9.0717Z" fill="#F2F2F2"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M27.2092 11.1097L28.2997 11.9821C28.7511 12.3431 29.4096 12.2699 29.7707 11.8185C30.1317 11.3673 30.0585 10.7087 29.6072 10.3476L18.2687 1.27687C16.3578 -0.251957 13.6423 -0.251957 11.7313 1.27687L0.392802 10.3476C-0.058523 10.7087 -0.131695 11.3673 0.229365 11.8185C0.590411 12.2699 1.24897 12.3431 1.7003 11.9821L2.79073 11.1097V25.4671H1.04655C0.468569 25.4671 3.97891e-05 25.9357 3.97891e-05 26.5136C3.97891e-05 27.0916 0.468569 27.5601 1.04655 27.5601H28.9534C29.5314 27.5601 29.9999 27.0916 29.9999 26.5136C29.9999 25.9357 29.5314 25.4671 28.9534 25.4671H27.2092V11.1097ZM11.1628 9.0718C11.1628 6.95258 12.8807 5.2346 15 5.2346C17.1192 5.2346 18.8372 6.95258 18.8372 9.0718C18.8372 11.1911 17.1192 12.909 15 12.909C12.8807 12.909 11.1628 11.1911 11.1628 9.0718ZM15.0689 14.3044C15.9967 14.3044 16.7959 14.3042 17.4361 14.3903C18.1221 14.4825 18.7797 14.6906 19.313 15.2239C19.8464 15.7573 20.0543 16.4148 20.1466 17.1009C20.2272 17.7009 20.2322 18.441 20.2325 19.2955C20.2325 19.3526 20.2325 19.4101 20.2325 19.468V25.4671H18.1395V19.5369C18.1395 18.5207 18.1373 17.8637 18.0722 17.3797C18.0113 16.9258 17.9128 16.7836 17.8331 16.7039C17.7534 16.6243 17.6111 16.5257 17.1572 16.4646C16.6731 16.3996 16.0162 16.3974 15 16.3974C13.9837 16.3974 13.3268 16.3996 12.8429 16.4646C12.389 16.5257 12.2467 16.6243 12.167 16.7039C12.0873 16.7836 11.9888 16.9258 11.9278 17.3797C11.8627 17.8637 11.8605 18.5207 11.8605 19.5369V25.4671H9.76746V19.468C9.76741 18.5403 9.76737 17.7409 9.85342 17.1009C9.94565 16.4148 10.1536 15.7573 10.687 15.2239C11.2204 14.6906 11.878 14.4825 12.564 14.3903C13.204 14.3042 14.0034 14.3044 14.9312 14.3044H15.0689Z" fill="#F2F2F2"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M13.2559 9.0717C13.2559 8.10841 14.0368 7.32751 15 7.32751C15.9634 7.32751 16.7442 8.10841 16.7442 9.0717C16.7442 10.035 15.9634 10.8159 15 10.8159C14.0368 10.8159 13.2559 10.035 13.2559 9.0717Z" fill="#F2F2F2"/>
+        </svg>
+        
+        <svg onclick="navigateToSection('key-features')"  width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.46335 0C2.55214 0 0 2.08174 0 4.77646V8.08367C0 10.7784 2.55214 12.8602 5.46335 12.8602H8.5378C11.449 12.8602 14.0011 10.7784 14.0011 8.08367V4.77646C14.0011 2.08174 11.449 0 8.5378 0H5.46335ZM5.46335 3.67354H8.5378C9.4633 3.67354 9.99997 4.21394 9.99997 4.77646V8.08367C9.99997 8.64618 9.4633 9.18667 8.5378 9.18667H5.46335C4.53785 9.18667 4.00118 8.64618 4.00118 8.08367V4.77646C4.00118 4.21394 4.53785 3.67354 5.46335 3.67354Z" fill="#F2F2F2"/>
+            <path d="M5.46335 14.6998C2.55214 14.6998 0 16.7817 0 19.4764V22.7836C0 25.4783 2.55214 27.56 5.46335 27.56H8.5378C11.449 27.56 14.0011 25.4783 14.0011 22.7836V19.4764C14.0011 16.7817 11.449 14.6998 8.5378 14.6998H5.46335ZM5.46335 18.3734H8.5378C9.4633 18.3734 9.99997 18.9139 9.99997 19.4764V22.7836C9.99997 23.3461 9.4633 23.8865 8.5378 23.8865H5.46335C4.53785 23.8865 4.00118 23.3461 4.00118 22.7836V19.4764C4.00118 18.9139 4.53785 18.3734 5.46335 18.3734Z" fill="#F2F2F2"/>
+            <path d="M21.4624 14.6998C18.5512 14.6998 15.999 16.7817 15.999 19.4764V22.7836C15.999 25.4783 18.5512 27.56 21.4624 27.56H24.5369C27.4481 27.56 30.0003 25.4783 30.0003 22.7836V19.4764C30.0003 16.7817 27.4481 14.6998 24.5369 14.6998H21.4624ZM21.4624 18.3734H24.5369C25.4624 18.3734 25.999 18.9139 25.999 19.4764V22.7836C25.999 23.3461 25.4624 23.8865 24.5369 23.8865H21.4624C20.5369 23.8865 20.0002 23.3461 20.0002 22.7836V19.4764C20.0002 18.9139 20.5369 18.3734 21.4624 18.3734Z" fill="#F2F2F2"/>
+            <path d="M22.9996 0C19.1553 0 15.999 2.90018 15.999 6.4301C15.999 9.96002 19.1553 12.8602 22.9996 12.8602C26.844 12.8602 30.0003 9.96002 30.0003 6.4301C30.0003 2.90018 26.844 0 22.9996 0ZM22.9996 3.67354C24.6953 3.67354 25.999 4.8706 25.999 6.4301C25.999 7.9896 24.6953 9.18667 22.9996 9.18667C21.304 9.18667 20.0002 7.9896 20.0002 6.4301C20.0002 4.8706 21.304 3.67354 22.9996 3.67354Z" fill="#F2F2F2"/>
+        </svg>
+            
+        <svg onclick="navigateToSection('how-works')"  width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M29.998 12.3838L26.3994 11.7917C26.178 11.4112 25.8014 11.1004 25.3137 10.9432C25.2526 10.9235 25.1905 10.9066 25.1284 10.8923L21.0981 3.78021C21.4807 3.09517 21.5297 2.27617 21.1511 1.53308C20.4781 0.209447 18.7063 -0.36752 17.194 0.244279L2.15542 5.71475C0.323548 6.45605 -0.500742 8.35665 0.314534 9.95983C0.662078 10.6431 1.251 11.1611 1.9551 11.4746L7.43167 23.5159L7.66404 24.0419C6.60338 24.9172 5.93934 26.1694 5.93934 27.56H16.6902C16.6902 24.9127 14.2834 22.7665 11.3148 22.7665C11.3047 22.7665 11.2957 22.7665 11.2857 22.7665L10.9021 21.8278L10.9622 21.8412L10.857 21.718L6.46716 10.9628L6.46316 10.9173L18.5481 5.52183L22.7927 11.9631C22.7867 11.9774 22.7797 11.9908 22.7747 12.0051C22.7416 12.0873 22.7156 12.1703 22.6966 12.2543L19.3133 14.0915L20.4511 15.0159L22.0996 18.1535L23.7823 18.433L23.0982 14.0942L23.3566 13.9557C23.5319 14.0888 23.7372 14.1969 23.9666 14.271C24.8379 14.5523 25.7864 14.2549 26.2832 13.6003L27.5161 17.8194L28.9864 17.0388L29.2809 13.9647L29.4201 13.987L30 12.3865L29.998 12.3838ZM3.15999 6.53554C4.45602 6.34441 5.67993 7.1259 5.89427 8.28162C6.1086 9.43734 5.23223 10.5288 3.9362 10.7199C2.64017 10.911 1.41626 10.1295 1.20192 8.97381C0.987587 7.81809 1.86396 6.72667 3.15999 6.53554ZM16.6812 2.88261C16.5209 2.01894 17.1759 1.20351 18.1444 1.06061C18.9257 0.945392 19.6708 1.30265 20.0144 1.89837C20.0344 1.9332 20.0524 1.96803 20.0695 2.00376C20.0715 2.00733 20.0725 2.01091 20.0745 2.01358C20.0905 2.04842 20.1055 2.08325 20.1195 2.11987L20.1205 2.12255C20.1336 2.15738 20.1456 2.194 20.1556 2.22972C20.1576 2.23776 20.1596 2.2458 20.1616 2.25295C20.1716 2.28956 20.1806 2.32618 20.1866 2.36369C20.2167 2.52535 20.2177 2.68612 20.1936 2.84063C20.0895 3.50959 19.5096 4.07048 18.7233 4.18659C18.6943 4.19105 18.6663 4.19463 18.6382 4.19731C18.6292 4.1982 18.6202 4.19909 18.6112 4.19999C18.5921 4.20177 18.5721 4.20356 18.5531 4.20445C18.5421 4.20534 18.531 4.20534 18.521 4.20624C18.503 4.20713 18.486 4.20802 18.469 4.20802C18.4579 4.20802 18.4469 4.20802 18.4349 4.20802C18.4179 4.20802 18.4008 4.20802 18.3838 4.20713C18.3728 4.20713 18.3618 4.20624 18.3508 4.20624C18.3337 4.20534 18.3167 4.20445 18.2997 4.20356C18.2887 4.20266 18.2787 4.20177 18.2676 4.20088C18.2486 4.19909 18.2306 4.19731 18.2125 4.19552C18.2035 4.19463 18.1945 4.19373 18.1855 4.19284C18.1585 4.18927 18.1324 4.1857 18.1054 4.18123H18.1034C18.0773 4.17676 18.0503 4.1714 18.0243 4.16605C18.0152 4.16426 18.0062 4.16158 17.9972 4.15979C17.9802 4.15622 17.9622 4.15176 17.9451 4.14729C17.9351 4.14461 17.9241 4.14193 17.9141 4.13925C17.8981 4.13479 17.883 4.13032 17.867 4.12585C17.856 4.12228 17.846 4.1196 17.835 4.11603C17.8199 4.11157 17.8049 4.10621 17.7899 4.10085C17.7799 4.09727 17.7689 4.0937 17.7588 4.09013C17.7438 4.08477 17.7288 4.07852 17.7138 4.07316C17.7038 4.06959 17.6937 4.06512 17.6847 4.06155C17.6687 4.0553 17.6527 4.04815 17.6366 4.04101C17.6286 4.03743 17.6206 4.03386 17.6126 4.03029C17.5896 4.01957 17.5655 4.00796 17.5435 3.99635L17.5425 3.99546C17.0998 3.76592 16.7713 3.36758 16.6812 2.88261Z" fill="#F2F2F2"/>
+        </svg>
+        
+        <svg onclick="navigateToSection('about-us')" width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.4853 3.34657C14.3447 3.34657 16.6561 5.46825 16.6561 8.09302C16.6561 10.7178 14.3447 12.8613 11.4853 12.8613C8.62589 12.8613 6.31454 10.7396 6.31454 8.11489C6.31454 5.49013 8.62589 3.34657 11.4853 3.34657ZM26.1636 23.3604H19.6823L22.7085 18.5702C23.328 17.564 22.9468 16.2954 21.8745 15.7267C20.8022 15.158 19.4202 15.508 18.8006 16.4923L15.7744 21.2824L11.2709 14.1956C10.8419 13.4519 9.98411 13.0801 8.91183 13.0801C8.76886 13.0801 8.4591 13.1238 8.2923 13.1676C8.14933 13.1894 7.93487 13.255 7.76807 13.2988C3.43129 14.6112 0 20.9762 0 27.56C0.119142 27.56 10.413 27.56 13.0342 27.56C12.9388 27.4288 12.8435 27.3194 12.7482 27.1882L7.52979 18.9202C7.36299 18.6358 7.48213 18.264 7.76807 18.1109C8.07784 17.9577 8.48292 18.0671 8.64972 18.3296L13.8205 26.532C14.2017 27.1444 14.9166 27.56 15.7506 27.56H26.1636C27.4265 27.56 28.4273 26.6195 28.4273 25.4821C28.4512 24.279 27.4027 23.3604 26.1636 23.3604ZM30 3.48295C30 4.18617 29.807 4.77871 29.4269 5.26046C29.2038 5.54842 28.7755 5.92496 28.1421 6.37894L27.5147 6.82744C27.1709 7.07111 26.9477 7.35349 26.8331 7.68016C26.7606 7.885 26.7245 8.20621 26.7185 8.63809H24.3236C24.3598 7.72446 24.4563 7.0932 24.6071 6.74433C24.758 6.39545 25.156 5.99124 25.7895 5.53715L26.435 5.07202C26.6461 4.92252 26.821 4.76197 26.9478 4.59027C27.1831 4.29684 27.2977 3.97006 27.2977 3.61014C27.2977 3.20035 27.165 2.82381 26.9056 2.48609C26.6402 2.14837 26.1636 1.97666 25.47 1.97666C24.7884 1.97666 24.2998 2.18708 24.0162 2.60234C23.7628 2.97331 23.6241 3.35543 23.594 3.75407C23.594 3.75964 23.594 3.77069 23.594 3.77627C23.594 3.81498 23.594 3.85927 23.5879 3.8981C23.5215 4.49064 22.9786 4.95019 22.3151 4.95019C21.6516 4.95019 21.1087 4.49064 21.0423 3.8981C21.0423 3.8981 21.0543 3.60467 21.0665 3.52156C21.2053 2.17604 21.7843 1.20695 22.7917 0.614522C23.4851 0.204841 24.3417 0 25.3551 0C26.6882 0 27.7983 0.287958 28.679 0.874921C29.5597 1.45631 30 2.32565 30 3.48295ZM23.9315 10.914C23.9315 11.7519 24.6715 12.4312 25.5844 12.4312C26.4972 12.4312 27.2372 11.7519 27.2372 10.914C27.2372 10.076 26.4972 9.39676 25.5844 9.39676C24.6715 9.39676 23.9315 10.076 23.9315 10.914Z" fill="#F2F2F2"/>
+        </svg>
+            
+        <svg onclick="navigateToSection('control-form')"  width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 10.0557V17.5043C0 21.0157 1.05185e-07 22.7713 1.27345 23.8622C2.43032 24.8531 4.22774 24.9438 7.62048 24.9522C7.61123 24.8989 7.60241 24.8455 7.59395 24.7917C7.39124 23.5001 7.39128 21.858 7.39131 19.8207V19.7389C7.39131 19.1219 7.97529 18.6217 8.69566 18.6217C9.41603 18.6217 10 19.1219 10 19.7389C10 21.8773 10.0028 23.3687 10.1794 24.4939C10.351 25.587 10.6648 26.1659 11.1461 26.5783C11.6275 26.9906 12.3032 27.2594 13.5794 27.4063C14.8931 27.5577 16.6341 27.56 19.1305 27.56H20.8696C23.3659 27.56 25.107 27.5577 26.4206 27.4063C27.6967 27.2594 28.3726 26.9906 28.8538 26.5783C29.3352 26.1659 29.649 25.587 29.8205 24.4939C29.9972 23.3687 30 21.8773 30 19.7389V7.82108C30 5.6827 29.9972 4.19131 29.8205 3.06605C29.649 1.97291 29.3352 1.39405 28.8538 0.981749C28.3726 0.569451 27.6967 0.300634 26.4206 0.153662C25.107 0.00237309 23.3659 0 20.8696 0H19.1305C16.6341 0 14.8931 0.00237309 13.5794 0.153662C12.3032 0.300634 11.6275 0.569451 11.1461 0.981749C10.6648 1.39405 10.351 1.97291 10.1794 3.06605C10.0028 4.19131 10 5.6827 10 7.82108C10 8.43815 9.41603 8.93838 8.69566 8.93838C7.97529 8.93838 7.39131 8.43815 7.39131 7.82108V7.73934C7.39128 5.702 7.39124 4.05983 7.59395 2.7683C7.60241 2.71448 7.61123 2.66099 7.62048 2.60786C4.22774 2.61616 2.43032 2.70688 1.27345 3.69786C1.05185e-07 4.78869 0 6.54435 0 10.0557ZM17.4441 18.2943L21.7918 14.5701C22.3013 14.1337 22.3013 13.4263 21.7918 12.9899L17.4441 9.26563C16.9346 8.82929 16.1088 8.82929 15.5995 9.26563C15.09 9.70196 15.09 10.4094 15.5995 10.8458L17.7206 12.6627H5.21739C4.49702 12.6627 3.91304 13.163 3.91304 13.78C3.91304 14.397 4.49702 14.8973 5.21739 14.8973H17.7206L15.5995 16.7142C15.09 17.1506 15.09 17.8581 15.5995 18.2943C16.1088 18.7307 16.9346 18.7307 17.4441 18.2943Z" fill="#F2F2F2"/>
+        </svg>
+        
+        <script> 
+            function navigateToSection(sectionId) { 
+                var element = document.getElementById(sectionId); 
+                var offset = 130; // Adjust this value to add padding when scrolling 
+                var elementPosition = element.getBoundingClientRect().top; 
+                var offsetPosition = elementPosition + window.pageYOffset - offset; 
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' }); 
+            }
+        </script>
+    
     </section>
 
-    <section id="features">
-        <h2>Key Features</h2>
-        <div class="features-grid">
-            <div class="feature">
-                <h3>Pill Dispenser</h3>
-                <p>Ensures correct dosage of medication.</p>
-            </div>
-            <div class="feature">
-                <h3>Locking System</h3>
-                <p>Secures the medication compartment.</p>
-            </div>
-            <div class="feature">
-                <h3>Light Indicator</h3>
-                <p>Shows medication status (e.g., low or replenished).</p>
-            </div>
-            <div class="feature">
-                <h3>Body Temperature Monitoring</h3>
-                <p>Monitors and displays body temperature.</p>
-            </div>
-            <div class="feature">
-                <h3>Medication Schedule on LED</h3>
-                <p>Displays medication schedules.</p>
-            </div>
-            <div class="feature">
-                <h3>Medication Reminder</h3>
-                <p>Reminds users to take their medication.</p>
-            </div>
-            <div class="feature">
-                <h3>Facial Recognition</h3>
-                <p>Identifies users for secure access.</p>
-            </div>
-            <div class="feature">
-                <h3>Fall Detection</h3>
-                <p>Detects falls to ensure timely intervention.</p>
-            </div>
+    <section class="title-section" id="title-section">
+        <h2 class="roboto-bold">Meet Well-E: Your Personal Health Care Assistant</h2>
+        <h5 class="roboto-light">Transforming Health Care Management with AI</h5>
+        <button  class="roboto-bold">Know More</button>
+    </section>
+
+    <section class="key-features" id="key-features">
+        <h2 class="roboto-bold">Well-E Features</h2>
+        <div class="key-features-content">
+            <h4 class="roboto-medium">Pill Dispenser</h4>
+            <p class="roboto-light">Ensures correct dosage of medication.</p>
+        </div>
+        <div class="key-features-content">
+            <h4 class="roboto-medium">Locking System</h4>
+            <p class="roboto-light">Secures the medication compartment.</p>
+        </div> 
+        <div class="key-features-content">
+            <h4 class="roboto-medium">Body Temperature Monitoring</h4>
+            <p class="roboto-light">Monitors and displays body temperature.</p>
+        </div>
+        <div class="key-features-content">
+            <h4 class="roboto-medium">Medication Schedule on LED</h4>
+            <p class="roboto-light">Displays medication schedules.</p>
+        </div>
+        <div class="key-features-content">
+            <h4 class="roboto-medium">Medication Reminder</h4>
+            <p class="roboto-light">Reminds users to take their medication.</p>
+        </div>
+        <div class="key-features-content">
+            <h4 class="roboto-medium">Facial Recognition</h4>
+            <p class="roboto-light">Identifies users for secure access.</p>
         </div>
     </section>
 
-    <section id="how-it-works">
-        <h2>How It Works</h2>
-        <ol>
-            <li>Voice Commands Interaction</li>
-            <li>Task Automation</li>
-            <li>Health Monitoring</li>
-            <li>Facial Recognition and Security</li>
-        </ol>
+
+    <section class="how-works" id="how-works">
+        <h2 class="roboto-bold">How It Works</h2>
+        <h4 class="roboto-light">- Voice Commands Interaction -</h4>
+        <h4 class="roboto-light">- Task Automation -</h4>
+        <h4 class="roboto-light">- Health Monitoring -</h4>
+        <h4 class="roboto-light">- Facial Recognition and Security -</h4>
     </section>
 
-    <section id="testimonials">
-        <h2>What Our Users Say</h2>
-        <blockquote>
-            <p>"Well-E has revolutionized how I manage my health. It's like having a personal nurse available 24/7!"</p>
-            <cite>– John Doe</cite>
-        </blockquote>
-        <blockquote>
-            <p>"The facial recognition feature ensures my medication is secure and only accessible by me."</p>
-            <cite>– Jane Smith</cite>
-        </blockquote>
+    <section class="about-us" id="about-us">
+        <h2 class="roboto-bold">About Well-E</h2>
+        <p class="roboto-light">Well-E is a pioneering AI-powered personal health care assistant  designed to enhance patient care and management. Our mission is to  revolutionize health care through innovative technology, providing a  seamless, secure, and personalized experience for all users.</p>
     </section>
 
-    <section id="about-us">
-        <h2>About Well-E</h2>
-        <p>Well-E is a pioneering AI-powered personal health care assistant designed to enhance patient care and management. Our mission is to revolutionize health care through innovative technology, providing a seamless, secure, and personalized experience for all users.</p>
+
+    <section class="control-form" id="control-form">
+        <h2 class="roboto-bold">CONTROL WELL-E</h2>
+        <div class="control-input">
+            <label class="roboto-medium "  for="name">Username *</label>
+            <input class="roboto-medium "  type="text" id="name" placeholder="Enter the username" name="name" required>
+        </div>
+        <div class="control-input">
+            <label class="roboto-medium " for="pass">Password *</label>
+            <input class="roboto-medium "  type="password" id="pass" placeholder="Enter the password" name="pass" required>
+        </div>
+        <button id="start-now">START NOW</button>
     </section>
 
-    <section id="contact">
-        <h2>Get in Touch</h2>
-        <form action="submit_form" method="POST">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" required></textarea>
-
-            <button type="submit">Send Message</button>
-        </form>
-        <p>Email: info@welle.com | Phone: +1 234 567 890 | Address: 123 Health Street, Well-E City</p>
+    <section class="footer">
+        <h3 class="roboto-medium ">Privacy Policy | Terms of Service</h3>
+        <h3 class="roboto-medium ">© 2025 Well-E. All rights reserved.</h3>
     </section>
 
-    <footer>
-        <p><a href="privacy_policy.html">Privacy Policy</a> | <a href="terms_of_service.html">Terms of Service</a></p>
-        <p>&copy; 2025 Well-E. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+    <script>
+        document.getElementById("start-now").addEventListener("click", async function() {
+            const username = document.getElementById("name").value;
+            const password = document.getElementById("pass").value;
+            if (!username || !password) return;
+            const formData = new FormData();
+            formData.append("username", username);
+            formData.append("password", password);
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "CSRFToken": "{{ csrf_token }}",
+                },
+                body: formData,
+            });
+            const data = await response.json();
+            if (data.success) {
+                window.location.href = "/dashboard";
+            } else {
+                alert("Invalid username or password");
+            }
+
+        });
+    </script>
+
+{% endblock bodyblock %}
+    
