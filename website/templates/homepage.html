@@ -4,6 +4,7 @@
 
 {% block headblock %}
     <link rel="stylesheet" href="{% static 'homepage.css' %}">
+    <meta name="csrf-token" content="{{ csrf_token }}">
 {% endblock headblock %}
     
 
@@ -118,20 +119,20 @@
         document.getElementById("start-now").addEventListener("click", async function() {
             const username = document.getElementById("name").value;
             const password = document.getElementById("pass").value;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             if (!username || !password) return;
             const formData = new FormData();
             formData.append("username", username);
             formData.append("password", password);
-            const response = await fetch("/api/login", {
+            const response = await fetch("login", {
                 method: "POST",
                 headers: {
-                    "CSRFToken": "{{ csrf_token }}",
+                    "X-CSRFToken": csrfToken,
                 },
                 body: formData,
             });
             const data = await response.json();
-            if (data.success) {
-                window.location.href = "/dashboard";
+            if (data.success) { 
             } else {
                 alert("Invalid username or password");
             }
