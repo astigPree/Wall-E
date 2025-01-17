@@ -39,8 +39,7 @@ def datamanager_page(request):
     # Check if user is authenticated
     if not request.user.is_authenticated:
         return redirect('index')
-    
-    print(request.user.id)
+     
     # Render the data manager page if authenticated
     
     return render(request, 'datamanager_page.html')
@@ -59,6 +58,10 @@ def fetch_patients_data(request):
                     patient.get_patient_data() for patient in patients
                 ]
                 
+                return JsonResponse({
+                    'patients': patients_data
+                }, status=200)
+                
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
     
@@ -75,9 +78,71 @@ def fetch_nurses_data(request):
                     nurse.get_nurse_data() for nurse in nurses
                 ]
                 
+                return JsonResponse({
+                    'nurses': nurses_data
+                }, status=200)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+def add_patient(request):
+    try:
+        if request.method == "POST" and request.user.is_authenticated:
+            
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            middle_name = request.POST.get('middle_name')
+            face = request.FILES.get('face')
+            
+            if not first_name or not last_name or not middle_name or not face:
+                return JsonResponse({'error': 'All fields are required'}, status=400)
+            
+            # Create a new patient object
+            patient = Patient.objects.create(
+                name = f"{first_name} {middle_name[0].upper()}. {last_name}",
+                first_name=first_name,
+                last_name=last_name,
+                middle_name=middle_name,
+                account_id=request.user.id,
+                face=face
+            )
+            
+            
+            return JsonResponse({'message': 'Patient added successfully'}, status=200)
+            
+            
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
+def add_nurse(request):
+    try:
+        if request.method == "POST" and request.user.is_authenticated:
+            
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            middle_name = request.POST.get('middle_name')
+            face = request.FILES.get('face')
+            
+            if not first_name or not last_name or not middle_name or not face:
+                return JsonResponse({'error': 'All fields are required'}, status=400)
+            
+            # Create a new nurse object
+            nurse = Nurse.objects.create(
+                name = f"{first_name} {middle_name[0].upper()}. {last_name}",
+                first_name=first_name,
+                last_name=last_name,
+                middle_name=middle_name,
+                account_id=request.user.id,
+                face=face
+            )
+            
+            
+            return JsonResponse({'message': 'Nurse added successfully'}, status=200)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)

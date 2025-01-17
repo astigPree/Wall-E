@@ -14,7 +14,7 @@ class Account(models.Model):
         return self.username
 
 class Nurse(models.Model):
-    account_id = models.BigIntegerField(null=True, default=None, unique=True)
+    account_id = models.BigIntegerField(null=True, default=None)
     name = models.CharField(max_length=100 , default='')
     first_name = models.CharField(max_length=100, default='')
     last_name = models.CharField(max_length=100, default='')
@@ -38,7 +38,7 @@ class Nurse(models.Model):
     
     
 class Patient(models.Model):
-    account_id = models.BigIntegerField(null=True, default=None, unique=True)
+    account_id = models.BigIntegerField(null=True, default=None)
     name = models.CharField(max_length=100, default='')
     first_name = models.CharField(max_length=100, default='')
     last_name = models.CharField(max_length=100, default='')
