@@ -4,7 +4,17 @@ from django.utils import timezone
 
 # Create your models here.
 
+class Account(models.Model):
+    username = models.CharField(max_length=100, unique=True)
+    password = models.CharField(max_length=100)
+    email = models.EmailField(max_length=254, unique=True)
+    user_id = models.BigIntegerField(null=True, default=None, unique=True)
+    
+    def __str__(self):
+        return self.username
+
 class Nurse(models.Model):
+    account_id = models.BigIntegerField(null=True, default=None, unique=True)
     name = models.CharField(max_length=100 , default='')
     first_name = models.CharField(max_length=100, default='')
     last_name = models.CharField(max_length=100, default='')
@@ -15,8 +25,20 @@ class Nurse(models.Model):
     def __str__(self):
         return f"{self.name} -> {self.date_added}"
     
+    def get_nurse_data(self):
+        return {
+            'id': self.pk,
+            'name': self.name,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'middle_name': self.middle_name,
+            'date_added': self.date_added.strftime("%Y-%m-%d %H:%M:%S"),
+            'face': self.face.url if self.face else None
+        }
+    
     
 class Patient(models.Model):
+    account_id = models.BigIntegerField(null=True, default=None, unique=True)
     name = models.CharField(max_length=100, default='')
     first_name = models.CharField(max_length=100, default='')
     last_name = models.CharField(max_length=100, default='')
@@ -27,8 +49,20 @@ class Patient(models.Model):
     def __str__(self):
         return f"{self.name} -> {self.date_added}"
     
+    def get_patient_data(self):
+        return {
+            'id': self.pk,
+            'name': self.name,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'middle_name': self.middle_name,
+            'date_added': self.date_added.strftime("%Y-%m-%d %H:%M:%S"),
+            'face': self.face.url if self.face else None
+        }
+    
     
 class Schedule(models.Model):
+    account_id = models.BigIntegerField(null=True, default=None, unique=True)
     nurse = models.BigIntegerField( blank=True, null=True, default=None)
     patient = models.BigIntegerField( blank=True, null=True, default=None)
     created_at = models.DateField(auto_now_add=True )

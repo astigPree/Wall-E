@@ -132,7 +132,8 @@
                 body: formData,
             });
             const data = await response.json();
-            if (data.success) { 
+            if (response.ok) { 
+                window.location.href = data.url; // Replace with your dashboard route
             } else {
                 alert("Invalid username or password");
             }

@@ -7,3 +7,5 @@ admin.site.register(Nurse)
 admin.site.register(Patient)
 
 admin.site.register(Schedule)
+
+admin.site.register(Account)
