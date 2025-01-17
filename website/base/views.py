@@ -9,3 +9,6 @@ def login_user(request):
 
 def datamanager_page(request):
     return render(request, 'datamanager_page.html')
+
+def patient_page(request):
+    return render(request, 'patient_page.html')
