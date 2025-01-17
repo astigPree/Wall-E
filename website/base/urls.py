@@ -8,7 +8,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('login', views.login_user, name='login_user'),
     path('datamanager', views.datamanager_page, name='datamanager_page'),
-    path('patient', views.patient_page, name='patient_page'),
+    path('patient/<int:patient_id>', views.patient_page, name='patient_page'),
     
     
     
@@ -17,5 +17,11 @@ urlpatterns = [
     
     path('create/patient', views.add_patient, name='create_patient'),
     path('create/nurse', views.add_nurse, name='create_nurse'),
+    
+    path('create/daily/medication', views.add_schedule_daily, name='add_schedule_daily'),
+    path('create/once/medication', views.add_schedule_once, name='add_schedule_once'),
+    
+    path('delete/nurse' , views.delete_nurse, name='delete_nurse'),
+    path('delete/patient' , views.delete_patient, name='delete_patient'),
     
 ]

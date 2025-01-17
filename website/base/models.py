@@ -62,7 +62,7 @@ class Patient(models.Model):
     
     
 class Schedule(models.Model):
-    account_id = models.BigIntegerField(null=True, default=None, unique=True)
+    account_id = models.BigIntegerField(null=True, default=None)
     nurse = models.BigIntegerField( blank=True, null=True, default=None)
     patient = models.BigIntegerField( blank=True, null=True, default=None)
     created_at = models.DateField(auto_now_add=True )
