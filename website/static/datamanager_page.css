@@ -54,6 +54,7 @@
     padding: clamp(5px, 2vw, 10px) clamp(10px, 4vw, 20px);
     border: none;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
 
 .default-button{ 

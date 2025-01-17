@@ -18,12 +18,12 @@
             </svg>
         </div>
         <div class="top-bar-buttons">
-            <button class="roboto-bold default-button selected-button">PATIENT MANAGER</button>
-            <button class="roboto-bold default-button">NURSE MANAGER</button>
+            <button id="patient-screen-button" class="roboto-bold default-button selected-button">PATIENT MANAGER</button>
+            <button id="nurse-screen-button" class="roboto-bold default-button">NURSE MANAGER</button>
         </div>
     </section>
 
-    <section class="patient-section" style="display: none;">
+    <section id="patient-section" class="patient-section">
         <button id="add-patient-button" class=" roboto-bold">ADD PATIENT</button>
         <div class="patient-list">
             <div class="patient-card">
@@ -43,7 +43,7 @@
 
     
 
-    <section class="nurse-section">
+    <section id="nurse-section" class="nurse-section"  style="display: none;">
         <button id="add-nurse-button" class=" roboto-bold">ADD NURSE</button>
         <div class="nurse-list">
             <div class="nurse-card">
@@ -83,8 +83,8 @@
                 <input type="file" id="patient-image" name="patient-image" accept="image/*">
             </div>
             <div class="form-action-buttons">
-                <button class="roboto-light" >CONFIRM</button>
-                <button class="roboto-light" >CANCEL</button>
+                <button class="roboto-light" id="patient-confirm-button" >CONFIRM</button>
+                <button class="roboto-light" id="patient-cancel-button" >CANCEL</button>
             </div>
         </div>
         
@@ -112,12 +112,67 @@
                 <input type="file" id="nurse-image" name="nurse-image" accept="image/*">
             </div>
             <div class="form-action-buttons">
-                <button class="roboto-light" >CONFIRM</button>
-                <button class="roboto-light" >CANCEL</button>
+                <button class="roboto-light" id="nurse-confirm-button" >CONFIRM</button>
+                <button class="roboto-light" id="nurse-cancel-button" >CANCEL</button>
             </div>
         </div>
         
     </div>
+
+    <script>
+        const patient_screen_button = document.getElementById("patient-screen-button");
+        const nurse_screen_button = document.getElementById("nurse-screen-button");
+        
+        const patient_section = document.getElementById("patient-section");
+        const nurse_section = document.getElementById("nurse-section");
+
+        const add_patient_button = document.getElementById("add-patient-button");
+        const add_nurse_button = document.getElementById("add-nurse-button");
+        
+        const patient_add_form = document.querySelector(".patient-add-form");
+        const nurse_add_form = document.querySelector(".nurse-add-form");
+
+        const patient_confirm_button = document.getElementById("patient-confirm-button");
+        const nurse_confirm_button = document.getElementById("nurse-confirm-button");
+        
+        const patient_cancel_button = document.getElementById("patient-cancel-button");
+        const nurse_cancel_button = document.getElementById("nurse-cancel-button");
+        
+        patient_cancel_button.addEventListener("click", function () {
+            patient_add_form.style.display = "none";
+        });
+
+        nurse_cancel_button.addEventListener("click", function () {
+            nurse_add_form.style.display = "none";
+        });
+        
+        add_patient_button.addEventListener("click", function () {
+            patient_add_form.style.display = "flex";
+            nurse_add_form.style.display = "none";
+        });
+
+        add_nurse_button.addEventListener("click", function () {
+            nurse_add_form.style.display = "flex";
+            patient_add_form.style.display = "none";
+        });
+
+        patient_screen_button.addEventListener("click", function () {
+            patient_section.style.display = "flex";
+            nurse_section.style.display = "none";
+            patient_screen_button.classList.remove("selected-button");
+            nurse_screen_button.classList.remove("selected-button");
+            patient_screen_button.classList.add("selected-button");
+        });
+        
+        nurse_screen_button.addEventListener("click", function () {
+            nurse_section.style.display = "flex";
+            patient_section.style.display = "none";
+            nurse_screen_button.classList.remove("selected-button");
+            patient_screen_button.classList.remove("selected-button");
+            nurse_screen_button.classList.add("selected-button");
+        });
+        
+    </script>
 
 {% endblock bodyblock %}
     
