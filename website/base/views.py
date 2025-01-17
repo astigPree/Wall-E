@@ -6,3 +6,6 @@ def index(request):
 
 def login_user(request):
     return JsonResponse({'error': 'You must be authenticated to view this page.'})
+
+def datamanager_page(request):
+    return render(request, 'datamanager_page.html')

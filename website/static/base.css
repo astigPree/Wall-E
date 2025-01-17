@@ -8,7 +8,9 @@ body{
 
 main{
     display: flex;
-    width: clamp(320px , 500px , 500px );
+    width: clamp(300px , 500px , 500px );
+    padding-right: 10px;
+    padding-left: 10px;
     height: fit-content;  
     flex-direction: column;
     justify-content: center; 

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block headblock %}
+    <link rel="stylesheet" href="{% static 'datamanager_page.css' %}">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock headblock %}
+    
+
+
+{% block bodyblock %}
+    <section class="top-bar">
+        <div class="top-bar-title">
+            <h1 class="roboto-bold">Welcome To Well-E Data Manager</h1>
+            <svg width="65" height="60" viewBox="0 0 65 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0.00434113 26.9604L7.80138 25.6712C8.28096 24.8429 9.09691 24.1663 10.1537 23.824C10.2861 23.7813 10.4206 23.7443 10.5552 23.7132L19.2875 8.22978C18.4586 6.73841 18.3522 4.95537 19.1725 3.33761C20.6308 0.45598 24.4696 -0.800116 27.7464 0.531813L60.3299 12.4414C64.299 14.0553 66.0849 18.193 64.3185 21.6832C63.5655 23.1707 62.2895 24.2985 60.7639 24.981L48.898 51.1957L48.3946 52.3409C50.6927 54.2465 52.1314 56.9725 52.1314 60H28.838C28.838 54.2367 34.0526 49.5643 40.4847 49.5643C40.5064 49.5643 40.5259 49.5643 40.5476 49.5643L41.3788 47.5207L41.2486 47.5499L41.4764 47.2815L50.9878 23.8668L50.9965 23.7676L24.8125 12.0214L15.6158 26.0446C15.6288 26.0757 15.644 26.1048 15.6548 26.136C15.7265 26.3148 15.7829 26.4957 15.8241 26.6784L23.1546 30.6781L20.6894 32.6906L17.1175 39.5214L13.4718 40.13L14.9539 30.684L14.394 30.3826C14.0143 30.6723 13.5694 30.9076 13.0725 31.0689C11.1845 31.6814 9.12946 31.034 8.05311 29.6087L5.38176 38.7941L2.19611 37.0947L1.55811 30.402L1.25647 30.4506L0 26.9662L0.00434113 26.9604ZM58.1534 14.2283C55.3453 13.8122 52.6935 15.5136 52.2291 18.0297C51.7647 20.5457 53.6635 22.9218 56.4716 23.3379C59.2796 23.754 61.9314 22.0527 62.3958 19.5366C62.8602 17.0205 60.9614 14.6444 58.1534 14.2283ZM28.8575 6.27563C29.2047 4.39538 27.7855 2.62012 25.687 2.30901C23.9944 2.05818 22.3799 2.83595 21.6355 4.13288C21.5921 4.20871 21.5531 4.28455 21.5162 4.36232C21.5118 4.3701 21.5097 4.37788 21.5053 4.38371C21.4706 4.45954 21.4381 4.53538 21.4077 4.6151L21.4055 4.62093C21.3773 4.69676 21.3513 4.77648 21.3296 4.85426C21.3252 4.87176 21.3209 4.88926 21.3165 4.90482C21.2948 4.98454 21.2753 5.06426 21.2623 5.14592C21.1972 5.49786 21.195 5.84786 21.2471 6.18425C21.4728 7.64062 22.7292 8.86171 24.4327 9.11449C24.4957 9.12421 24.5564 9.13199 24.6172 9.13782C24.6367 9.13977 24.6563 9.14171 24.6758 9.14365C24.717 9.14754 24.7604 9.15143 24.8017 9.15338C24.8255 9.15532 24.8494 9.15532 24.8711 9.15727C24.9102 9.15921 24.947 9.16115 24.9839 9.16115C25.0078 9.16115 25.0317 9.16115 25.0577 9.16115C25.0946 9.16115 25.1315 9.16116 25.1684 9.15921C25.1923 9.15921 25.2161 9.15727 25.24 9.15727C25.2769 9.15532 25.3138 9.15338 25.3507 9.15143C25.3746 9.14949 25.3963 9.14754 25.4201 9.1456C25.4614 9.14171 25.5004 9.13782 25.5395 9.13393C25.559 9.13199 25.5785 9.13004 25.5981 9.1281C25.6567 9.12032 25.7131 9.11254 25.7717 9.10282H25.776C25.8324 9.0931 25.891 9.08143 25.9474 9.06977C25.967 9.06588 25.9865 9.06005 26.006 9.05616C26.0429 9.04838 26.082 9.03866 26.1189 9.02893C26.1406 9.0231 26.1645 9.01727 26.1862 9.01143C26.2209 9.00171 26.2534 8.99199 26.2881 8.98227C26.312 8.97449 26.3337 8.96866 26.3576 8.96088C26.3901 8.95116 26.4227 8.93949 26.4552 8.92782C26.4769 8.92005 26.5008 8.91227 26.5225 8.90449C26.5551 8.89282 26.5876 8.87921 26.6202 8.86755C26.6419 8.85977 26.6636 8.85005 26.6831 8.84227C26.7178 8.82866 26.7525 8.8131 26.7873 8.79755C26.8046 8.78977 26.822 8.78199 26.8393 8.77422C26.8893 8.75088 26.9413 8.7256 26.9891 8.70033L26.9913 8.69838C27.9504 8.19867 28.6622 7.33145 28.8575 6.27563Z" fill="#F2F2F2"/>
+            </svg>
+        </div>
+        <div class="top-bar-buttons">
+            <button class="roboto-bold default-button selected-button">PATIENT MANAGER</button>
+            <button class="roboto-bold default-button">NURSE MANAGER</button>
+        </div>
+    </section>
+
+    <section class="patient-section" style="display: none;">
+        <button id="add-patient-button" class=" roboto-bold">ADD PATIENT</button>
+        <div class="patient-list">
+            <div class="patient-card">
+                <img src="data:image/jpeg;base64,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" alt="patient">
+                <div class="patient-info">
+                    <h3 class="roboto-medium">Lukas T. Junior</h3>
+                    <h5 class="roboto-light">Date Added : July 20, 2024</h5>
+                    <div class="patient-action-buttons">
+                        <button>Edit Patient</button>
+                        <button>Delete Patient</button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    
+
+    <section class="nurse-section">
+        <button id="add-nurse-button" class=" roboto-bold">ADD NURSE</button>
+        <div class="nurse-list">
+            <div class="nurse-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1kR5CA__aaMwVzssB8UPkHeaRCakOS0iV_w&s" alt="nurse">
+                <div class="nurse-info">
+                    <h3 class="roboto-medium">Lukas T. Junior</h3>
+                    <h5 class="roboto-light">Date Added : July 20, 2024</h5>
+                    <div class="nurse-action-buttons">
+                        <button style="display: none;"></button> 
+                        <button>Delete Nurse</button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+    
+
+    <div class="patient-add-form" style="display: none;">
+
+        <div class="patient-fill-up-form">
+            <h3 class="roboto-bold">ADD PATIENT</h3>
+            <div class="patient-fill-line">
+                <label  class="roboto-medium" for="patient-name">First Name *</label>
+                <input type="text" id="patient-fname" name="patient-name">
+            </div>
+            <div class="patient-fill-line">
+                <label class="roboto-medium" for="patient-name">Middle Name *</label>
+                <input type="text" id="patient-mname" name="patient-name">
+            </div>
+            <div class="patient-fill-line">
+                <label class="roboto-medium" for="patient-name">Last Name *</label>
+                <input type="text" id="patient-lname" name="patient-name">
+            </div>
+            <div class="patient-fill-line">
+                <label class="roboto-medium" for="patient-image">Upload Face Image *</label>
+                <input type="file" id="patient-image" name="patient-image" accept="image/*">
+            </div>
+            <div class="form-action-buttons">
+                <button class="roboto-light" >CONFIRM</button>
+                <button class="roboto-light" >CANCEL</button>
+            </div>
+        </div>
+        
+    </div>
+
+    
+    <div class="nurse-add-form" style="display: none;">
+
+        <div class="nurse-fill-up-form">
+            <h3 class="roboto-bold">ADD NURSE</h3>
+            <div class="nurse-fill-line">
+                <label  class="roboto-medium" for="nurse-name">First Name *</label>
+                <input type="text" id="nurse-fname" name="nurse-name">
+            </div>
+            <div class="nurse-fill-line">
+                <label class="roboto-medium" for="nurse-name">Middle Name *</label>
+                <input type="text" id="nurse-mname" name="nurse-name">
+            </div>
+            <div class="nurse-fill-line">
+                <label class="roboto-medium" for="nurse-name">Last Name *</label>
+                <input type="text" id="nurse-lname" name="nurse-name">
+            </div>
+            <div class="nurse-fill-line">
+                <label class="roboto-medium" for="nurse-image">Upload Face Image *</label>
+                <input type="file" id="nurse-image" name="nurse-image" accept="image/*">
+            </div>
+            <div class="form-action-buttons">
+                <button class="roboto-light" >CONFIRM</button>
+                <button class="roboto-light" >CANCEL</button>
+            </div>
+        </div>
+        
+    </div>
+
+{% endblock bodyblock %}
+    
