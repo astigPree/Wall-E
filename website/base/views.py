@@ -4,8 +4,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login , logout
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+
+
 from .models import Account, Nurse, Patient, Schedule
 from datetime import datetime
+
 
 def index(request):
     return render(request, 'homepage.html') 
@@ -324,9 +328,9 @@ def delete_schedule(request):
 
 
 
-
-
 # ======================= CONTROLLERS ========================
+
+@csrf_exempt
 def controller_get_data(request):
     try:
         
@@ -334,6 +338,7 @@ def controller_get_data(request):
             controller_token = request.POST.get('controller_token')
             
             user = Account.objects.filter(user_token=controller_token).first()
+            print("controller ; ", controller_token)
             if not user:
                 return JsonResponse({'error': 'User not found'}, status=404)
             

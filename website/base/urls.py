@@ -27,4 +27,7 @@ urlpatterns = [
     path('patient/medication/<int:patient_id>', views.get_patient_medications, name='patient_medications'),
     path('delete/medication', views.delete_schedule, name='delete_medications'),
     
+    
+    path("controller", views.controller_get_data, name='controller'),
+    
 ]
