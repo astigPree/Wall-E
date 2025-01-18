@@ -167,16 +167,18 @@ def add_schedule_daily(request):
     try:
         if request.method == "POST" and request.user.is_authenticated:
             
+            patient_id = request.POST.get('patient_id')
             medication_time = request.POST.get('medication_time')
             medication_type = request.POST.get('medication_type')
             
-            if not medication_time or not medication_type:
+            if not medication_time or not medication_type or not patient_id:
                 return JsonResponse({'error': 'All fields are required'}, status=400)
             
             medication_time = datetime.strptime(medication_time, '%H:%M').time()
             
             # Create a new schedule object
             schedule = Schedule.objects.create(
+                patient = patient_id,
                 set_time=medication_time,
                 pill=medication_type,
                 account_id=request.user.id,
@@ -191,8 +193,6 @@ def add_schedule_daily(request):
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
         
-        
-            
 
 def add_schedule_once(request):
     try:
@@ -201,8 +201,9 @@ def add_schedule_once(request):
             medication_date = request.POST.get('medication_date')
             medication_time = request.POST.get('medication_time')
             medication_type = request.POST.get('medication_type')
+            patient_id = request.POST.get('patient_id')
             
-            if not medication_time or not medication_type or not medication_date:
+            if not medication_time or not medication_type or not medication_date or not patient_id:
                 return JsonResponse({'error': 'All fields are required'}, status=400)
             
             medication_date = datetime.strptime(medication_date, '%Y-%m-%d').date()
@@ -210,6 +211,7 @@ def add_schedule_once(request):
             
             # Create a new schedule object
             schedule = Schedule.objects.create(
+                patient = patient_id,
                 set_date = medication_date,
                 set_time=medication_time,
                 pill=medication_type,
@@ -237,6 +239,10 @@ def delete_patient(request):
             
             if patient.account_id != request.user.id: 
                 return JsonResponse({'error': 'Patient not found'}, status=404)
+            
+            schedules = Schedule.objects.filter(patient=patient_id)
+            for schedule in schedules:
+                schedule.delete()
             
             patient.delete()
             
@@ -267,4 +273,94 @@ def delete_nurse(request):
         return JsonResponse({'error': str(e)}, status=500)
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def get_patient_medications(request, patient_id ):
+    try:
+        if request.method == "GET" and request.user.is_authenticated:
+            patient = Patient.objects.filter(id=patient_id).first()
+
+            if not patient:
+                return JsonResponse({'error': 'Patient not found'}, status=404)
+
+            if patient.account_id != request.user.id:
+                return JsonResponse({'error': 'Patient not found'}, status=404)
+            
+            schedules = Schedule.objects.filter(patient=patient_id).order_by('-created_at')
+            medications = [
+                schedule.get_schedule_data() for schedule in schedules
+            ]
+            
+            return JsonResponse({
+                'medications': medications
+            }, status=200)
+            
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def delete_schedule(request):
+    try:
+        if request.method == "POST" and request.user.is_authenticated:
+            schedule_id = request.POST.get('schedule_id')
+            schedule = Schedule.objects.filter(id=schedule_id).first()
+
+            if not schedule:
+                return JsonResponse({'error': 'Schedule not found'}, status=404)
+
+            if schedule.account_id != request.user.id:
+                return JsonResponse({'error': 'Schedule not found'}, status=404)
+
+            schedule.delete()
+
+            return JsonResponse({'message': 'Schedule deleted successfully'}, status=200)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)   
+
+
+
+
+
+
+# ======================= CONTROLLERS ========================
+def controller_get_data(request):
+    try:
+        
+        if request.method == "POST":
+            controller_token = request.POST.get('controller_token')
+            
+            user = Account.objects.filter(user_token=controller_token).first()
+            if not user:
+                return JsonResponse({'error': 'User not found'}, status=404)
+            
+            patients = Patient.objects.filter(account_id=user.id)
+            nurses = Nurse.objects.filter(account_id=user.id)
+            schedules = Schedule.objects.filter(account_id=user.id)
+            
+            patients_data = {
+                patient.pk : patient.get_patient_data() for patient in patients
+            }
+            nurses_data = {
+                nurse.pk : nurse.get_nurse_data() for nurse in nurses
+            }
+            schedules_data = {
+                schedule.pk : schedule.get_schedule_data() for schedule in schedules
+            }
+            
+            return JsonResponse({
+                'patients': patients_data,
+                'nurses': nurses_data,
+                'schedules': schedules_data
+            }, status=200)
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+    
+
 

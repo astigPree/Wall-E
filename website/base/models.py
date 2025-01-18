@@ -9,6 +9,7 @@ class Account(models.Model):
     password = models.CharField(max_length=100)
     email = models.EmailField(max_length=254, unique=True)
     user_id = models.BigIntegerField(null=True, default=None, unique=True)
+    user_token = models.CharField(max_length=100, null=True, default=None)
     
     def __str__(self):
         return self.username
@@ -77,3 +78,15 @@ class Schedule(models.Model):
         return f"{self.nurse} -> {self.patient} -> {self.created_at} -> {self.pill} -> { 'daily' if self.is_daily else 'once' }"
     
     
+    def get_schedule_data(self):
+        return {
+            'id': self.pk,
+            'nurse': self.nurse,
+            'patient': self.patient,
+            'created_at': self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            'pill': self.pill,
+            'is_daily': self.is_daily,
+            'is_medication_taken': self.is_medication_taken,
+            'set_date': self.set_date.strftime("%Y-%m-%d") if self.set_date else None,
+            'set_time': self.set_time.strftime("%H:%M") if self.set_time else None
+        }

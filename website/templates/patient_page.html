@@ -44,12 +44,8 @@
 
         <div class="medications-table">
             <h4 class="roboto-light">MEDICATION INFORMATION</h4>
-            <div class="medication-row-container">
+            <div class="medication-row-container" id="medication-list">
 
-                <div class="medication-row">
-                    <p class="roboto-light">One Time - Mefinamic - July 21, 2024 - 12:00</p>
-                    <button class="roboto-bold">DELETE</button>
-                </div>
 
                 <div class="medication-row">
                     <p class="roboto-light">One Time - Mefinamic - July 21, 2024 - 12:00</p>
@@ -147,6 +143,8 @@
         const once_cancel_button = document.getElementById('once-cancel-button');
         const once_confirm_button = document.getElementById('once-confirm-button');
 
+        const medication_list = document.getElementById('medication-list');
+
         daily_cancel_button.addEventListener('click', () => {
             form_add_medication_daily.style.display = 'none';
         });
@@ -182,6 +180,7 @@
                 return;
             }
             const formData = new FormData();
+            formData.append('patient_id', {{patient.id}})
             formData.append("medication_time", medicationTime);
             formData.append("medication_type", medicationType);
             
@@ -223,6 +222,7 @@
                 return;
             }
             const formData = new FormData();
+            formData.append('patient_id', {{patient.id}})
             formData.append("medication_date", medicationDate);
             formData.append("medication_time", medicationTime);
             formData.append("medication_type", medicationType);
@@ -238,7 +238,9 @@
             });
             const data = await response.json();
             if (response.ok) { 
-                console.log(data);
+                setTimeout(() =>{
+                    window.location.reload();
+                },500)
             } else {
                 console.error('Server responded with status:', response.status);
                 console.error('Error:', data);
@@ -246,6 +248,74 @@
                 return;
             }
         });
+
+
+        async function get_medication_data() {
+            try{
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                const response = await fetch("../patient/medication/" + {{patient.id}}, {
+                    method: "GET",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                    },
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    console.log(data)
+                    medication_list.innerHTML = ''
+                    data.medications.forEach((medication)=>{
+                        
+                        // Parse the string into a Date object
+                        const originalDate = new Date(medication.set_date);
+
+                        // Format the Date object into the desired string format
+                        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                        const formattedDateStr = `${monthNames[originalDate.getMonth()]} ${originalDate.getDate()}, ${originalDate.getFullYear()}`;
+ 
+                        medication_list.insertAdjacentHTML('afterbegin', ` 
+                            <div class="medication-row">
+                                <p class="roboto-light">
+                                    ${medication.is_daily ? "Daily" : "One Time"} - ${ medication.pill } -${!medication.is_daily ? ` ${formattedDateStr} -` : ""} ${medication.set_time ? medication.set_time : ""}</p>
+                                <button class="roboto-bold" id="delete-medication-${medication.id}">DELETE</button>
+                            </div>
+                        `)
+                        const delete_button = document.getElementById(`delete-medication-${medication.id}`)
+                        delete_button.addEventListener('click', async ()=>{ 
+
+                            const formData = new FormData();
+                            formData.append('schedule_id', medication.id);
+                            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                            const response = await fetch(`../delete/medication`, {
+                                method: "POST",
+                                headers: {
+                                    "X-CSRFToken": csrfToken,
+                                },
+                                body: formData,
+                            });
+                            const data = await response.json();
+                            if (response.ok) {
+                                setTimeout(() =>{
+                                    window.location.reload();
+                                },500)
+                            } else {
+                                console.error('Server responded with status:', response.status);
+                                console.error('Error:', data); 
+                            }
+                        });
+                    })
+                } else {
+                    console.error('Server responded with status:', response.status);
+                    console.error('Error:', data);
+                }
+            } catch(e){
+                console.error(e);
+            }
+
+        }
+
+        get_medication_data();
+
+
     </script>
 
 
