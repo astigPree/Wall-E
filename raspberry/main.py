@@ -93,28 +93,30 @@ def eyes_loop():
 
 async def main_loop():
     
-    threading.Thread(target=fetch_data).start()
+    # threading.Thread(target=fetch_data).start()
     
     # threading.Thread(target=eyes_loop).start() # For facial recognition
     
-    # while not event.close_down: 
-    #     text = recognizer.recognize_speech()
-    #     if text:
-    #         response = await brain.generate_response(rules.rule_for_identifiying_command.format(text=text))
-    #         print(f"The response is: {response}")
-    #         data : dict = text_to_dictionary(response)
-    #         if data is not None:
-    #             # data = { action , message, data }
-    #             if data.get('action') == '2' or data.get('action') == 2:
-    #                 algo_open_back_of_the_machine(
-    #                     event=event, voice=voice, 
-    #                     db=database, brain=brain, 
-    #                     recognizer=recognizer, eyes=eyes, 
-    #                     data=data
-    #                 )
+    while not event.close_down: 
+        text = recognizer.recognize_speech()
+        print(f"Text received: {text}")
+        # if text:
+        #     response = await brain.generate_response(rules.rule_for_identifiying_command.format(text=text))
+        #     print(f"The response is: {response}")
+        #     data : dict = text_to_dictionary(response)
+        #     if data is not None:
+        #         # data = { action , message, data }
+        #         if data.get('action') == '2' or data.get('action') == 2:
+        #             algo_open_back_of_the_machine(
+        #                 event=event, voice=voice, 
+        #                 db=database, brain=brain, 
+        #                 recognizer=recognizer, eyes=eyes, 
+        #                 data=data,
+        #                 user_command=text
+        #             )
 
             
-    #     await asyncio.sleep(0.5)  # Add a short delay between iterations
+        await asyncio.sleep(0.5)  # Add a short delay between iterations
     
     
     

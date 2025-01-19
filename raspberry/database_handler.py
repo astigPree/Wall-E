@@ -23,6 +23,22 @@ class DataHandler:
     # def __init__(self):
     #     self.load_data()
     
+    def generate_id_and_name_of_nurses(self):
+        text = ""
+        for nurse in self.nurses:
+            formated_text = f"\n{nurse} -> {self.nurses[nurse]['first_name']} {self.nurses[nurse]['middle_name']} {self.nurses[nurse]['last_name']} "
+            text += formated_text
+        
+        return text
+
+    def generate_id_and_name_of_patients(self):
+        text = ""
+        for patient in self.patients:
+            formated_text = f"\n{patient} -> {self.patients[patient]['first_name']} {self.patients[patient]['middle_name']} {self.patients[patient]['last_name']} "
+            text += formated_text
+        
+        return text
+
     def load_data(self):
         with open(self.nurses_path, "r") as nurses_file:
             self.nurses : dict = json.load(nurses_file)
@@ -65,8 +81,17 @@ class DataHandler:
                 )
                 
         
-            
-                           
+    def get_user_by_name(self, name : str):
+        people = {}
+        for nurse in self.nurses:
+            if name.lower() in self.nurses[nurse]["name"].lower():
+                people[nurse] = self.nurses[nurse]
+        for patient in self.patients:
+            if name.lower() in self.patients[patient]["name"].lower():
+                people[patient] = self.patients[patient]
+                
+        return people
+    
             
     def get_nurses(self):
         for nurse in self.nurses:

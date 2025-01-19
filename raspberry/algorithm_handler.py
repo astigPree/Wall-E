@@ -5,6 +5,7 @@ from database_handler import DataHandler
 from speech_recognition_utils import SpeechRecognitionUtils
 from facial_recognition_utils import FacialRecognition
 import time
+from rules import *
 
 SCANNING_FACIAL_RECOGNITION_TIMEOUT = 5 # seconds timeout in seconds for processing face recognition
 
@@ -16,7 +17,9 @@ def algo_open_back_of_the_machine(
     brain : BrainUtils, 
     recognizer : SpeechRecognitionUtils , 
     eyes : FacialRecognition, 
-    data : dict):
+    data : dict,
+    user_command : str
+    ):
     # 2. User want to open the back of the machine or add a pills in the machine.
     # 3. Senario in putting pills (NURSEs);
     #     - The user will ask the machine to open the back of the machine.
@@ -30,10 +33,23 @@ def algo_open_back_of_the_machine(
     if event.stop_proccess:
         return
     
+    response = None
+    maximum_retry = 5
+    
+    while not response and maximum_retry > 0:
+        response = brain.generate_response()
+        
+        maximum_retry -= 1
+    
     voice.speak(data.get('message', 'Please face my camera so i can see you if you are a nurse'))
+    
+    
     
     # Scanning face recognition
     
+    event.activate_scanning = True
+    event.open_eyes = True
+    # TODO :  Create an algorithm that will scan the face of based on the data
     
     
     

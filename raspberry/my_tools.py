@@ -80,3 +80,26 @@ def text_to_dictionary(response : str):
         else:
             print("No match found")
             return None
+        
+
+def text_to_list(text):
+    # Find the list within the text
+    match = re.search(r'\[.*?\]', text)
+    if match:
+        # Extract the list text
+        list_text = match.group(0)
+        
+        # Convert the list text to a Python list
+        try:
+            return json.loads(list_text)
+        except json.JSONDecodeError:
+            print("Failed to parse JSON from the list")
+            return None
+    else:
+        print("No list found in the text")
+        return None
+
+# Example usage
+# text = "List ['{\"name\": \"John\"}', 'Hello', '{\"age\": 30}']"
+# result = extract_and_convert_list(text)
+# print(result)  # Output: ['{"name": "John"}', 'Hello', '{"age": 30}']

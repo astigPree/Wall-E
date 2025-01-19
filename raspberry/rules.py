@@ -44,7 +44,23 @@ Here is the example for the data:
 
 """
 
+rule_for_identifiying_id_by_name = """
+Based on this text who are the person the text want to find and give me a list of id based on the available options:
+Text: "{text}"
 
+Available options:
+    "{options}"
+
+Return a list of id based on the available options like this [ "1", "2", "3"].
+
+For example:
+    text = "My name is John"
+    options :
+        patient-1 : John Smith
+        nurses-2 : Jane Doe
+        patient-3 : Jill Doe
+    The output will be: ["patient-1"]    
+"""
 
 
 
