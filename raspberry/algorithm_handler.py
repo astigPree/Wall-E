@@ -34,14 +34,30 @@ def algo_open_back_of_the_machine(
     
     
     
+
+def algo_machine_walk(
+    event : EventHandler , 
+    voice : VoiceUtils , 
+    db : DataHandler, 
+    brain : BrainUtils, 
+    recognizer : SpeechRecognitionUtils , 
+    eyes : FacialRecognition, 
+    data : dict):
+    
+    # 8. Senario in making the machine walk;
+    # - The user will ask the machine to move.
+    # - The machine will identify what position and where to go.
+    # - The machine will move to the position and where to go.
+    pass
     
     
     
     
     
     
-    
-    
+
+if __name__ == "__main__":
+    pass
     
     
 

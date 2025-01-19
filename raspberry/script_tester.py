@@ -21,53 +21,12 @@ if sys.platform == 'win32':
 
 
 database = DataHandler()
-eyes = FacialRecognition()
+# eyes = FacialRecognition()
 voice = VoiceUtils()
-recognizer = SpeechRecognitionUtils()
+# recognizer = SpeechRecognitionUtils()
 brain = BrainUtils()
 event =  EventHandler()
 
-
-async def sample_function():
-    while True:
-        text = recognizer.recognize_speech()
-        if text:
-            response = await brain.generate_response(text)
-            print(f"The response is: {response}")
-            voice.speak(response)  
-            print(f"You said: {response}")
-            print("--------------------------------")
-        await asyncio.sleep(2)  # Add a short delay between iterations
-
-
-def eyes_loop():
-    while not event.close_down:
-        
-        if not event.open_eyes:
-            continue
-        
-        
-        frame = eyes.get_face_by_camera()
-        if frame is not None:
-            
-            if event.detect_nurse:
-                people = database.get_nurses()
-            elif event.detect_patient:
-                people = database.get_patients()
-            else :
-                people = database.get_all_people()
-            
-            for person in people:
-                
-                event.has_face_scanned = eyes.check_face_exists_in_database(frame, event.selected_face)
-                
-                if event.has_face_scanned:
-                    # TODO: Create a logic here
-                    print("Face recognized")
-                else:
-                    print("Face not recognized")
-                
-        time.sleep(0.5)
 
 
 async def main_loop():
@@ -75,7 +34,7 @@ async def main_loop():
     # threading.Thread(target=eyes_loop).start() # For facial recognition
     
     while not event.close_down: 
-        text = recognizer.recognize_speech()
+        text = input("Enter user response : ")
         if text:
             response = await brain.generate_response(rules.rule_for_identifiying_command.format(text=text))
             print(f"The response is: {response}")
@@ -86,7 +45,7 @@ async def main_loop():
                     algo_open_back_of_the_machine(
                         event=event, voice=voice, 
                         db=database, brain=brain, 
-                        recognizer=recognizer, eyes=eyes, 
+                        recognizer=None, eyes=None, 
                         data=data
                     )
 
@@ -103,15 +62,15 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"An error occurred: {e}")
         event.close_down = True
-        eyes.close_camera()
+        # eyes.close_camera()
     finally:
         event.close_down = True
         # Safely close the event loop
         try:
-            eyes.close_camera()
+            # eyes.close_camera()
             loop = asyncio.get_event_loop()
             if not loop.is_closed():
                 loop.close()
         except RuntimeError as re:
             print(f"Error closing event loop: {re}")
-            eyes.close_camera()
+            # eyes.close_camera()
