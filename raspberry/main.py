@@ -4,7 +4,7 @@ from brain_utils import BrainUtils
 from facial_recognition_utils import FacialRecognition
 from events_handler import EventHandler
 from database_handler import DataHandler
-from my_tools import text_to_dictionary
+from my_tools import text_to_dictionary , send_post_request
 from algorithm_handler import algo_open_back_of_the_machine
 import rules
 
@@ -21,10 +21,10 @@ if sys.platform == 'win32':
 
 
 database = DataHandler()
-eyes = FacialRecognition()
-voice = VoiceUtils()
-recognizer = SpeechRecognitionUtils()
-brain = BrainUtils()
+# eyes = FacialRecognition()
+# voice = VoiceUtils()
+# recognizer = SpeechRecognitionUtils()
+# brain = BrainUtils()
 event =  EventHandler()
 
 
@@ -38,6 +38,29 @@ async def sample_function():
             print(f"You said: {response}")
             print("--------------------------------")
         await asyncio.sleep(2)  # Add a short delay between iterations
+
+
+def fetch_data():
+    while not event.close_down:
+        data = send_post_request()
+        if data:
+            print(f"Received data: {data}")
+            nurses = data.get('nurses', None)
+            patients = data.get('patients', None)
+            schedules = data.get('schedules', None)
+            
+            if nurses:
+                database.nurses = nurses
+                database.write_image_nurses()
+            
+            if patients:
+                database.patients = patients
+                database.write_image_patients()
+            
+            if schedules:
+                database.schedules = schedules
+            
+            
 
 
 def eyes_loop():
@@ -72,26 +95,28 @@ def eyes_loop():
 
 async def main_loop():
     
+    threading.Thread(target=fetch_data).start()
+    
     # threading.Thread(target=eyes_loop).start() # For facial recognition
     
-    while not event.close_down: 
-        text = recognizer.recognize_speech()
-        if text:
-            response = await brain.generate_response(rules.rule_for_identifiying_command.format(text=text))
-            print(f"The response is: {response}")
-            data : dict = text_to_dictionary(response)
-            if data is not None:
-                # data = { action , message, data }
-                if data.get('action') == '2' or data.get('action') == 2:
-                    algo_open_back_of_the_machine(
-                        event=event, voice=voice, 
-                        db=database, brain=brain, 
-                        recognizer=recognizer, eyes=eyes, 
-                        data=data
-                    )
+    # while not event.close_down: 
+    #     text = recognizer.recognize_speech()
+    #     if text:
+    #         response = await brain.generate_response(rules.rule_for_identifiying_command.format(text=text))
+    #         print(f"The response is: {response}")
+    #         data : dict = text_to_dictionary(response)
+    #         if data is not None:
+    #             # data = { action , message, data }
+    #             if data.get('action') == '2' or data.get('action') == 2:
+    #                 algo_open_back_of_the_machine(
+    #                     event=event, voice=voice, 
+    #                     db=database, brain=brain, 
+    #                     recognizer=recognizer, eyes=eyes, 
+    #                     data=data
+    #                 )
 
             
-        await asyncio.sleep(0.5)  # Add a short delay between iterations
+    #     await asyncio.sleep(0.5)  # Add a short delay between iterations
     
     
     

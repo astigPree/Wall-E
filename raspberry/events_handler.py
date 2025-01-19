@@ -14,11 +14,15 @@ class EventHandler:
     detect_nurse = False # True if you want to detect a nurse face
     detect_patient = False # True if you want to detect a patient face
     
-    patients = [] # List of patients ; patients = [dict , dict , dict , dict , dict , dict]
-    patients_to_take_medication = [] # List of patients to take medication ; patients_to_take_medication = [ id, id, id, id, id, id, id]
+    patients = {} # List of patients ; patients = {patient : dict, patient : dict, patient : dict, patient : dict, patient : dict, patient : dict}
+    patients_to_take_medication = {} # List of patients to take a medication 
     there_is_patient_need_to_take_medication = False # True if here is a patient need to take medication
     
     stop_proccess = False # True if we are stopping the procedure and we are not waiting for it to complete
+    
+    nurses = {} # List of nurses ; nurses = { nurse : dict, nurse : dict, nurse : dict, nurse : dict, nurse : dict, nurse : dict }
+    
+    schedules = {} # List of schedules for the patient 
     
     def update_patients(self, patients):
         self.patients = patients
@@ -53,6 +57,10 @@ class EventHandler:
                                 self.patients_to_take_medication.append(patient["id"])  # Add patient to the list of patients to take medication
                                 self.there_is_patient_need_to_take_medication = True
 
+        
+        
+        
+        
         threading.Thread(target=event).start()
 
     

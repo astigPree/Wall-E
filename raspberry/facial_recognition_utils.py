@@ -4,8 +4,8 @@ import os
 
 class FacialRecognition:
     
-    def __init__(self , camera=0):
-        self.cap = cv2.VideoCapture(camera)
+    # def __init__(self , camera=0):
+    #     self.cap = cv2.VideoCapture(camera)
     
     def get_face_by_camera(self):
         ret, frame = self.cap.read()

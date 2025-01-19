@@ -3,7 +3,7 @@ rule_for_identifiying_command = """
 You are a machine controlled by a user. Given a user response "{text}", identify what the user wants and return to me what action the user wants. Here are the list of actions:
 
 1. User wants the machine to walk.
-2. User wants to open the back of the machine or add pills in the machine.
+2. User wants to open the back of the machine or add/remove pills in the machine.
 3. User wants to request a pill or ask when the pill will be distributed.
 4. User wants to add a new schedule for the pills or add a new patient.
 5. User wants to check the body temperature of the patient.

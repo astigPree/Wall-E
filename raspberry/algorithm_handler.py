@@ -30,7 +30,10 @@ def algo_open_back_of_the_machine(
     if event.stop_proccess:
         return
     
-    voice.speak(data.get('message', 'Please face my eyes so i can see you if you are a nurse'))
+    voice.speak(data.get('message', 'Please face my camera so i can see you if you are a nurse'))
+    
+    # Scanning face recognition
+    
     
     
     
@@ -48,9 +51,10 @@ def algo_machine_walk(
     # - The user will ask the machine to move.
     # - The machine will identify what position and where to go.
     # - The machine will move to the position and where to go.
-    pass
     
-    
+    if not data :
+        return None
+     
     
     
     
