@@ -8,6 +8,7 @@ class EventHandler:
     close_down = False # True if we are closing down the system, False otherwise (default)
     
     open_eyes = True # True if you want to open the eyes for reading from the camera
+    activate_scanning = False # True if you want to activate the scanning of the patients and nurses
     has_face_scanned = False # True if there is a face scanned
     has_capture_face = False # True if the face is captured
     
@@ -23,6 +24,9 @@ class EventHandler:
     nurses = {} # List of nurses ; nurses = { nurse : dict, nurse : dict, nurse : dict, nurse : dict, nurse : dict, nurse : dict }
     
     schedules = {} # List of schedules for the patient 
+    
+    
+    
     
     def update_patients(self, patients):
         self.patients = patients

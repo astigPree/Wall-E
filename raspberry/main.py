@@ -21,10 +21,10 @@ if sys.platform == 'win32':
 
 
 database = DataHandler()
-# eyes = FacialRecognition()
-# voice = VoiceUtils()
-# recognizer = SpeechRecognitionUtils()
-# brain = BrainUtils()
+eyes = FacialRecognition()
+voice = VoiceUtils()
+recognizer = SpeechRecognitionUtils()
+brain = BrainUtils()
 event =  EventHandler()
 
 
@@ -73,22 +73,20 @@ def eyes_loop():
         frame = eyes.get_face_by_camera()
         if frame is not None:
             
-            if event.detect_nurse:
-                people = database.get_nurses()
-            elif event.detect_patient:
-                people = database.get_patients()
-            else :
-                people = database.get_all_people()
-            
-            for person in people:
+            if event.activate_scanning:
                 
-                event.has_face_scanned = eyes.check_face_exists_in_database(frame, event.selected_face)
+                selected_people = None
+                people = {}
+                if event.detect_nurse:
+                    people = database.get_nurses()
+                    selected_people = "nurses"
+                elif event.detect_patient:
+                    people = database.get_patients()
+                    selected_people = "patients"
                 
-                if event.has_face_scanned:
-                    # TODO: Create a logic here
-                    print("Face recognized")
-                else:
-                    print("Face not recognized")
+                for person in people:
+                    pass
+                     
                 
         time.sleep(0.5)
 
