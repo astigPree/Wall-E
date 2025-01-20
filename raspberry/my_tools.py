@@ -110,3 +110,31 @@ def text_to_list(text):
 # text = "List ['{\"name\": \"John\"}', 'Hello', '{\"age\": 30}']"
 # result = extract_and_convert_list(text)
 # print(result)  # Output: ['{"name": "John"}', 'Hello', '{"age": 30}']
+ 
+
+def extract_integer(text):
+    match = re.search(r'\d+', text)
+    if match:
+        return int(match.group(0))
+    else:
+        return None
+
+# Example usage
+# text = "patient-1"
+# integer = extract_integer(text)
+# print(integer)  # Output: 1
+
+
+def extract_integer_and_text(text):
+    match = re.search(r'(\D+)-(\d+)', text)
+    if match:
+        text_part = match.group(1)
+        integer_part = int(match.group(2))
+        return text_part, integer_part
+    else:
+        return None, None
+
+# Example usage
+# text = "patient-1"
+# text_part, integer_part = extract_integer_and_text(text)
+# print(f"Text: {text_part}, Integer: {integer_part}")  # Output: Text: patient, Integer: 1
