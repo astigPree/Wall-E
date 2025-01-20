@@ -8,8 +8,8 @@ import time
 from rules import *
 import my_tools
 
-SCANNING_FACIAL_RECOGNITION_TIMEOUT = 5 # seconds timeout in seconds for processing face recognition 
-
+SCANNING_FACIAL_RECOGNITION_TIMEOUT = 50 # seconds timeout in seconds for processing face recognition  
+COMPARING_FACIAL_RECOGNITION_TIMEOUT = 2 # number of tries to compare the face recognition
 async def algo_open_back_of_the_machine(
     event : EventHandler , 
     voice : VoiceUtils , 
@@ -82,11 +82,21 @@ async def algo_open_back_of_the_machine(
     voice.speak(data.get('message', 'Please face my camera so i can see you if you are a nurse'))
     
     # Scanning face recognition
-    
+     
     event.activate_scanning = True
     event.open_eyes = True
-    # TODO : Create an algorithm that will scan the face of based on the data before procceding below
+    event.what_to_search = "nurse" 
+    event.is_searching = True
     
+    # TODO : Create an algorithm that will scan the face of based on the data before procceding below 
+    while not event.has_face_scanned and eyes.number_to_try_detection < COMPARING_FACIAL_RECOGNITION_TIMEOUT:
+        if event.stop_proccess:
+            return
+        time.sleep(0.5)
+        
+    event.is_searching = False
+    event.activate_scanning = False 
+    eyes.number_to_try_detection = 0
     
     if event.has_face_scanned and event.detect_nurse:
         voice.speak(data.get('success', "Wait i will open the back so you can put the pills in the machine"))
@@ -200,8 +210,18 @@ async def algo_check_for_schedules(
     
     event.activate_scanning = True
     event.open_eyes = True
-    # TODO : Create an algorithm that will scan the face of based on the data before procceding below
+    event.what_to_search = "all" 
+    event.is_searching = True
     
+    # TODO : Create an algorithm that will scan the face of based on the data before procceding below
+    while not event.has_face_scanned and eyes.number_to_try_detection < COMPARING_FACIAL_RECOGNITION_TIMEOUT:
+        if event.stop_proccess:
+            return
+        time.sleep(0.5)
+        
+    event.is_searching = False
+    event.activate_scanning = False 
+    eyes.number_to_try_detection = 0
     
         
     if event.has_face_scanned and (event.detect_nurse or event.detect_patient):

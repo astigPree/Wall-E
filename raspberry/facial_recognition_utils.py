@@ -6,6 +6,7 @@ class FacialRecognition:
     
     # def __init__(self , camera=0):
     #     self.cap = cv2.VideoCapture(camera)
+    number_to_try_detection = 0 # number of tries to detect a face 
     
     def get_face_by_camera(self):
         ret, frame = self.cap.read()

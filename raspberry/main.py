@@ -7,6 +7,7 @@ from database_handler import DataHandler
 from my_tools import text_to_dictionary , send_post_request
 from algorithm_handler import algo_open_back_of_the_machine
 import rules
+import my_tools
 
 import asyncio
 import sys
@@ -74,20 +75,35 @@ def eyes_loop():
         if frame is not None:
             
             if event.activate_scanning:
+                eyes.number_to_try_detection += 1
+                if event.what_to_search == "all" or event.what_to_search == "patient":
+                    for patient_id , patient in database.patients.items():
+                        if event.stop_proccess:
+                            break
+                        if not event.is_searching:
+                            break
+                        filename = my_tools.extract_filename(patient.face)
+                        if filename:
+                            patient_face_path = os.path.join(database.patients_image_path, filename)
+                            if not event.has_face_scanned:
+                                event.has_face_scanned = eyes.check_face_exists_in_database(face_image=frame, face_in_database=patient_face_path)
+                            if not event.detect_patient:
+                                event.detect_patient = True if event.has_face_scanned else False
                 
-                selected_people = None
-                people = {}
-                if event.detect_nurse:
-                    people = database.get_nurses()
-                    selected_people = "nurses"
-                elif event.detect_patient:
-                    people = database.get_patients()
-                    selected_people = "patients"
-                
-                for person, person_data in people.items():
-                    pass
-                    
-                
+                if event.what_to_search == "all" or event.what_to_search == "nurse":
+                    for nurse_id , nurse in database.nurses.items():
+                        if event.stop_proccess:
+                            break
+                        if not event.is_searching:
+                            break 
+                        filename = my_tools.extract_filename(nurse.face)
+                        if filename:
+                            nurse_face_path = os.path.join(database.nurses_image_path, filename)
+                            if not event.has_face_scanned:
+                                event.has_face_scanned = eyes.check_face_exists_in_database(face_image=frame, face_in_database=nurse_face_path)
+                            if not event.detect_nurse:
+                                event.detect_nurse = True if event.has_face_scanned else False 
+                            
         time.sleep(0.5)
 
 

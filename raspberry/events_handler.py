@@ -12,8 +12,8 @@ class EventHandler:
     has_face_scanned = False # True if there is a face scanned
     has_capture_face = False # True if the face is captured
     
-    detect_nurse = False # True if you want to detect a nurse face
-    detect_patient = False # True if you want to detect a patient face
+    detect_nurse = False # True if nurse is detected
+    detect_patient = False # True if patient is detected 
     
     patients = {} # List of patients ; patients = {patient : dict, patient : dict, patient : dict, patient : dict, patient : dict, patient : dict}
     patients_to_take_medication = {} # List of patients to take a medication 
@@ -25,7 +25,9 @@ class EventHandler:
     
     schedules = {} # List of schedules for the patient 
     
+    what_to_search = "nobody" # what to search for in the camera : all, patient, nurse, nobody
     
+    is_searching = False # True if we are searching for something in the 
     
     
     def update_patients(self, patients):
