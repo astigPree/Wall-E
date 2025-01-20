@@ -84,11 +84,13 @@ def eyes_loop():
                     people = database.get_patients()
                     selected_people = "patients"
                 
-                for person in people:
+                for person, person_data in people.items():
                     pass
-                     
+                    
                 
         time.sleep(0.5)
+
+
 
 
 async def main_loop():

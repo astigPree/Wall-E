@@ -22,13 +22,13 @@ Here is the response MUST look like this dictionary and don't add any further in
 
 Here is the example message for each action and don't copy it directly into the dictionary, it's just for reference:
 1. message value should reference the example "How many distance you want me to move?" if there is no distance provided. If there is a distance provided, the message should reference "Successfully moved to the `distance` meters".
-2. message value should reference the example "Could you please tell me your name?".
-3. message value should reference the example "Could you please tell me your name?".
-4. message value should reference the example "Could you please tell me your name?".
-5. message value should reference the example "I'm waiting to scan the patient's body temperature".
-6. message value should reference the example "Got it, thanks for letting me know!".
-7. message value should reference the example "I'm not sure what you want or the command isn't recognized".
-8. message value should reference the example "Alright, I'm closing the back of the machine now".
+2. message value should reference the example greeting the user based on the name provided and ask to look at your camera. If there is no name provided, the message should reference asking the user to provide a name.
+3. message value should reference the example greeting the user based on the name provided and ask to look at your camera. If there is no name provided, the message should reference asking the user to provide a name.
+4. message value should reference the example greeting the user based on the name provided and ask to look at your camera. If there is no name provided, the message should reference asking the user to provide a name.
+5. message value should reference the example saying the user that you are waiting for the temperature to be scanned.
+6. message value should reference the example responding to the user inquiries/questions or text.
+7. message value should reference the example responding to the user inquiries/questions or text.
+8. message value should reference the example saying that you will close the back of the machine.
  
 The dictionary should look like this but not copy it directly into the dictionary, it's just for reference:
 {{"action": "1", "message": "Successfully moved to the `distance` meters", "data": {{"distance": "10" , "type": "meters"}}}}
@@ -41,7 +41,6 @@ Here is the example for the data:
 5. data value should reference the example "celcius" : "Your temperature is {{cel}} celcius" , "fahrenheit" : "Your temperature is {{fah}} fahrenheit".
 6. data value should reference the example "message": "Got it, thanks for letting me know!".
 7. data value should reference the example "message": "I'm not sure what you want or the command isn't recognized".
-
 """
 
 rule_for_identifiying_id_by_name = """

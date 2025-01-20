@@ -4,6 +4,7 @@
 import json
 import re
 import requests
+import os
 
 SERVER_URL = "http://WellE.pythonanywhere.com"
 
@@ -31,14 +32,20 @@ def send_post_request():
  
 
 def fetch_and_save_image(image_url, save_path):
-    response = requests.get(image_url)
-    
-    if response.status_code == 200:
-        with open(save_path, 'wb') as file:
-            file.write(response.content)
-        print(f"Image saved to {save_path}")
-    else:
-        print(f"Failed to fetch image. Status code: {response.status_code}")
+    try:
+        response = requests.get(image_url)
+        
+        if response.status_code == 200:
+            if not os.path.isfile(save_path):
+                with open(save_path, 'wb') as file:
+                    file.write(response.content)
+                print(f"Image saved to {save_path}")
+        else:
+            print(f"Failed to fetch image. Status code: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        print(f'Error: {e}')
+    except Exception as e:
+        print(f'Error: {e}')
 
 # Example usage
 # image_url = 'http://example.com/image.jpg'  # Replace with your actual image URL

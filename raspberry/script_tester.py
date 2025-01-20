@@ -29,28 +29,22 @@ event =  EventHandler()
 
 
 
-async def main_loop():
-    
-    # threading.Thread(target=eyes_loop).start() # For facial recognition
-    
-    while not event.close_down: 
-        text = input("Enter user response : ")
-        if text:
-            response = await brain.generate_response(rules.rule_for_identifiying_command.format(text=text))
-            print(f"The response is: {response}")
-            data : dict = text_to_dictionary(response)
-            if data is not None:
-                # data = { action , message, data }
-                if data.get('action') == '2' or data.get('action') == 2:
-                    algo_open_back_of_the_machine(
-                        event=event, voice=voice, 
-                        db=database, brain=brain, 
-                        recognizer=None, eyes=None, 
-                        data=data
-                    )
+async def main_loop(): 
+    text = input("Enter user response : ")
 
-            
-        await asyncio.sleep(0.5)  # Add a short delay between iterations
+    # if text:
+    #     response = await brain.generate_response(rules.rule_for_identifiying_id_by_name.format(text=text , options=options))
+    #     print(f"The response is: {response}")
+    #     data : dict = text_to_dictionary(response)
+    #     if data is not None:
+    #         # data = { action , message, data }
+    #         if data.get('action') == '2' or data.get('action') == 2:
+    #             algo_open_back_of_the_machine(
+    #                 event=event, voice=voice, 
+    #                 db=database, brain=brain, 
+    #                 recognizer=None, eyes=None, 
+    #                 data=data
+    #             ) 
     
     
     
