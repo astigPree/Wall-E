@@ -7,6 +7,7 @@ import requests
 import os
 
 SERVER_URL = "http://WellE.pythonanywhere.com"
+CONTROLLER_TOKEN = '1234567890'
 
 def send_post_request():
     try:
@@ -15,7 +16,7 @@ def send_post_request():
             "Content-Type": "application/x-www-form-urlencoded"
         }
         data = {
-            'controller_token': '1234567890'  # Replace with your actual token
+            'controller_token': CONTROLLER_TOKEN  # Replace with your actual token
         }
         
         response = requests.post(url, headers=headers, data=data)
@@ -29,7 +30,52 @@ def send_post_request():
     except Exception as e:
         print(f'Error: {e}')
         return None
- 
+
+def delete_schedule(schedule_id):
+    try:
+        url = SERVER_URL + '/controller/delete'  # Replace with your actual URL
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        data = {
+            'controller_token': CONTROLLER_TOKEN,  # Replace with your actual token
+            'schedule_id' : schedule_id
+        }
+        
+        response = requests.post(url, headers=headers, data=data)
+        
+        if response.ok:
+            return response.json()
+        else:
+            print(f'Server responded with status: {response.status_code}')
+            print(f'Error: {response.json()}')
+            return None
+    except Exception as e:
+        print(f'Error: {e}')
+        return None
+
+def taken_medicine_schedule(schedule_id): 
+    try:
+        url = SERVER_URL + '/controller/taken'  # Replace with your actual URL
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        data = {
+            'controller_token': CONTROLLER_TOKEN,  # Replace with your actual token
+            'schedule_id' : schedule_id
+        }
+        
+        response = requests.post(url, headers=headers, data=data)
+        
+        if response.ok:
+            return response.json()
+        else:
+            print(f'Server responded with status: {response.status_code}')
+            print(f'Error: {response.json()}')
+            return None
+    except Exception as e:
+        print(f'Error: {e}')
+        return None
 
 def fetch_and_save_image(image_url, save_path):
     try:

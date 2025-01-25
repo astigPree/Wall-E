@@ -368,4 +368,69 @@ def controller_get_data(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
     
 
+@csrf_exempt
+def controller_delete_schedule(request):
+    try:
+        
+        if request.method == "POST":
+            controller_token = request.POST.get('controller_token')
+            
+            user = Account.objects.filter(user_token=controller_token).first()
+            print("controller ; ", controller_token)
+            if not user:
+                return JsonResponse({'error': 'User not found'}, status=404)
+            
+            schedule_id = request.POST.get('schedule_id' , None)
+            if not schedule_id:
+                return JsonResponse({'error': 'Schedule not found'}, status=404)
+            
+            sched = Schedule.objects.filter(account_id = user.user_id , id=schedule_id).first()
+            if not sched:
+                raise JsonResponse({'error': 'Schedule not found'}, status=404)
+            
+            sched.delete()
+            
+            return JsonResponse({
+                'success': 'Schedule deleted'
+            }, status=200)
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@csrf_exempt
+def controller_taken_medicine_schedule(request):
+    try:
+        
+        if request.method == "POST":
+            controller_token = request.POST.get('controller_token')
+            
+            user = Account.objects.filter(user_token=controller_token).first()
+            print("controller ; ", controller_token)
+            if not user:
+                return JsonResponse({'error': 'User not found'}, status=404)
+            
+            schedule_id = request.POST.get('schedule_id' , None)
+            if not schedule_id:
+                return JsonResponse({'error': 'Schedule not found'}, status=404)
+            
+            sched = Schedule.objects.filter(account_id = user.user_id , id=schedule_id).first()
+            if not sched:
+                raise JsonResponse({'error': 'Schedule not found'}, status=404)
+            
+            sched.is_medication_taken = True
+            sched.save()
+            
+            return JsonResponse({
+                'success': 'Schedule Medication taken successfully'
+            }, status=200)
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
 

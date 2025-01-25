@@ -7,6 +7,8 @@ class EventHandler:
     
     close_down = False # True if we are closing down the system, False otherwise (default)
     
+    has_important_event = False # True if there is a important event in the system, False otherwise (default)
+    
     open_eyes = True # True if you want to open the eyes for reading from the camera
     activate_scanning = False # True if you want to activate the scanning of the patients and nurses
     has_face_scanned = False # True if there is a face scanned
@@ -28,6 +30,11 @@ class EventHandler:
     what_to_search = "nobody" # what to search for in the camera : all, patient, nurse, nobody
     
     is_searching = False # True if we are searching for something in the 
+    
+    search_patient_id = None # The id of the patient we are searching for
+    search_nurse_id = None # The id of the nurse we are searching for
+    
+    api_action = "get_data" # get_data = Get the data , delete_data = Delete the schedule, taken_medication = Modify the data in server in taken
     
     
     def update_patients(self, patients):

@@ -10,6 +10,10 @@ import my_tools
 
 SCANNING_FACIAL_RECOGNITION_TIMEOUT = 50 # seconds timeout in seconds for processing face recognition  
 COMPARING_FACIAL_RECOGNITION_TIMEOUT = 2 # number of tries to compare the face recognition
+RECORDING_VOICE_TIMEOUT = 3 # number of tries to recording the voice recognition
+
+
+
 async def algo_open_back_of_the_machine(
     event : EventHandler , 
     voice : VoiceUtils , 
@@ -263,8 +267,139 @@ async def algo_check_for_schedules(
         return
     
     
+async def algo_check_body_temperature( 
+    event : EventHandler , 
+    voice : VoiceUtils , 
+    db : DataHandler, 
+    brain : BrainUtils, 
+    recognizer : SpeechRecognitionUtils , 
+    eyes : FacialRecognition, 
+    data : dict,
+    user_command : str
+    ):
+    # 7. Senario in checking body temperature (NURSEs);
+    # - The user can get the body temperature of the patient by using the machine tools.
+    # - The machine will identify the body temperature of the patient.
+    # - The machine will display the body temperature of the patient and speak the body temperature of the patient.
+    if event.stop_proccess:
+        return
     
     
+    voice.speak(data.get("message", "Please scan the body temperature using my machine tools body temperature sensor."))
+    
+    # TODO: Create a logic that connect arduino and raspberry pi using a wiring then get the body temperature from the arduino
+    
+    voice.speak("The body temperature of the patient is: 5 degrees")
+    
+    return
+
+
+
+async def algo_user_want_to_talk(
+    event : EventHandler , 
+    voice : VoiceUtils , 
+    db : DataHandler, 
+    brain : BrainUtils, 
+    recognizer : SpeechRecognitionUtils , 
+    eyes : FacialRecognition, 
+    data : dict,
+    user_command : str
+    ):
+    
+    # 8. Senario in making the machine walk;
+    # - The user will ask the machine to move.
+    # - The machine will identify what position and where to go.
+    # - The machine will move to the position and where to go.
+    
+    if event.stop_proccess:
+        return {}
+    
+    past_conversation : list[str] = []
+    
+    user_conversation_placeholder = "\nUser Response : {conversation}"
+    bot_conversation_placeholder = "\nYour Response : {conversation}"
+    past_conversation.append(user_conversation_placeholder.format(conversation=user_command))
+    bot_message = data.get("message", "Hello There! Could you repeat your request because i did not understand the message")
+    past_conversation.append(bot_conversation_placeholder.format(conversation=bot_message))
+    
+    voice.speak(bot_message)
+    
+    while True:
+        response = ""
+        for tries in range(RECORDING_VOICE_TIMEOUT):
+            
+            if event.stop_proccess:
+                return {}
+            
+            response += recognizer.recognize_speech()
+            
+            if event.stop_proccess:
+                return {}
+            
+            if response and tries > 2 :
+                bot_response = await brain.generate_response(rules_for_converstaion.format(conversations=past_conversation.join("")))
+                    
+                if event.stop_proccess:
+                    return {}
+                
+                data : dict = text_to_dictionary(bot_response)
+                if not data:
+                    voice.speak("Sorry, there was a problem. Please try again later.")
+                    return {}
+                
+                bot_message = data.get("response" , None)
+                if not bot_message:
+                    action = data.get("action", None)
+                    if action is not None:
+                        return data
+                    voice.speak("Sorry, there was a problem. Please try again later.")
+                    return {}
+                
+                past_conversation.append(user_conversation_placeholder.format(conversation=response))
+                past_conversation.append(bot_conversation_placeholder.format(conversation=bot_message))
+                voice.speak(bot_message)
+                
+                break
+
+async def algo_user_command_not_exist(
+    event : EventHandler , 
+    voice : VoiceUtils , 
+    db : DataHandler, 
+    brain : BrainUtils, 
+    recognizer : SpeechRecognitionUtils , 
+    eyes : FacialRecognition, 
+    data : dict,
+    user_command : str
+    ):
+    
+    voice.speak(data.get("message", "The command you are looking for does not exist. Please try again"))
+
+
+async def algo_close_the_back_of_the_machine(
+    event : EventHandler , 
+    voice : VoiceUtils , 
+    db : DataHandler, 
+    brain : BrainUtils, 
+    recognizer : SpeechRecognitionUtils , 
+    eyes : FacialRecognition, 
+    data : dict,
+    user_command : str
+    ):
+    if event.stop_proccess:
+        return
+    
+    
+    voice.speak(data.get("message", "Wait, I will slowly close the pills drawers."))
+    
+    # TODO: Create a logic that connect arduino and close the back of the machine
+    
+    return
+
+
+
+    
+
+
 
 if __name__ == "__main__":
     pass
