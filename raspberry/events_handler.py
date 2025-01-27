@@ -8,6 +8,7 @@ class EventHandler:
     close_down = False # True if we are closing down the system, False otherwise (default)
     
     has_important_event = False # True if there is a important event in the system, False otherwise (default)
+    on_proccess = False # True if we are on the process, False otherwise (default)
     
     open_eyes = True # True if you want to open the eyes for reading from the camera
     activate_scanning = False # True if you want to activate the scanning of the patients and nurses

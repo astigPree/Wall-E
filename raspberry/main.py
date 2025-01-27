@@ -20,6 +20,8 @@ if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
+OFFSET_MINUTE_TO_CALL_NAME = 10
+
 
 database = DataHandler()
 eyes = FacialRecognition()
@@ -49,7 +51,10 @@ def fetch_data():
     global brain
     global event
     
+    
     while not event.close_down:
+        
+        time.sleep(1) # sleep for 1 second
         
         if event.api_action == "get_data":
             data = send_post_request()
@@ -74,12 +79,29 @@ def fetch_data():
                      
                 if schedules:
                     database.schedules = schedules
-            
+        
+        
+        
         # TODO: Create an algorithm that check the schedule of the patients
         # TODO: This is an important event and it should check the patient face to verify before despensing pills
         # TODO: This is an important event and it should shout the patients name so they will be notified
-        
-
+        for schedule_id , schedule in database.schedules.items():
+            if schedule.set_date:
+                if not my_tools.is_current_date(schedule.set_date):
+                    # If the schedule is not current date, then we need to skip the action
+                    continue
+                
+            if schedule.set_time:
+                if not my_tools.is_within_time_range(schedule.set_time , OFFSET_MINUTE_TO_CALL_NAME):
+                    # If the schedule is not current time, then we need to skip the action
+                    continue
+            
+            event.has_important_event = True
+            patient = database.patients.get(schedule.patient)
+            if patient:
+                voice.speak(f"{patient.get('name', 'No name Patient!')} IT'S TIME TO TAKE YOUR {schedule.get('pill' , 'PILLS').upper()}! DON'T FORGET YOUR MEDICATION!")
+            event.has_important_event = False
+            
 
 def eyes_loop():
      

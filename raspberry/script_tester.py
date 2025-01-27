@@ -7,20 +7,40 @@ if data:
 
 import datetime
 
-def is_current_date(date_str):
-    # Get the current date
-    today = datetime.date.today()
-    
-    # Parse the date string
-    input_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
-    
-    # Check if the input date is the current date
-    return input_date == today
-
-# Example usage
-date_str = "2025-01-27"
-
-if is_current_date(date_str):
-    print("The provided date is the current date.")
-else:
-    print("The provided date is not the current date.")
+data = {
+    'patients': {
+        '8': {
+            'id': 8,
+            'name': 'Arthur A. Arthur',
+            'first_name': 'Arthur',
+            'last_name': 'Arthur',
+            'middle_name': 'Arthur',
+            'date_added': '2025-01-19 06:16:02',
+            'face': '/media/patient_faces/patient_image_j5Gr6Tu.jpg'
+        }
+    },
+    'nurses': {
+        '3': {
+            'id': 3,
+            'name': 'Joy T. Tarucan',
+            'first_name': 'Joy',
+            'last_name': 'Tarucan',
+            'middle_name': 'Tambak',
+            'date_added': '2025-01-19 07:00:38',
+            'face': '/media/nurse_faces/nurse_image.jpg'
+        }
+    },
+    'schedules': {
+        '9': {
+            'id': 9,
+            'nurse': None,
+            'patient': 8,
+            'created_at': '2025-01-19 00:00:00',
+            'pill': 'Citirizine',
+            'is_daily': False,
+            'is_medication_taken': False,
+            'set_date': '2025-01-15',
+            'set_time': '12:38'
+        }
+    }
+}
