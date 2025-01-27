@@ -5,6 +5,7 @@ import json
 import re
 import requests
 import os
+import datetime
 
 SERVER_URL = "http://WellE.pythonanywhere.com"
 CONTROLLER_TOKEN = '1234567890'
@@ -184,3 +185,62 @@ def extract_integer_and_text(text):
 # text = "patient-1"
 # text_part, integer_part = extract_integer_and_text(text)
 # print(f"Text: {text_part}, Integer: {integer_part}")  # Output: Text: patient, Integer: 1
+ 
+def convert_str_to_date(str_to_date):
+    if str_to_date:
+        return datetime.datetime.strptime(str_to_date, "%Y-%m-%d %H:%M")
+    else:
+        return None
+
+def convert_str_to_time(str_to_time):
+    if str_to_time:
+        return datetime.datetime.strptime(str_to_time, "%H:%M")
+    else:
+        return None
+    
+  
+def is_within_time_range(start_time_str, offset_minutes):
+    # Get the current date and time
+    now = datetime.datetime.now()
+    
+    # Parse the start time
+    start_time = datetime.datetime.strptime(start_time_str, "%H:%M").time()
+    
+    # Combine the start time with today's date
+    start_datetime = datetime.datetime.combine(now.date(), start_time)
+    
+    # Calculate the end time by adding the offset minutes
+    end_datetime = start_datetime + datetime.timedelta(minutes=offset_minutes)
+    
+    # Check if the current time is within the range
+    return start_datetime <= now <= end_datetime
+
+# Example usage
+# start_time_str = "23:42"  # 1:00 AM in 24-hour format
+# offset_minutes = 30
+
+# if is_within_time_range(start_time_str, offset_minutes):
+#     print("Current time is within the specified time range.")
+# else:
+#     print("Current time is outside the specified time range.")
+
+
+
+def is_current_date(date_str):
+    # Get the current date
+    today = datetime.date.today()
+    
+    # Parse the date string
+    input_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
+    
+    # Check if the input date is the current date
+    return input_date == today
+
+# Example usage
+# date_str = "2025-01-27"
+
+# if is_current_date(date_str):
+#     print("The provided date is the current date.")
+# else:
+#     print("The provided date is not the current date.")
+
