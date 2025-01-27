@@ -53,6 +53,8 @@ def fetch_data():
         
         if event.api_action == "get_data":
             data = send_post_request()
+            print("\n\nHere is the data ;")
+            print(data)
             if data:
                 print(f"Received data: {data}")
                 nurses = data.get('nurses', None)
@@ -154,8 +156,9 @@ async def main_loop():
     global brain
     global event
     
-    # threading.Thread(target=fetch_data).start()
-    
+    threading.Thread(target=fetch_data).start()
+    while True:
+        time.sleep(1)
     # threading.Thread(target=eyes_loop).start() # For facial recognition
     
     while not event.close_down: 
@@ -275,3 +278,5 @@ if __name__ == '__main__':
         except RuntimeError as re:
             print(f"Error closing event loop: {re}")
             eyes.close_camera()
+        except Exception as e:
+            print(f"An error occurred while closing event loop: {e}")
