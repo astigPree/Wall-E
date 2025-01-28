@@ -88,7 +88,7 @@ def fetch_data():
         for schedule_id , schedule in database.schedules.items():
             if schedule.set_date:
                 if not my_tools.is_current_date(schedule.set_date):
-                    # If the schedule is not current date, then we need to skip the action
+                    # If the schedule is not current date, then we need to skip the action 
                     continue
                 
             if schedule.set_time:
