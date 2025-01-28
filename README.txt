@@ -110,3 +110,15 @@ SENARIOS;
 
     
 
+
+REQUIREMENTS;
+
+pip install gTTS
+pip install DeepFace
+pip install cv2
+pip install speech_recognition
+pip install playsound
+pip install -qq pytorch-lightning==1.7.0 transformers==4.21.3 aitextgen==0.6.0
+pip install torchmetrics==0.11.4
+
+
