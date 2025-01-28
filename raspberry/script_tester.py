@@ -46,14 +46,45 @@ data = {
 
 
 
-from aitextgen import aitextgen
+# from aitextgen import aitextgen
 
-# Without any parameters, aitextgen() will download, cache, and load the 124M GPT-2 "small" model
-ai = aitextgen()
+# # Without any parameters, aitextgen() will download, cache, and load the 124M GPT-2 "small" model
+# ai = aitextgen()
 
-ai.generate()
-ai.generate(n=3, max_length=100)
-ai.generate(n=3, prompt="I believe in unicorns because", max_length=100)
-ai.generate_to_file(n=10, prompt="I believe in unicorns because", max_length=100, temperature=1.2)
+# # ai.generate()
+# # ai.generate(n=3, max_length=100)
+# generate = ai.generate_one(prompt="hello guys", max_length=1000)
+# print("================================================")
+# print(generate)
 
+
+
+
+from pyuac import main_requires_admin
+
+@main_requires_admin
+def main():
+    print("Do stuff here that requires being run as an admin.")
+    # The window will disappear as soon as the program exits!
+    # input("Press enter to close the window. >")
+  
+    import serial
+    import time
+
+    arduino = serial.Serial(port='COM5',  baudrate=115200, timeout=.1)
+
+
+    def write_read(x):
+        arduino.write(bytes(x,  'utf-8'))
+        time.sleep(0.05)
+        data = arduino.readline()
+        return  data
+
+
+    while True:
+        num = input("Enter a number: ")
+        value  = write_read(num)
+        print(value)
+
+main()
 
