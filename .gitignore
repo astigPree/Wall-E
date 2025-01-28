@@ -9,3 +9,5 @@ venv/
 *.gif
 *.bmp
 *.tiff
+
+aitextgen/
