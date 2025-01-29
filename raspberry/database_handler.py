@@ -17,9 +17,9 @@ class DataHandler:
     nurses_path = os.path.join(os.getcwd(), "databases", "nurses.json")
     patients_path = os.path.join(os.getcwd(), "databases", "patients.json")
     
-    nurses : dict = None
-    patients : dict = None
-    schedules : dict = None
+    nurses : dict = {}
+    patients : dict =  {}
+    schedules : dict =  {}
     
     
     # def __init__(self):

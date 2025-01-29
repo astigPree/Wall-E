@@ -28,7 +28,8 @@ class EventHandler:
     
     schedules = {} # List of schedules for the patient 
     
-    what_to_search = "nobody" # what to search for in the camera : all, patient, nurse, nobody
+    what_to_search = "nobody" # what to search for in the camera : all, patient, nurse, nobody , nurse, patient
+    person_id = None # the id of the person we are searching for based on the database ( patient or nurses )
     
     is_searching = False # True if we are searching for something in the 
     

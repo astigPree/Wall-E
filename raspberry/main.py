@@ -31,6 +31,7 @@ brain = BrainUtils()
 event =  EventHandler()
 
 
+
 async def sample_function():
     while True:
         text = recognizer.recognize_speech()
@@ -59,10 +60,10 @@ def fetch_data():
         
         if event.api_action == "get_data":
             data = send_post_request()
-            print("\n\nHere is the data ;")
-            print(data)
+            # print("\n\nHere is the data ;")
+            # print(data)
             if data:
-                print(f"Received data: {data}")
+                # print(f"Received data: {data}")
                 nurses = data.get('nurses', None)
                 patients = data.get('patients', None)
                 schedules = data.get('schedules', None)
@@ -86,30 +87,30 @@ def fetch_data():
         # TODO: Create an algorithm that check the schedule of the patients
         # TODO: This is an important event and it should check the patient face to verify before despensing pills
         # TODO: This is an important event and it should shout the patients name so they will be notified
-        for schedule_id , schedule in database.schedules.items():
-            if schedule.set_date:
+        # for schedule_id , schedule in database.schedules.items():
+        #     if schedule.set_date:
                 
-                date_sched = my_tools.check_date_status(schedule.set_date)
-                if date_sched == "Past":
-                    # If the schedule is not current date, then we need to skip the action
-                    continue
+        #         date_sched = my_tools.check_date_status(schedule.set_date)
+        #         if date_sched == "Past":
+        #             # If the schedule is not current date, then we need to skip the action
+        #             continue
                 
-            if schedule.set_time:
+        #     if schedule.set_time:
                 
-                time_sched = my_tools.check_time_status(schedule.set_time , OFFSET_MINUTE_TO_VALID)
+        #         time_sched = my_tools.check_time_status(schedule.set_time , OFFSET_MINUTE_TO_VALID)
                 
-                if time_sched == "Past":
-                    # If the schedule is not current time, then we need to skip the action
-                    continue
+        #         if time_sched == "Past":
+        #             # If the schedule is not current time, then we need to skip the action
+        #             continue
             
-            event.has_important_event = True 
-            patient = database.patients.get(schedule.patient)
-            # TODO : Check if nasa list_of_patients_to_take then skip it
-            if patient:
-                # TODO: I check kung meron pills ang selected medication
-                # TODO : Check if lumampas na an specific time na mag take san pills ma send san text message na wra katumar san bulong
-                voice.speak(f"{patient.get('name', 'No name Patient!')} IT'S TIME TO TAKE YOUR {schedule.get('pill' , 'PILLS').upper()}! DON'T FORGET YOUR MEDICATION!")
-            event.has_important_event = False
+        #     event.has_important_event = True 
+        #     patient = database.patients.get(schedule.patient)
+        #     # TODO : Check if nasa list_of_patients_to_take then skip it
+        #     if patient:
+        #         # TODO: I check kung meron pills ang selected medication
+        #         # TODO : Check if lumampas na an specific time na mag take san pills ma send san text message na wra katumar san bulong
+        #         voice.speak(f"{patient.get('name', 'No name Patient!')} IT'S TIME TO TAKE YOUR {schedule.get('pill' , 'PILLS').upper()}! DON'T FORGET YOUR MEDICATION!")
+        #     event.has_important_event = False
             
 
 def eyes_loop():
@@ -121,24 +122,61 @@ def eyes_loop():
     global brain
     global event
     
+    eyes.start_camera()
+    
     while not event.close_down:
         
         if not event.open_eyes:
             continue
         
         
+        
         frame = eyes.get_face_by_camera()
         if frame is not None:
             
-            if event.activate_scanning:
+            if event.activate_scanning and (database.patients or database.nurses):
+                print("Start Scanning Faces")
                 eyes.number_to_try_detection += 1
+                
+                if event.what_to_search == "patient":
+                    print("Start Scanning Patient")
+                    patient_data = database.patients.get(event.person_id)
+                    if not patient_data:
+                        print(f"Patient {event.person_id} not found in database")
+                        continue
+                    filename = my_tools.extract_filename(patient_data.get('face')) 
+                    if filename:
+                        patient_face_path = os.path.join(database.patients_image_path, filename)
+                        if not event.has_face_scanned:
+                            event.has_face_scanned = eyes.check_face_exists_in_database(face_image=frame, face_in_database=patient_face_path)
+                        if not event.detect_patient:
+                            event.detect_patient = True if event.has_face_scanned else False
+                            event.search_patient_id = patient_id
+                
+                if event.what_to_search == "nurse":
+                    print("Start Scanning Nurses")
+                    nurse_data = database.nurses.get(event.person_id)
+                    if not nurse_data:
+                        print(f"Nurse {event.person_id} not found in database")
+                        continue
+                    filename = my_tools.extract_filename(nurse_data.get('face')) 
+                    if filename:
+                        nurse_face_path = os.path.join(database.nurses_image_path, filename)
+                        if not event.has_face_scanned:
+                            event.has_face_scanned = eyes.check_face_exists_in_database(face_image=frame, face_in_database=nurse_face_path)
+                        if not event.detect_nurse:
+                            event.detect_nurse = True if event.has_face_scanned else False
+                            event.search_nurse_id = nurse_id
+                    
+                
                 if event.what_to_search == "all" or event.what_to_search == "patient":
-                    for patient_id , patient in database.patients.items():
+                    print("Start Scanning Patients")
+                    for patient_id , patient_data in database.patients.items():
                         if event.stop_proccess:
                             break
                         if not event.is_searching:
-                            break
-                        filename = my_tools.extract_filename(patient.face)
+                            break 
+                        filename = my_tools.extract_filename(patient_data.get('face')) 
                         if filename:
                             patient_face_path = os.path.join(database.patients_image_path, filename)
                             if not event.has_face_scanned:
@@ -148,12 +186,13 @@ def eyes_loop():
                                 event.search_patient_id = patient_id
                 
                 if event.what_to_search == "all" or event.what_to_search == "nurse":
-                    for nurse_id , nurse in database.nurses.items():
+                    print("Start Scanning Nurses")
+                    for nurse_id , nurse_data in database.nurses.items():
                         if event.stop_proccess:
                             break
                         if not event.is_searching:
-                            break 
-                        filename = my_tools.extract_filename(nurse.face)
+                            break  
+                        filename = my_tools.extract_filename(nurse_data.get('face')) 
                         if filename:
                             nurse_face_path = os.path.join(database.nurses_image_path, filename)
                             if not event.has_face_scanned:
@@ -188,9 +227,9 @@ async def main_loop():
     global event
     
     threading.Thread(target=fetch_data).start()
+    threading.Thread(target=eyes_loop).start() # For facial recognition
     while True:
         time.sleep(1)
-    # threading.Thread(target=eyes_loop).start() # For facial recognition
     
     while not event.close_down: 
         

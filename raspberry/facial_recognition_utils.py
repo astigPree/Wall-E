@@ -24,7 +24,7 @@ class FacialRecognition:
     def check_face_exists_in_database(self, face_image , face_in_database) -> bool:
         try:
             # Compare the captured face with the saved image
-            result = DeepFace.verify(face_image, face_in_database, enforce_detection=False)
+            result = DeepFace.verify(face_image, face_in_database, enforce_detection=False) 
             if result['verified']:
                 print(f"Face matches with {face_in_database}")
                 return True

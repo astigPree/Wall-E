@@ -344,9 +344,9 @@ def controller_get_data(request):
             if not user:
                 return JsonResponse({'error': 'User not found'}, status=404)
             
-            patients = Patient.objects.filter(account_id=user.id)
-            nurses = Nurse.objects.filter(account_id=user.id)
-            schedules = Schedule.objects.filter(account_id=user.id)
+            patients = Patient.objects.filter(account_id=user.user_id)
+            nurses = Nurse.objects.filter(account_id=user.user_id)
+            schedules = Schedule.objects.filter(account_id=user.user_id)
             
             patients_data = {
                 patient.pk : patient.get_patient_data() for patient in patients
