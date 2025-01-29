@@ -2,9 +2,9 @@ from my_tools import *
 import time
 import rules
  
-# data = send_post_request()
-# if data:
-#     print(f"Received data: {data}")
+data = send_post_request()
+if data:
+    print(f"Received data: {data}")
  
 data = {
     'patients': {
@@ -46,6 +46,39 @@ data = {
 
 
 
+
+
+from datetime import datetime
+
+def check_date_status(date_str):
+    # Parse the input date string into a datetime object
+    input_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    
+    # Get the current date
+    current_date = datetime.now().date()
+    
+    # Compare the dates
+    if input_date < current_date:
+        return "Past"
+    elif input_date == current_date:
+        return "Present"
+    else:
+        return "Future"
+
+# Example usage
+date_to_check = "2025-01-15"
+status = check_date_status(date_to_check)
+print(f"The date {date_to_check} is in the {status}.")
+
+
+
+
+
+
+
+
+
+
 # from aitextgen import aitextgen
 
 # # Without any parameters, aitextgen() will download, cache, and load the 124M GPT-2 "small" model
@@ -60,31 +93,31 @@ data = {
 
 
 
-from pyuac import main_requires_admin
+# from pyuac import main_requires_admin
 
-@main_requires_admin
-def main():
-    print("Do stuff here that requires being run as an admin.")
-    # The window will disappear as soon as the program exits!
-    # input("Press enter to close the window. >")
+# @main_requires_admin
+# def main():
+#     print("Do stuff here that requires being run as an admin.")
+#     # The window will disappear as soon as the program exits!
+#     # input("Press enter to close the window. >")
   
-    import serial
-    import time
+#     import serial
+#     import time
 
-    arduino = serial.Serial(port='COM5',  baudrate=115200, timeout=.1)
-
-
-    def write_read(x):
-        arduino.write(bytes(x,  'utf-8'))
-        time.sleep(0.05)
-        data = arduino.readline()
-        return  data
+#     arduino = serial.Serial(port='COM5',  baudrate=115200, timeout=.1)
 
 
-    while True:
-        num = input("Enter a number: ")
-        value  = write_read(num)
-        print(value)
+#     def write_read(x):
+#         arduino.write(bytes(x,  'utf-8'))
+#         time.sleep(0.05)
+#         data = arduino.readline()
+#         return  data
 
-main()
+
+#     while True:
+#         num = input("Enter a number: ")
+#         value  = write_read(num)
+#         print(value)
+
+# main()
 

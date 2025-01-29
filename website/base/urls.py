@@ -31,5 +31,6 @@ urlpatterns = [
     path("controller", views.controller_get_data, name='controller'),
     path("controller/delete", views.controller_get_data, name='controller_delete'),
     path("controller/taken", views.controller_get_data, name='controller_taken'),
+    path("controller/reset/daily", views.controller_reset_taken_medicine, name='controller_reset_daily'),
     
 ]

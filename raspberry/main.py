@@ -21,7 +21,7 @@ if sys.platform == 'win32':
 
 
 OFFSET_MINUTE_TO_CALL_NAME = 10
-
+OFFSET_MINUTE_TO_VALID = 20
 
 database = DataHandler()
 eyes = FacialRecognition()
@@ -87,12 +87,17 @@ def fetch_data():
         # TODO: This is an important event and it should shout the patients name so they will be notified
         for schedule_id , schedule in database.schedules.items():
             if schedule.set_date:
-                if not my_tools.is_current_date(schedule.set_date):
-                    # If the schedule is not current date, then we need to skip the action 
+                
+                date_sched = my_tools.check_date_status(schedule.set_date)
+                if date_sched == "Past":
+                    # If the schedule is not current date, then we need to skip the action
                     continue
                 
             if schedule.set_time:
-                if not my_tools.is_within_time_range(schedule.set_time , OFFSET_MINUTE_TO_CALL_NAME):
+                
+                time_sched = my_tools.check_time_status(schedule.set_time , OFFSET_MINUTE_TO_VALID)
+                
+                if time_sched == "Past":
                     # If the schedule is not current time, then we need to skip the action
                     continue
             

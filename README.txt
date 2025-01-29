@@ -122,3 +122,72 @@ pip install -qq pytorch-lightning==1.7.0 transformers==4.21.3 aitextgen==0.6.0
 pip install torchmetrics==0.11.4
 pip install pyserial 
 
+
+
+COMMAND ; 
+
+Biogesic = "B" (raspberry)
+Cremil-S = "S" (raspberry)
+Citerizen = "C" (raspberry)
+Mefenamic = "M" (raspberry)
+
+Red-Patient = "RED" (raspberry)
+Blue-Patient = "BLUE" (raspberry)
+Yellow-Patient = "YELLOW" (raspberry)
+
+PILL-DROPED = "DROP" (arduino)
+PILL-DRINK = "DRINK" (arduino)
+FINISH-LINE-COLOR = "GREEN" (arduino)
+COMEBACK-COMMAND = "BACK" (raspberry)
+HOME-COLOR = "PINK" (arduino)
+HOME-COMMAND = "HOME" (arduino)
+NO-PILLS-Biogesic = "NPB" (arduino)
+NO-PILLS-Cremil-S = "NPS" (arduino)
+NO-PILLS-Citerizen = "NPC" (arduino)
+NO-PILLS-Mefenamic = "NPM" (arduino)
+
+SENARIOS ARDUINO;
+
+Walking;
+    - (raspberry) masend ako san command kun sa diin na color na makadto
+        - Masiyak na may importante na karadtuon
+    - (arduino) masend san command na nakaabot na an machine sa FINISH-LINE-COLOR
+        - detect pag may nakaharang
+    - (raspberry) Masiyak san patient name tapos suguon na mag kita sa machine camera
+    - (raspberry) Pag wara mag pakita sa machine camera in specific time then masend san command na mag uli na
+        - (arduino) Matalikod tas mabalik sa pinangalingan
+        - (raspberry) Masiyak na mauli na sya
+        - (arduino) Masend san command na nakauli na sya
+            - detect pag may nakaharang
+    - (raspberry) Pag may nakita na patient sa camera identify ko an pamayhon kun hahatagan san bulong
+        - (raspberry) Masend san signal san bulong na kailangan san patiente
+            - maistorya na maghulat sa pag takdag san bulong
+        - (arduino) matagdak san bulong at mapailaw
+            - (arduino) masend san command na natakdag na PILL-DROPED
+            - (raspberry) masiyak na kuhaon na an bulong tas after 5 mins
+            - (raspberry) after 5 mins tas wara pa san command na nakaabot galing sa arduino, mauli na an robot
+            - (arduino) pag may action na tinumar tas nag pindot sa arduino, masend san command na PILL-DRINK
+            - (raspberry) mahulat san 1 minute bago mag uli para makapag storya lang sa patiente san kadali
+            - (raspberry) masend san commandna maguli na COMEBACK-COMMAND
+            - (arduino) masend san command na nakauli na sya 
+                - detect pag may nakaharang
+        - (arduino) pagwara san bulong, masend san command
+            - (arduino) masend san command na waran bulong NO-PILLS
+            - (raspberry) masiayak na wara na akon bulong sani na pills
+            - (raspberry) masiayak na mauli sya para mag sabi na wara na sya san bulong 
+            - (arduino) masend san command na nakauli na sya 
+                - detect pag may nakaharang
+            - (raspberry) masiyak na need nya san bulong for 1 mins pag kauli
+
+        REPEATE THE CYCLE IF NECCESSARY 
+
+
+
+Body Temperature;
+
+    - (raspberry) masend san command na madetect san body temperature san tawo tas mahulat san 2 minutes
+    - (arduino) madect san temperature san tawo hasta may command na mag abot
+    - (raspberry) pag tapos na an minutes masend san command sa arduino na tapos na 
+    - (raspberry) maistorya san average temperature
+
+

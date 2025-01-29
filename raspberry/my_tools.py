@@ -78,6 +78,10 @@ def taken_medicine_schedule(schedule_id):
         print(f'Error: {e}')
         return None
 
+
+
+
+
 def fetch_and_save_image(image_url, save_path):
     try:
         response = requests.get(image_url)
@@ -244,3 +248,47 @@ def is_current_date(date_str):
 # else:
 #     print("The provided date is not the current date.")
 
+
+
+
+def check_date_status(date_str):
+    # Parse the input date string into a datetime object
+    input_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
+    
+    # Get the current date
+    current_date = datetime.datetime.now().date()
+    
+    # Compare the dates
+    if input_date < current_date:
+        return "Past"
+    elif input_date == current_date:
+        return "Present"
+    else:
+        return "Future"
+
+
+def check_time_status(time_str, minutes):
+    # Parse the input time string into a datetime object
+    input_time = datetime.datetime.strptime(time_str, "%H:%M").time()
+    
+    # Get the current time
+    now = datetime.datetime.now()
+    current_time = now.time()
+    
+    # Create a time range: current_time ± minutes
+    time_window_start = (now - datetime.timedelta(minutes=minutes)).time()
+    time_window_end = (now + datetime.timedelta(minutes=minutes)).time()
+    
+    # Check if the input time is within the time window
+    if time_window_start <= input_time <= time_window_end:
+        return "Present"
+    elif input_time < current_time:
+        return "Past"
+    else:
+        return "Future"
+
+# Example usage
+# time_to_check = "17:27"
+# minutes_window = 30  # 30 minutes
+# status = check_time_status(time_to_check, minutes_window)
+# print(f"The time {time_to_check} is in the {status}.")
