@@ -115,7 +115,9 @@ REQUIREMENTS;
 
 pip install -U g4f[all]
 pip install gTTS
-pip install DeepFace
+( will be replaced ) pip install DeepFace 
+pip install Pillow
+( used to replaced DeepFace) pip install imagehash
 pip install cv2
 pip install speech_recognition
 pip install playsound
