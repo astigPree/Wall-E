@@ -38,6 +38,21 @@ class EventHandler:
     api_action = "get_data" # get_data = Get the data , delete_data = Delete the schedule, taken_medication = Modify the data in server in taken
     
     
+    
+    no_pills_biogesic = False # no_pills_biogesic = True if there is no pills in biogesic
+    no_pills_cremil_s = False # no_pills_cremil_s = True if there is no pills in cremil_s
+    no_pills_citerizen = False # no_pills_citerizen = True if there is no pills in citerizen
+    no_pills_mefenamic = False # no_pills_mefenamic = True if there is no pills in mefenamic
+    
+    
+    list_of_patients_to_take = []
+    """
+    list_of_nurses_to_take = [
+        {'patient_id': 1 , 'medication': 'Medication Name'}
+    ]
+    """
+    
+    
     def update_patients(self, patients):
         self.patients = patients
          

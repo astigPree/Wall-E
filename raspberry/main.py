@@ -52,6 +52,7 @@ def fetch_data():
     global event
     
     
+    
     while not event.close_down:
         
         time.sleep(1) # sleep for 1 second
@@ -101,9 +102,12 @@ def fetch_data():
                     # If the schedule is not current time, then we need to skip the action
                     continue
             
-            event.has_important_event = True
+            event.has_important_event = True 
             patient = database.patients.get(schedule.patient)
+            # TODO : Check if nasa list_of_patients_to_take then skip it
             if patient:
+                # TODO: I check kung meron pills ang selected medication
+                # TODO : Check if lumampas na an specific time na mag take san pills ma send san text message na wra katumar san bulong
                 voice.speak(f"{patient.get('name', 'No name Patient!')} IT'S TIME TO TAKE YOUR {schedule.get('pill' , 'PILLS').upper()}! DON'T FORGET YOUR MEDICATION!")
             event.has_important_event = False
             
