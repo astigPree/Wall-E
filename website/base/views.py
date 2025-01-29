@@ -112,8 +112,9 @@ def add_patient(request):
             last_name = request.POST.get('last_name')
             middle_name = request.POST.get('middle_name')
             face = request.FILES.get('face')
+            phonenumber = request.POST.get('phone_number')
             
-            if not first_name or not last_name or not middle_name or not face:
+            if not first_name or not last_name or not middle_name or not face or not phonenumber:
                 return JsonResponse({'error': 'All fields are required'}, status=400)
             
             # Create a new patient object
@@ -123,7 +124,8 @@ def add_patient(request):
                 last_name=last_name,
                 middle_name=middle_name,
                 account_id=request.user.id,
-                face=face
+                face=face,
+                phone_number=phonenumber
             )
             
             

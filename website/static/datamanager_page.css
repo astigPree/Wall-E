@@ -21,7 +21,7 @@
 .top-bar-title h1{
     margin: 0;
     padding: 0;     
-    font-size: 35px;
+    font-size: clamp(1.5rem, 1.1413rem + 1.1957vw, 2.1875rem);
     line-height: 1.3; 
     color: #FFFFFF; 
     padding-left: 35px;
@@ -40,12 +40,11 @@
     flex-direction: row;
     width: 100%;
     justify-content: center;
-    column-gap: clamp(18px , 45px , 45px);
-
+    column-gap: clamp(1rem, 0.0543rem + 3.1522vw, 2.8125rem);
 }
 
 .top-bar-buttons button{
-    font-size: clamp(10px, 5vw, 16px);
+    font-size: clamp(0.75rem, 0.6196rem + 0.4348vw, 1rem);
 
     display: flex;
     align-items: center;
@@ -134,7 +133,7 @@
 
 .patient-info h3{
     flex : 1;
-    font-size: 24px;
+    font-size: clamp(1rem, 0.8696rem + 0.4348vw, 1.25rem);
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -144,10 +143,13 @@
 
 .patient-info h5{
     flex : 1;
-    font-size: 16px;
+    font-size: clamp(0.75rem, 0.6196rem + 0.4348vw, 1rem);
     margin: 0;
     padding: 0;
     margin-top: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .patient-action-buttons{
@@ -168,9 +170,9 @@
     height: fit-content;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: clamp(0.75rem, 0.6848rem + 0.2174vw, 0.875rem);
     border: none;
-    padding: 5px 15px;
+    padding: 5px clamp(0.3125rem, -0.0136rem + 1.087vw, 0.9375rem);
 }
 
 .patient-action-buttons button:nth-child(2){
@@ -196,7 +198,7 @@
 
 .patient-fill-up-form{
     display: flex;
-    width: clamp(320px , 500px , 500px );
+    width: clamp(18.75rem, 12.2283rem + 21.7391vw, 31.25rem);
     height: fit-content;  
     flex-direction: column;
     justify-content: center; 
@@ -338,7 +340,7 @@
 
 .nurse-info h3{
     flex : 1;
-    font-size: 24px;
+    font-size: clamp(1rem, 0.8696rem + 0.4348vw, 1.25rem);
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -348,10 +350,13 @@
 
 .nurse-info h5{
     flex : 1;
-    font-size: 16px;
+    font-size: clamp(0.75rem, 0.6196rem + 0.4348vw, 1rem);
     margin: 0;
     padding: 0;
     margin-top: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .nurse-action-buttons{
@@ -372,9 +377,9 @@
     height: fit-content;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: clamp(0.75rem, 0.6848rem + 0.2174vw, 0.875rem);
     border: none;
-    padding: 5px 15px;
+    padding: 5px clamp(0.3125rem, -0.0136rem + 1.087vw, 0.9375rem);
 }
 
 .nurse-action-buttons button:nth-child(2){
@@ -400,7 +405,7 @@
 
 .nurse-fill-up-form{
     display: flex;
-    width: clamp(320px , 500px , 500px );
+    width: clamp(18.75rem, 12.2283rem + 21.7391vw, 31.25rem);
     height: fit-content;  
     flex-direction: column;
     justify-content: center; 

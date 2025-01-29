@@ -46,19 +46,23 @@
             <h3 class="roboto-bold">ADD PATIENT</h3>
             <div class="patient-fill-line">
                 <label  class="roboto-medium" for="patient-name">First Name *</label>
-                <input type="text" id="patient-fname" name="patient-name">
+                <input type="text" id="patient-fname" name="patient-fname">
             </div>
             <div class="patient-fill-line">
                 <label class="roboto-medium" for="patient-name">Middle Name *</label>
-                <input type="text" id="patient-mname" name="patient-name">
+                <input type="text" id="patient-mname" name="patient-mname">
             </div>
             <div class="patient-fill-line">
                 <label class="roboto-medium" for="patient-name">Last Name *</label>
-                <input type="text" id="patient-lname" name="patient-name">
+                <input type="text" id="patient-lname" name="patient-lname">
             </div>
             <div class="patient-fill-line">
                 <label class="roboto-medium" for="patient-image">Upload Face Image *</label>
                 <input type="file" id="patient-image" name="patient-image" accept="image/*">
+            </div>
+            <div class="patient-fill-line">
+                <label class="roboto-medium" for="patient-number">Emergency Phone Number *</label>
+                <input type="text" id="patient-number" name="patient-number">
             </div>
             <div class="form-action-buttons">
                 <button class="roboto-light" id="patient-confirm-button" >CONFIRM</button>
@@ -244,14 +248,14 @@
                         const formattedDateStr = `${monthNames[originalDate.getMonth()]} ${originalDate.getDate()}, ${originalDate.getFullYear()}`;
  
                         patient_list.insertAdjacentHTML('afterbegin', ` 
-                            <div class="nurse-card">
+                            <div class="patient-card">
                                 <img src="${patient.face}" alt="nurse">
-                                <div class="nurse-info">
+                                <div class="patient-info">
                                     <h3 class="roboto-medium">${patient.name}</h3>
                                     <h5 class="roboto-light">Date Added : ${formattedDateStr}</h5>
-                                    <div class="nurse-action-buttons">
+                                    <div class="patient-action-buttons">
                                         <button onclick="window.location.href='../patient/${patient.id}'">Edit Patient</button>
-                                        <button id="patient-delete-${patient.id}">Delete Nurse</button>
+                                        <button id="patient-delete-${patient.id}">Delete Patient</button>
                                     </div>
                                 </div>
                             </div>
@@ -307,8 +311,9 @@
             const lname = document.getElementById("patient-lname").value
             const mname = document.getElementById("patient-mname").value
             const face_image = document.getElementById("patient-image").files[0]
+            const phonenumber = document.getElementById("patient-number").value
 
-            if (!fname || !mname || !face_image || !lname){
+            if (!fname || !mname || !face_image || !lname || !phonenumber ){
                 alert("Please fill all required fields.")
                 patient_confirm_button.disabled = false;
                 return;
@@ -319,6 +324,7 @@
             formData.append('first_name', fname);
             formData.append('last_name', lname);
             formData.append('middle_name', mname);
+            formData.append('phone_number', phonenumber);
             
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             const response = await fetch("create/patient", {

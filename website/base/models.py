@@ -46,6 +46,7 @@ class Patient(models.Model):
     middle_name = models.CharField(max_length=100, default='')
     date_added = models.DateTimeField(auto_now_add=True)
     face = models.ImageField(upload_to='patient_faces', blank=True, null=True, default=None)
+    phone_number = models.CharField(max_length=100, null=True, default=None)
     
     def __str__(self):
         return f"{self.name} -> {self.date_added}"
@@ -58,7 +59,8 @@ class Patient(models.Model):
             'last_name': self.last_name,
             'middle_name': self.middle_name,
             'date_added': self.date_added.strftime("%Y-%m-%d %H:%M:%S"),
-            'face': self.face.url if self.face else None
+            'face': self.face.url if self.face else None,
+            'phone_number': self.phone_number
         }
     
     

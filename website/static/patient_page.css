@@ -21,11 +21,12 @@
 .top-bar-title h1{
     margin: 0;
     padding: 0;     
-    font-size: 35px;
+    font-size: clamp(1.5rem, 1.1413rem + 1.1957vw, 2.1875rem);
     line-height: 1.3; 
     color: #FFFFFF; 
     padding-left: 35px;
 }
+
 
 .top-bar-title svg{ 
 
@@ -41,6 +42,7 @@
     width: 100%;
     justify-content: center;
     column-gap: clamp(18px , 45px , 45px);
+    display: none;
 
 }
 
@@ -127,28 +129,27 @@
 .medications-action-buttons{
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 80%;
     justify-content: center;
     column-gap: 10px;
 }
 
 .medications-action-buttons button{
     width: fit-content;
-    padding: 10px 20px;
+    padding: clamp(0.4375rem, 0.3397rem + 0.3261vw, 0.625rem) clamp(1rem, 0.8696rem + 0.4348vw, 1.25rem);
     background-color: #003366;
     color: #F2F2F2;
     height: fit-content;
     align-self: flex-end;
     justify-self: flex-end;
     border-radius: 8px;
-    cursor: pointer;
-    margin-right: 26px;
-    font-size: 14px;
+    cursor: pointer; 
+    font-size: clamp(0.75rem, 0.6848rem + 0.2174vw, 0.875rem);
     margin-top: 20px;
 }
 
 .medications-table{
-    width: 100%;
+    width: 90%;
     margin-top: 20px;
     background-color: #D9D9D9;
 }
@@ -180,10 +181,10 @@
     display: flex;
     flex-direction: row;
     width: 100%;
-    row-gap: 10px;
+    column-gap: clamp(0.625rem, 0.462rem + 0.5435vw, 0.9375rem);
     margin-top: 24px;
     background-color: white;
-    padding: 10px 0px;
+    padding: clamp(0.3125rem, 0.1495rem + 0.5435vw, 0.625rem) 0px;
 }
 
 
@@ -195,9 +196,9 @@
     flex: 1;
     text-align: left;
     text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    margin-left: 20px;
+    overflow: hidden; 
+    margin-left: clamp(0.3125rem, -0.1766rem + 1.6304vw, 1.25rem);
+    width: 80%; 
 }
 
 .medication-row button{
@@ -209,11 +210,12 @@
     justify-self: center;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
-    padding: 5px 15px;
+    font-size: clamp(0.625rem, 0.4946rem + 0.4348vw, 0.875rem);
+    padding: clamp(0.125rem, 0.0272rem + 0.3261vw, 0.3125rem) clamp(0.5rem, 0.2717rem + 0.7609vw, 0.9375rem);
     border-radius: 2px;
     border: none;
-    margin-right: 20px;
+    margin-right: clamp(0.3125rem, -0.1766rem + 1.6304vw, 1.25rem);
+    width: 20%;
 }
 
 
@@ -246,7 +248,7 @@
 
 .once-medication-fill-up-form{
     display: flex;
-    width: clamp(320px , 500px , 500px );
+    width: clamp(18.75rem, 12.2283rem + 21.7391vw, 31.25rem);
     height: fit-content;  
     flex-direction: column;
     justify-content: center; 
@@ -359,7 +361,7 @@
 
 .daily-medication-fill-up-form{
     display: flex;
-    width: clamp(320px , 500px , 500px );
+    width: clamp(18.75rem, 12.2283rem + 21.7391vw, 31.25rem);
     height: fit-content;  
     flex-direction: column;
     justify-content: center; 

@@ -27,7 +27,9 @@
         
         <img src="{{patient.face}}" alt="">
         <h2 class="roboto-medium">{{patient.name}}</h2>
-        <h5 id="date-tag" class="roboto-light">Date Added : Junuary 20,2024</h5>
+        <h5 class="roboto-light">{{patient.phone_number}}</h5>
+        <h5 id="date-tag" class="roboto-light"></h5>
+        
         <script>
             // Parse the string into a Date object
             const originalDate = new Date("{{patient.date_added}}");
@@ -45,12 +47,7 @@
         <div class="medications-table">
             <h4 class="roboto-light">MEDICATION INFORMATION</h4>
             <div class="medication-row-container" id="medication-list">
-
-
-                <div class="medication-row">
-                    <p class="roboto-light">One Time - Mefinamic - July 21, 2024 - 12:00</p>
-                    <button class="roboto-bold">DELETE</button>
-                </div>
+{% comment %} 
 
                 <div class="medication-row">
                     <p class="roboto-light">One Time - Mefinamic - July 21, 2024 - 12:00</p>
@@ -61,6 +58,11 @@
                     <p class="roboto-light">One Time - Mefinamic - July 21, 2024 - 12:00</p>
                     <button class="roboto-bold">DELETE</button>
                 </div>
+
+                <div class="medication-row">
+                    <p class="roboto-light">One Time - Mefinamic - July 21, 2024 - 12:00</p>
+                    <button class="roboto-bold">DELETE</button>
+                </div> {% endcomment %}
             </div>
         </div>
     
