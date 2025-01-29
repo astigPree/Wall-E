@@ -6,6 +6,8 @@ from copy import deepcopy
 import os
 from my_tools import fetch_and_save_image, SERVER_URL, extract_filename
 
+
+
 class DataHandler:
     
     images_path = os.path.join(os.getcwd(), "images")
