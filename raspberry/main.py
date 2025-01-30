@@ -363,6 +363,12 @@ async def main_loop():
 if __name__ == '__main__':
     try:
         asyncio.run(main_loop())
+    except KeyboardInterrupt:
+        print("Interrupted by user.")
+        event.close_down = True
+        eyes.close_camera()
+    except RuntimeError as re:
+        print(f"An error occurred: {re}") 
     except Exception as e:
         print(f"An error occurred: {e}")
         event.close_down = True
@@ -380,3 +386,4 @@ if __name__ == '__main__':
             eyes.close_camera()
         except Exception as e:
             print(f"An error occurred while closing event loop: {e}")
+            
