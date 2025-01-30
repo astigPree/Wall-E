@@ -4,10 +4,9 @@ from brain_utils import BrainUtils
 from facial_recognition_utils import FacialRecognition
 from events_handler import EventHandler
 from database_handler import DataHandler
-from my_tools import text_to_dictionary , send_post_request
+from my_tools import text_to_dictionary , send_post_request, delete_schedule
 from algorithm_handler import *
-import rules
-import my_tools
+import rules 
 
 import asyncio
 import sys
@@ -52,7 +51,10 @@ def fetch_data():
     global brain
     global event
     
-    
+    event.list_of_patients_to_take = []
+    """
+    list_of_patients_to_take = [ patient_id, patient_id, ...]
+    """
     
     while not event.close_down:
         
@@ -68,50 +70,78 @@ def fetch_data():
                 patients = data.get('patients', None)
                 schedules = data.get('schedules', None)
                 
-                if nurses:
-                    database.nurses = nurses
-                
-                if patients:
-                    database.patients = patients
                 
                 if nurses: 
                     database.write_image_nurses()
                 if patients:
                     database.write_image_patients()
+                 
+                if nurses:
+                    database.nurses = nurses
+                
+                if patients:
+                    database.patients = patients
                      
                 if schedules:
                     database.schedules = schedules
-        
-        
-        
+         
         # TODO: Create an algorithm that check the schedule of the patients
         # TODO: This is an important event and it should check the patient face to verify before despensing pills
         # TODO: This is an important event and it should shout the patients name so they will be notified
-        # for schedule_id , schedule in database.schedules.items():
-        #     if schedule.set_date:
+        for schedule_id , schedule in database.schedules.items():
+            print(type(schedule))
+            if schedule.get('set_date' , None):
                 
-        #         date_sched = my_tools.check_date_status(schedule.set_date)
-        #         if date_sched == "Past":
-        #             # If the schedule is not current date, then we need to skip the action
-        #             continue
+                date_sched = my_tools.check_date_status(schedule.get('set_date' )) 
+                print("Date scheduled is in the ", date_sched)
+                if date_sched == "Past":
+                    # If the schedule is not current date, then we need to skip the action 
+                    threading.Thread(target=delete_schedule, args=(schedule_id,)).start() # delete the scheduled that already executed
+                    continue
                 
-        #     if schedule.set_time:
+            if schedule.get('set_time', None):
                 
-        #         time_sched = my_tools.check_time_status(schedule.set_time , OFFSET_MINUTE_TO_VALID)
+                time_sched = my_tools.check_time_status(schedule.get('set_time') , OFFSET_MINUTE_TO_VALID)
                 
-        #         if time_sched == "Past":
-        #             # If the schedule is not current time, then we need to skip the action
-        #             continue
+                print("Time scheduled is in the ", time_sched)
+                
+                if time_sched == "Past": 
+                    # If the schedule is not current time, then we need to skip the action
+                    continue
+                if time_sched == "Future": 
+                    # If the schedule is not current time, then we need to skip the action
+                    continue
             
-        #     event.has_important_event = True 
-        #     patient = database.patients.get(schedule.patient)
-        #     # TODO : Check if nasa list_of_patients_to_take then skip it
-        #     if patient:
-        #         # TODO: I check kung meron pills ang selected medication
-        #         # TODO : Check if lumampas na an specific time na mag take san pills ma send san text message na wra katumar san bulong
-        #         voice.speak(f"{patient.get('name', 'No name Patient!')} IT'S TIME TO TAKE YOUR {schedule.get('pill' , 'PILLS').upper()}! DON'T FORGET YOUR MEDICATION!")
-        #     event.has_important_event = False
+            patient_id = schedule.get('patient_id' , None)
+            if patient_id is None:
+                print("Schedule has no patient_id")
+                continue
             
+            patient_data = database.patients.get(patient_id)
+            if not patient_data:
+                print(f"Patient {patient_data.get('id')} not found in database")
+                continue
+            
+            if patient_id not in event.patients_to_take_medication:
+            
+                print(f"Patient {patient_id} is not in list of patients to take medication, so adding it.")
+                event.patients_to_take_medication.append(patient_id)
+                
+            
+            # event.has_important_event = True 
+            # patient = database.patients.get(schedule.patient)
+            # # TODO : Check if nasa list_of_patients_to_take then skip it
+            # if patient:
+            #     # TODO: I check kung meron pills ang selected medication
+            #     # TODO : Check if lumampas na an specific time na mag take san pills ma send san text message na wra katumar san bulong
+            #     voice.speak(f"{patient.get('name', 'No name Patient!')} IT'S TIME TO TAKE YOUR {schedule.get('pill' , 'PILLS').upper()}! DON'T FORGET YOUR MEDICATION!")
+            # event.has_important_event = False
+        
+        
+        # ----------------------------------------------------------------
+        # TODO: Create an algorithm that actionas the event.list_of_patients_to_take
+        print("Starting the main event loop")
+        print("These are the ids of the patiens to take medication : ", event.list_of_patients_to_take)
 
 def eyes_loop():
      
@@ -124,6 +154,8 @@ def eyes_loop():
     
     eyes.start_camera()
     
+    
+    
     while not event.close_down:
         
         if not event.open_eyes:
@@ -134,12 +166,10 @@ def eyes_loop():
         frame = eyes.get_face_by_camera()
         if frame is not None:
             
-            if event.activate_scanning and (database.patients or database.nurses):
-                print("Start Scanning Faces")
+            if event.activate_scanning and (database.patients or database.nurses): 
                 eyes.number_to_try_detection += 1
                 
-                if event.what_to_search == "patient":
-                    print("Start Scanning Patient")
+                if event.what_to_search == "patient": 
                     patient_data = database.patients.get(event.person_id)
                     if not patient_data:
                         print(f"Patient {event.person_id} not found in database")
@@ -227,7 +257,7 @@ async def main_loop():
     global event
     
     threading.Thread(target=fetch_data).start()
-    threading.Thread(target=eyes_loop).start() # For facial recognition
+    # threading.Thread(target=eyes_loop).start() # For facial recognition
     while True:
         time.sleep(1)
     

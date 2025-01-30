@@ -280,7 +280,7 @@ def check_time_status(time_str, minutes):
     time_window_end = (now + datetime.timedelta(minutes=minutes)).time()
     
     # Check if the input time is within the time window
-    if time_window_start <= input_time <= time_window_end:
+    if time_window_start <= input_time <= time_window_end and current_time < time_window_start:
         return "Present"
     elif input_time < current_time:
         return "Past"

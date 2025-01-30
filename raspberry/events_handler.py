@@ -48,9 +48,7 @@ class EventHandler:
     
     list_of_patients_to_take = []
     """
-    list_of_nurses_to_take = [
-        {'patient_id': 1 , 'medication': 'Medication Name'}
-    ]
+    list_of_patients_to_take = [ patient_id, patient_id, ...]
     """
     
     

@@ -135,6 +135,10 @@ data = {
 import cv2
 from PIL import Image
 import imagehash
+from imagededup.methods import PHash
+phasher = PHash()
+
+encodings = phasher.encode_images(image_dir='images/patient_faces/')
 
 def open_camera_and_hash_image():
     # Open the camera
