@@ -86,8 +86,28 @@ data = {
 #         print(value)
 
 # main()
+# import serial
+# import time
+
+# arduino = serial.Serial(port='COM5', baudrate=115200, timeout=0.1)
+
+# def write_data(x):
+#     arduino.write(bytes(x + '\n', 'utf-8'))
+
+# def read_data():
+#     data = arduino.readline().decode('utf-8').rstrip()
+#     return data
+
+# while True:
+#     # command = input("Enter command (ON/OFF): ")
+#     # write_data(command)
+#     time.sleep(0.05)
+#     value = read_data()
+#     print(value)
 
 
+
+# }
 
 # *- coding: utf-8 -*-
 # send_txt_msg.py
@@ -132,50 +152,50 @@ data = {
 
 
 
-import cv2
-from PIL import Image
-import imagehash
-from imagededup.methods import PHash
-phasher = PHash()
+# import cv2
+# from PIL import Image
+# import imagehash
+# from imagededup.methods import PHash
+# phasher = PHash()
 
-encodings = phasher.encode_images(image_dir='images/patient_faces/')
+# encodings = phasher.encode_images(image_dir='images/patient_faces/')
 
-def open_camera_and_hash_image():
-    # Open the camera
-    cap = cv2.VideoCapture(0)
+# def open_camera_and_hash_image():
+#     # Open the camera
+#     cap = cv2.VideoCapture(0)
 
-    if not cap.isOpened():
-        print("Error: Could not open camera.")
-        return
+#     if not cap.isOpened():
+#         print("Error: Could not open camera.")
+#         return
 
-    # Capture a frame
-    ret, frame = cap.read()
+#     # Capture a frame
+#     ret, frame = cap.read()
 
-    if not ret:
-        print("Error: Could not read frame.")
-        return
+#     if not ret:
+#         print("Error: Could not read frame.")
+#         return
 
-    # Convert the frame from BGR to RGB
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#     # Convert the frame from BGR to RGB
+#     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    # Convert the frame to PIL Image
-    pil_image = Image.fromarray(rgb_frame)
+#     # Convert the frame to PIL Image
+#     pil_image = Image.fromarray(rgb_frame)
 
-    # Compute the hash of the captured frame
-    frame_hash = imagehash.average_hash(pil_image)
+#     # Compute the hash of the captured frame
+#     frame_hash = imagehash.average_hash(pil_image)
 
-    # Print the hash
-    print("Hash of captured frame:", frame_hash)
-    hash = imagehash.average_hash(Image.open('images/patient_faces/patient_image_j5Gr6Tu.jpg'))
-    print(hash == frame_hash)
-    print(hash - frame_hash)
+#     # Print the hash
+#     print("Hash of captured frame:", frame_hash)
+#     hash = imagehash.average_hash(Image.open('images/patient_faces/patient_image_j5Gr6Tu.jpg'))
+#     print(hash == frame_hash)
+#     print(hash - frame_hash)
 
-    # Release the camera
-    cap.release()
-    cv2.destroyAllWindows()
+#     # Release the camera
+#     cap.release()
+#     cv2.destroyAllWindows()
 
-if __name__ == "__main__":
-    open_camera_and_hash_image()
+# if __name__ == "__main__":
+#     open_camera_and_hash_image()
 
 
 

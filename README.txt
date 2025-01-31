@@ -118,8 +118,8 @@ pip install gTTS
 ( will be replaced ) pip install DeepFace 
 pip install Pillow
 ( used to replaced DeepFace) pip install imagehash
-pip install cv2
-pip install speech_recognition
+pip install opencv-python
+pip install SpeechRecognition
 pip install playsound
 ( don't apply ) pip install -qq pytorch-lightning==1.7.0 transformers==4.21.3 aitextgen==0.6.0
 ( don't apply ) pip install torchmetrics==0.11.4
