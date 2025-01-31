@@ -4,6 +4,7 @@ from brain_utils import BrainUtils
 from facial_recognition_utils import FacialRecognition
 from events_handler import EventHandler
 from database_handler import DataHandler
+from arduino_connection import ArduinoConnection
 from my_tools import text_to_dictionary , send_post_request, delete_schedule
 from algorithm_handler import *
 import rules 
@@ -28,7 +29,8 @@ voice = VoiceUtils()
 recognizer = SpeechRecognitionUtils()
 brain = BrainUtils()
 event =  EventHandler()
-
+arduino = ArduinoConnection()
+arduino.initialized()
 
 
 async def sample_function():
@@ -50,6 +52,7 @@ def fetch_data():
     global recognizer
     global brain
     global event
+    global arduino
     
     event.list_of_patients_to_take = []
     """
@@ -255,6 +258,7 @@ async def main_loop():
     global recognizer
     global brain
     global event
+    global arduino
     
     threading.Thread(target=fetch_data).start()
     # threading.Thread(target=eyes_loop).start() # For facial recognition
