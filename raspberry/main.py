@@ -31,7 +31,7 @@ brain = BrainUtils()
 # brain = None
 event =  EventHandler()
 arduino = ArduinoConnection()
-arduino.initialized()
+# arduino.initialized()
 
 
 async def sample_function():
