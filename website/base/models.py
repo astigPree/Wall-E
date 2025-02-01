@@ -47,6 +47,7 @@ class Patient(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     face = models.ImageField(upload_to='patient_faces', blank=True, null=True, default=None)
     phone_number = models.CharField(max_length=100, null=True, default=None)
+    color_location = models.CharField(max_length=50, default=None, null=True, blank=True)
     
     def __str__(self):
         return f"{self.name} -> {self.date_added}"
@@ -55,6 +56,7 @@ class Patient(models.Model):
         return {
             'id': self.pk,
             'name': self.name,
+            'color': self.color_location,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'middle_name': self.middle_name,

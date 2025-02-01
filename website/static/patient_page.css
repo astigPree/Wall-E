@@ -415,3 +415,15 @@
 
 
  
+
+.border-is-red{
+    border: 4px solid red !important;
+}
+
+.border-is-blue{
+    border: 4px solid blue !important;
+}
+
+.border-is-yellow{
+    border: 4px solid yellow !important;
+}

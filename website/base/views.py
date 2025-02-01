@@ -113,8 +113,9 @@ def add_patient(request):
             middle_name = request.POST.get('middle_name')
             face = request.FILES.get('face')
             phonenumber = request.POST.get('phone_number')
+            color = request.POST.get('color')
             
-            if not first_name or not last_name or not middle_name or not face or not phonenumber:
+            if not first_name or not last_name or not middle_name or not face or not phonenumber and not color:
                 return JsonResponse({'error': 'All fields are required'}, status=400)
             
             # Create a new patient object
@@ -125,7 +126,8 @@ def add_patient(request):
                 middle_name=middle_name,
                 account_id=request.user.id,
                 face=face,
-                phone_number=phonenumber
+                phone_number=phonenumber,
+                color_location=color
             )
             
             
@@ -470,3 +472,38 @@ def controller_reset_taken_medicine(request):
 
 
 
+
+
+
+@csrf_exempt
+def notify_medication(request):
+    
+    try:
+        
+        if request.method == "POST":
+            controller_token = request.POST.get('controller_token')
+            
+            user = Account.objects.filter(user_token=controller_token).first()
+            print("controller ; ", controller_token)
+            if not user:
+                return JsonResponse({'error': 'User not found'}, status=404)
+            
+            patient_id = request.POST.get('patient_id' , None)
+            if not patient_id:
+                return JsonResponse({'error': 'Patient not found'}, status=404)
+            
+            patient = Patient.objects.filter(id=patient_id, account_id=user.user_id).first()
+            if not patient:
+                return JsonResponse({'error': 'Patient not found'}, status=404)
+            
+            # TODO: Message the emergency number
+            
+            
+            return JsonResponse({
+                'success': 'Currently Messaging the Patient Emergency Number'
+            }, status=200)
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)

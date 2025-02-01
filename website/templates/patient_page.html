@@ -25,13 +25,23 @@
     <section class="patient-section"  >
         <button id="back-patient-button" class=" roboto-bold" onclick="window.location.href='../datamanager'">GO BACK</button>
         
-        <img src="{{patient.face}}" alt="">
+        <img id="patient-face" src="{{patient.face}}" alt="">
         <h2 class="roboto-medium">{{patient.name}}</h2>
         <h5 class="roboto-light">{{patient.phone_number}}</h5>
         <h5 id="date-tag" class="roboto-light"></h5>
         
         <script>
             // Parse the string into a Date object
+            console.log("{{patient.color}}")
+            if ("{{patient.color}}" == "RED"){
+                document.getElementById("patient-face").classList.add('border-is-red') ;
+            } else if ("{{patient.color}}" == "BLUE"){
+                document.getElementById("patient-face").classList.add('border-is-blue') ;
+            } else if ("{{patient.color}}" == "YELLOW"){
+                document.getElementById("patient-face").classList.add('border-is-yellow') ;
+            }
+
+
             const originalDate = new Date("{{patient.date_added}}");
 
             // Format the Date object into the desired string format

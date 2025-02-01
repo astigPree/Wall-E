@@ -64,6 +64,15 @@
                 <label class="roboto-medium" for="patient-number">Emergency Phone Number *</label>
                 <input type="text" id="patient-number" name="patient-number">
             </div>
+            <div class="patient-fill-line">
+                <label class="roboto-medium" for="patient-number">Patient Color *</label>
+                <select name="patient-color" value='RED' id="patient-color">
+                    <option value="RED">RED</option>
+                    <option value="BLUE">BLUE</option>
+                    <option value="YELLOW">YELLOW</option>
+                </select>
+                {% comment %} <input type="text" id="patient-number" name="patient-number"> {% endcomment %}
+            </div>
             <div class="form-action-buttons">
                 <button class="roboto-light" id="patient-confirm-button" >CONFIRM</button>
                 <button class="roboto-light" id="patient-cancel-button" >CANCEL</button>
@@ -312,8 +321,9 @@
             const mname = document.getElementById("patient-mname").value
             const face_image = document.getElementById("patient-image").files[0]
             const phonenumber = document.getElementById("patient-number").value
+            const patient_color = document.getElementById("patient-color").value
 
-            if (!fname || !mname || !face_image || !lname || !phonenumber ){
+            if (!fname || !mname || !face_image || !lname || !phonenumber || !patient_color ){
                 alert("Please fill all required fields.")
                 patient_confirm_button.disabled = false;
                 return;
@@ -325,6 +335,7 @@
             formData.append('last_name', lname);
             formData.append('middle_name', mname);
             formData.append('phone_number', phonenumber);
+            formData.append('color', patient_color);
             
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             const response = await fetch("create/patient", {
