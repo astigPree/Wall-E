@@ -1,8 +1,8 @@
-# from deepface import DeepFace
+from deepface import DeepFace
 import cv2
 import os
 from PIL import Image
-import imagehash
+# import imagehash
 
 class FacialRecognition:
     
@@ -24,53 +24,53 @@ class FacialRecognition:
     def start_camera(self, camera=0):
         self.cap = cv2.VideoCapture(camera)
     
-    def check_face_exists_in_database(self, face_image , face_in_database) -> bool:
-        # Convert the frame from BGR to RGB
-        rgb_frame = cv2.cvtColor(face_image, cv2.COLOR_BGR2RGB)
-
-        # Convert the frame to PIL Image
-        pil_image = Image.fromarray(rgb_frame)
-
-        # Compute the hash of the captured frame
-        frame_hash = imagehash.average_hash(pil_image)
-
-        # Print the hash 
-        hash = imagehash.average_hash(Image.open(face_in_database)) 
-        if hash - frame_hash <= self.similarity_rate:
-            print("Face matches with", face_in_database)
-            return True
-        else:
-            return False
-            
     # def check_face_exists_in_database(self, face_image , face_in_database) -> bool:
-    #     try:
-    #         # Compare the captured face with the saved image
-    #         result = DeepFace.verify(face_image, face_in_database, enforce_detection=False) 
-    #         if result['verified']:
-    #             print(f"Face matches with {face_in_database}")
-    #             return True
-    #         else:
-    #             print(f"Face does not match with {face_in_database}")
-    #             return False
-    #     except Exception as e:
-    #         print(f"An error occurred during comparison: {e}")
-    #         return False
+    #     # Convert the frame from BGR to RGB
+    #     rgb_frame = cv2.cvtColor(face_image, cv2.COLOR_BGR2RGB)
 
-    # def check_face_exists_in_frame(face_image) -> str:
-    #     try:
-    #         # Check if there is a face
-    #         faces = DeepFace.extract_faces(img_path=None, img=face_image, enforce_detection=False)
-    #         if len(faces) == 0:
-    #             print("No faces detected.")
-    #             return 'empty'
-    #         if len(faces) > 1:
-    #             print("Multiple faces detected. Please ensure only one face is present.")
-    #             return 'multiple'
-    #         else:
-    #             return 'face'
-    #     except Exception as e:
-    #         print(f"An error occurred: {e}")
-    #         return 'error'
+    #     # Convert the frame to PIL Image
+    #     pil_image = Image.fromarray(rgb_frame)
+
+    #     # Compute the hash of the captured frame
+    #     frame_hash = imagehash.average_hash(pil_image)
+
+    #     # Print the hash 
+    #     hash = imagehash.average_hash(Image.open(face_in_database)) 
+    #     if hash - frame_hash <= self.similarity_rate:
+    #         print("Face matches with", face_in_database)
+    #         return True
+    #     else:
+    #         return False
+            
+    def check_face_exists_in_database(self, face_image , face_in_database) -> bool:
+        try:
+            # Compare the captured face with the saved image
+            result = DeepFace.verify(face_image, face_in_database, enforce_detection=False) 
+            if result['verified']:
+                print(f"Face matches with {face_in_database}")
+                return True
+            else:
+                print(f"Face does not match with {face_in_database}")
+                return False
+        except Exception as e:
+            print(f"An error occurred during comparison: {e}")
+            return False
+
+    def check_face_exists_in_frame(face_image) -> str:
+        try:
+            # Check if there is a face
+            faces = DeepFace.extract_faces(img_path=None, img=face_image, enforce_detection=False)
+            if len(faces) == 0:
+                print("No faces detected.")
+                return 'empty'
+            if len(faces) > 1:
+                print("Multiple faces detected. Please ensure only one face is present.")
+                return 'multiple'
+            else:
+                return 'face'
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return 'error'
 
     
     def save_face_to_database(self, face_image, face_name):
