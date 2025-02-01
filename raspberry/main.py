@@ -1,6 +1,6 @@
 from speech_recognition_utils import SpeechRecognitionUtils
 from voice_utils import VoiceUtils
-# from brain_utils import BrainUtils
+from brain_utils import BrainUtils
 from facial_recognition_utils import FacialRecognition
 from events_handler import EventHandler
 from database_handler import DataHandler
@@ -27,8 +27,8 @@ database = DataHandler()
 eyes = FacialRecognition()
 voice = VoiceUtils()
 recognizer = SpeechRecognitionUtils()
-# brain = BrainUtils()
-brain = None
+brain = BrainUtils()
+# brain = None
 event =  EventHandler()
 arduino = ArduinoConnection()
 arduino.initialized()
