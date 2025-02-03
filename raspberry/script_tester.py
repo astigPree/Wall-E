@@ -106,7 +106,10 @@ while True:
     command = input("Enter command (ON/OFF): ")
     arduino.write(command)
     # write_data(command)
-    time.sleep(0.05)
+    time.sleep(2)
+    value = arduino.read()
+    print(value)
+    time.sleep(1)
     value = arduino.read()
     print(value)
 
