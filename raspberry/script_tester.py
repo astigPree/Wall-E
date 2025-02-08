@@ -219,53 +219,11 @@ data = {
 
 
 
+import subprocess
 
-import cv2
-from deepface import DeepFace
-
-# Define the path to the saved images
-saved_images = [
-    "path/to/saved_image1.jpg",
-    "path/to/saved_image2.jpg",
-    "path/to/saved_image3.jpg"
-]
-
-# Initialize the video capture
-cap = cv2.VideoCapture(0)  # Change the index if using a different camera
-
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
-
-    try:
-        # Extract faces in the frame
-        faces = DeepFace.extract_faces(frame, enforce_detection=False)
-
-        if len(faces) == 0:
-            print("No faces detected.")
-        else:
-            for face_info in faces:
-                face_image = face_info['face']  # Extract the face image from the dictionary
-
-                # Loop through saved images and compare
-                for saved_image_path in saved_images:
-                    try:
-                        # Compare the captured face with the saved image
-                        result = DeepFace.verify(face_image, saved_image_path, enforce_detection=False)
-                        if result['verified']:
-                            print(f"Face matches with {saved_image_path}")
-                        else:
-                            print(f"Face does not match with {saved_image_path}")
-                    except Exception as e:
-                        print(f"An error occurred during comparison: {e}")
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
-    cv2.imshow('frame', frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-cap.release()
-cv2.destroyAllWindows()
+pt = subprocess.Popen(['/opt/vc/bin/vcgencmd', 'get_throttled'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+(res,err) = pt.communicate()
+res = res.decode().split("=")[1]
+res = res.rstrip("\n")
+print ("Current Power Issues?    = ",(int(res,0) & 0x01) == 0x01)
+print ("Any Power issues before? = ",(int(res,0) & 0x50000) == 0x50000)
