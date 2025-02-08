@@ -160,59 +160,112 @@ data = {
 
 
 
+# import cv2
+# from PIL import Image
+# import imagehash
+# from imagededup.methods import PHash
+# phasher = PHash()
+
+# encodings = phasher.encode_images(image_dir='images/patient_faces/')
+
+# def open_camera_and_hash_image():
+#     # Open the camera
+#     cap = cv2.VideoCapture(0)
+
+#     if not cap.isOpened():
+#         print("Error: Could not open camera.")
+#         return
+
+#     # Capture a frame
+#     ret, frame = cap.read()
+
+#     if not ret:
+#         print("Error: Could not read frame.")
+#         return
+
+#     # Convert the frame from BGR to RGB
+#     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+#     # Convert the frame to PIL Image
+#     pil_image = Image.fromarray(rgb_frame)
+
+#     # Compute the hash of the captured frame
+#     frame_hash = imagehash.average_hash(pil_image)
+
+#     # Print the hash
+#     print("Hash of captured frame:", frame_hash)
+#     hash = imagehash.average_hash(Image.open('images/patient_faces/patient_image_j5Gr6Tu.jpg'))
+#     print(hash == frame_hash)
+#     print(hash - frame_hash)
+
+#     # Release the camera
+#     cap.release()
+#     cv2.destroyAllWindows()
+
+# if __name__ == "__main__":
+#     open_camera_and_hash_image()
+
+
+
+
+
+# # from speech_recognition_utils import SpeechRecognitionUtils
+# # recognizer = SpeechRecognitionUtils()
+
+
+# # while True:
+# #     text = recognizer.recognize_speech()
+# #     print(f"Text received: {text}")
+
+
+
+
 import cv2
-from PIL import Image
-import imagehash
-from imagededup.methods import PHash
-phasher = PHash()
+from deepface import DeepFace
 
-encodings = phasher.encode_images(image_dir='images/patient_faces/')
+# Define the path to the saved images
+saved_images = [
+    "path/to/saved_image1.jpg",
+    "path/to/saved_image2.jpg",
+    "path/to/saved_image3.jpg"
+]
 
-def open_camera_and_hash_image():
-    # Open the camera
-    cap = cv2.VideoCapture(0)
+# Initialize the video capture
+cap = cv2.VideoCapture(0)  # Change the index if using a different camera
 
-    if not cap.isOpened():
-        print("Error: Could not open camera.")
-        return
-
-    # Capture a frame
+while True:
     ret, frame = cap.read()
-
     if not ret:
-        print("Error: Could not read frame.")
-        return
+        break
 
-    # Convert the frame from BGR to RGB
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    try:
+        # Extract faces in the frame
+        faces = DeepFace.extract_faces(frame, enforce_detection=False)
 
-    # Convert the frame to PIL Image
-    pil_image = Image.fromarray(rgb_frame)
+        if len(faces) == 0:
+            print("No faces detected.")
+        else:
+            for face_info in faces:
+                face_image = face_info['face']  # Extract the face image from the dictionary
 
-    # Compute the hash of the captured frame
-    frame_hash = imagehash.average_hash(pil_image)
+                # Loop through saved images and compare
+                for saved_image_path in saved_images:
+                    try:
+                        # Compare the captured face with the saved image
+                        result = DeepFace.verify(face_image, saved_image_path, enforce_detection=False)
+                        if result['verified']:
+                            print(f"Face matches with {saved_image_path}")
+                        else:
+                            print(f"Face does not match with {saved_image_path}")
+                    except Exception as e:
+                        print(f"An error occurred during comparison: {e}")
 
-    # Print the hash
-    print("Hash of captured frame:", frame_hash)
-    hash = imagehash.average_hash(Image.open('images/patient_faces/patient_image_j5Gr6Tu.jpg'))
-    print(hash == frame_hash)
-    print(hash - frame_hash)
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
-    # Release the camera
-    cap.release()
-    cv2.destroyAllWindows()
+    cv2.imshow('frame', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
-if __name__ == "__main__":
-    open_camera_and_hash_image()
-
-
-
-
-
-# from speech_recognition_utils import SpeechRecognitionUtils
-# recognizer = SpeechRecognitionUtils()
-
-
-# while True:
-#     text = recognizer.recognize_speech()
-#     print(f"Text received: {text}")
+cap.release()
+cv2.destroyAllWindows()
