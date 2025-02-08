@@ -91,7 +91,7 @@ import time
 from arduino_connection import ArduinoConnection
 
 arduino = ArduinoConnection()
-arduino.initialized(port='COM8', baudrate=115200)
+arduino.initialized(port='/dev/ttyACM0', baudrate=115200)
 
 # arduino = serial.Serial(port='COM4', baudrate=115200, timeout=0.1)
 

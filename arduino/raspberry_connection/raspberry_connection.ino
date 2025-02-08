@@ -1,11 +1,34 @@
 #include <Servo.h>
+/* Include the standard Arduino SPI library */
+#include <SPI.h>
+/* Include the RFID library */
+#include <RFID.h>
 
-#define biogesic 13 // servo for biogesic pill dispenser
-#define cremils 12 // servo for cremils pill dispenser
-#define citirizene 11 // servo for citirizene pill dispenser
-#define mefenamic 10 // servo for mefinamic pill dispenser
 
-#define lockservo 9 // locking system for pills lock
+#define biogesic 4 // servo for biogesic pill dispenser
+#define cremils 5 // servo for cremils pill dispenser
+#define citirizene 7 // servo for citirizene pill dispenser
+#define mefenamic 6 // servo for mefinamic pill dispenser
+
+#define lockservo 13 // locking system for pills lock
+
+
+#define motor1pin1 30 // MOTOR A - 1 RIGHT 
+#define motor1pin2 32 // MOTOR A - 2 RIGHT
+#define motor2pin1 34 // MOTOR B - 1 LEFT
+#define motor2pin2 36 // MOTOR B - 2 LEFT
+
+
+
+/* Create an instance of the RFID library */
+#define SDA_DIO 9
+#define RESET_DIO 8
+RFID RC522(SDA_DIO, RESET_DIO); 
+byte defaultUID1[5] = {227 , 185 , 172 , 46 , 216 }; // RFID UUID 1
+byte defaultUID2[5] = {33 , 110 , 235 , 38 , 130};  // RFID UUID 2  
+unsigned long lastDebounceTime = 0;  // The last time the button state changed
+unsigned long debounceDelay = 5000;    // Debounce delay time in milliseconds
+
 
 Servo lock;  // Create a servo object
 bool machine_is_locked = true;
@@ -21,25 +44,45 @@ void setup() {
   Serial.begin(115200);
   Serial.setTimeout(1);
 
+  /* Enable the SPI interface */
+  SPI.begin(); 
+  delay(1000);
+  RC522.init();
+  delay(1000);
+
   lock.attach(lockservo); 
   lock.write(90);
   delay(2000);
 
   biogesic_servo.attach(biogesic);
   biogesic_servo.write(0);
-  delay(1000);
+  delay(2000);
 
   cremils_servo.attach(cremils);
   cremils_servo.write(0);
-  delay(1000);
+  delay(2000);
  
   citirizene_servo.attach(citirizene);
   citirizene_servo.write(0);
-  delay(1000);
+  delay(2000);
  
   mefenamic_servo.attach(mefenamic);
   mefenamic_servo.write(0);
-  delay(1000); 
+  delay(2000);
+
+
+  pinMode(motor1pin1, OUTPUT);
+  pinMode(motor1pin2, OUTPUT);
+  digitalWrite(motor1pin1,  LOW);
+  digitalWrite(motor1pin2, LOW);
+  
+  pinMode(motor2pin1,  OUTPUT);
+  pinMode(motor2pin2, OUTPUT);
+  digitalWrite(motor2pin1, LOW);
+  digitalWrite(motor2pin2, LOW);
+  delay(1000);
+
+  Serial.print("Start the activity");
 }
 
 void loop() { 
@@ -57,11 +100,8 @@ void loop() {
         return;
       }
       machine_is_locked = true;
-      Serial.println("Locking The Back Of The Machine ...");
-      for (int pos = 0; pos <= 90; pos += 1) { // Move servo from 0 to 180 degrees
-        lock.write(pos); // Tell servo to go to position in variable 'pos'
-        delay(15); // Wait 15 ms for the servo to reach the position
-      }
+      Serial.println("Locking The Back Of The Machine ..."); 
+      lockTheBackOfTheMachine();
     }
 
     if (data == "UNLOCK"){
@@ -71,10 +111,7 @@ void loop() {
       }
       machine_is_locked = false;
       Serial.println("Unlocking The Back Of The Machine ...");
-      for (int pos = 90; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
-        lock.write(pos); // Tell servo to go to position in variable 'pos'
-        delay(15); // Wait 15 ms for the servo to reach the position
-      }
+      unlockTheBackOfTheMachine();
 
     }
 
@@ -152,5 +189,126 @@ void loop() {
 
   }
 
+  // Logic that don't need serial
+  
+
+  // Opening Back and Clossing the back of the machine using rfid
+  if (RC522.isCard()) {
+    // Check if enough time has passed since the last action
+    if ((millis() - lastDebounceTime) > debounceDelay) {
+      RC522.readCardSerial();
+      lastDebounceTime = millis(); // Update debounce timer
+
+      Serial.println("Card detected:");
+      for (int i = 0; i < 5; i++) {
+        Serial.print(RC522.serNum[i], DEC);
+        Serial.print(" ");
+      }
+      Serial.println();
+
+      // Check if the detected UID matches any of the default UIDs
+      if (compareUID(RC522.serNum, defaultUID1)) {
+        // Perform actions for matched UID 1
+        if (!machine_is_locked) {
+          machine_is_locked = true;
+          Serial.println("Locking The Back Of The Machine ..."); 
+          lockTheBackOfTheMachine();
+        } else {
+          machine_is_locked = false;
+          Serial.println("Unlocking The Back Of The Machine ...");
+          unlockTheBackOfTheMachine();
+        }
+
+      } else if (compareUID(RC522.serNum, defaultUID2)) {
+        // Perform actions for matched UID 2
+        if (!machine_is_locked) {
+          machine_is_locked = true;
+          Serial.println("Locking The Back Of The Machine ..."); 
+          lockTheBackOfTheMachine();
+        } else {
+          machine_is_locked = false;
+          Serial.println("Unlocking The Back Of The Machine ...");
+          unlockTheBackOfTheMachine();
+        }
+
+      } else {
+        // Perform actions for non-matched UID
+        Serial.println("UID does not match. Access denied.");
+      }
+
+      delay(1000);  // Small delay to stabilize the system before the next read
+
+    }
+  }
 
 }
+
+
+void clearUID(byte *uid)
+{
+  for (int i = 0; i < 5; i++)
+  {
+    uid[i] = 0;
+  }
+}
+
+// Function to compare two UIDs
+bool compareUID(byte *uid1, byte *uid2){
+  for (int i = 0; i < 5; i++){
+    if (uid1[i] != uid2[i]){
+      return false;
+    }
+  }
+  return true;
+}
+
+void unlockTheBackOfTheMachine(){ 
+  for (int pos = 90; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
+    lock.write(pos); // Tell servo to go to position in variable 'pos'
+    delay(15); // Wait 15 ms for the servo to reach the position
+  }
+}
+
+void lockTheBackOfTheMachine(){ 
+  for (int pos = 0; pos <= 90; pos += 1) { // Move servo from 0 to 180 degrees
+    lock.write(pos); // Tell servo to go to position in variable 'pos'
+    delay(15); // Wait 15 ms for the servo to reach the position
+  }
+}
+
+void moveForward(){
+  digitalWrite(motor1pin1,  HIGH);
+  digitalWrite(motor1pin2, LOW);
+
+  digitalWrite(motor2pin1, HIGH);
+  digitalWrite(motor2pin2, LOW); 
+}
+
+void moveBackWard(){
+  digitalWrite(motor1pin1,  LOW);
+  digitalWrite(motor1pin2, HIGH);
+  digitalWrite(motor2pin1, LOW);
+  digitalWrite(motor2pin2, HIGH);  
+}
+
+void moveRightForward(){
+  digitalWrite(motor1pin1,  HIGH);
+  digitalWrite(motor1pin2, LOW); 
+}
+
+void moveLeftForward(){
+  digitalWrite(motor2pin1, HIGH);
+  digitalWrite(motor2pin2, LOW);  
+} 
+
+void moveRightBackWard(){ 
+  digitalWrite(motor1pin1,  LOW);
+  digitalWrite(motor1pin2, HIGH); 
+}
+
+void moveLeftBackWard(){
+  digitalWrite(motor2pin1,  LOW);
+  digitalWrite(motor2pin2, HIGH);  
+}
+
+
