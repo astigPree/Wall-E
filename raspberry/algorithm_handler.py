@@ -4,6 +4,7 @@ from brain_utils import BrainUtils
 from database_handler import DataHandler
 from speech_recognition_utils import SpeechRecognitionUtils
 from facial_recognition_utils import FacialRecognition
+from arduino_connection import ArduinoConnection
 import time
 from rules import *
 import my_tools
@@ -275,6 +276,7 @@ async def algo_check_body_temperature(
     recognizer : SpeechRecognitionUtils , 
     eyes : FacialRecognition, 
     data : dict,
+    arduino : ArduinoConnection,
     user_command : str
     ):
     # 7. Senario in checking body temperature (NURSEs);
@@ -283,13 +285,32 @@ async def algo_check_body_temperature(
     # - The machine will display the body temperature of the patient and speak the body temperature of the patient.
     if event.stop_proccess:
         return
-    
-    
+     
     voice.speak(data.get("message", "Please scan the body temperature using my machine tools body temperature sensor."))
     
-    # TODO: Create a logic that connect arduino and raspberry pi using a wiring then get the body temperature from the arduino
     
-    voice.speak("The body temperature of the patient is: 5 degrees")
+    # TODO: Create a logic that connect arduino and raspberry pi using a wiring then get the body temperature from the arduino
+    temps = []
+    
+    while True:
+        if event.stop_proccess:
+            return
+        temp = arduino.read()
+        if temp is not None:
+            if temp == "DONE":
+                break
+            try:
+                temp = float(temp)
+                temps.append(temp)
+            except ValueError as e:
+                print(f"An error occurred: {e}")
+                continue 
+        time.sleep(1)
+    
+    temp1 = sum(temps) / len(temps)
+    temp2 = (temp1 * 1.8) + 32
+    response = await brain.generate_response(rules_for_temperature.format(temp1=temp1 , temp2=temp2)) 
+    voice.speak(response.get('message' , "The scanned body temperature is {temp1} Celsius and {temp2} Fahrenheit"))
     
     return
 

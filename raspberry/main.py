@@ -287,8 +287,6 @@ def eyes_loop():
             print(f"An error occurred while closing event loop: {e}")
             
 
-    
-    
 
 def check_schedule(): 
     global database

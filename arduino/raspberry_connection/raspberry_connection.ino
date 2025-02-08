@@ -4,6 +4,11 @@
 /* Include the RFID library */
 #include <RFID.h>
 
+#include <Wire.h>
+#include "ClosedCube_MAX30205.h"
+
+ClosedCube_MAX30205 max30205;
+
 
 #define biogesic 4 // servo for biogesic pill dispenser
 #define cremils 5 // servo for cremils pill dispenser
@@ -80,6 +85,9 @@ void setup() {
   pinMode(motor2pin2, OUTPUT);
   digitalWrite(motor2pin1, LOW);
   digitalWrite(motor2pin2, LOW);
+  delay(1000);
+ 
+  max30205.begin(0x48);
   delay(1000);
 
   Serial.print("Start the activity");
@@ -181,6 +189,17 @@ void loop() {
 
     if (data == "BACK") { 
       Serial.println("Machine is going back to its original location");
+    }
+
+
+    if (data == "BODYTEMP"){
+      for (int i = 0; i < 15; i++) {
+        Serial.println(max30205.readTemperature());
+        delay(100); // Wait 100ms for the temperature sensor to read the new value
+      }
+      Serial.println("DONE");
+      
+      
     }
 
 

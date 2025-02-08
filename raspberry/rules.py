@@ -1,14 +1,11 @@
 
-rule_for_identifiying_command = """
+rule_for_identifiying_command = """ 
 You are a machine controlled by a user. Given a user response "{text}", identify what the user wants and return to me what action the user wants. Here are the list of actions:
 
-1. User wants the machine to walk.
-2. User wants to open the back of the machine or add/remove pills in the machine.
-3. User wants to request a pill or ask when the pill will be distributed.
-4. User wants to check the body temperature of the patient.
-5. User wants to talk to you.
-6. You don't know what the user wants or the command is not in the list.
-7. User wants to close the back of the machine.
+1. User wants to check the body temperature of the patient.
+2. User wants to talk to you.
+3. You don't know what the user wants or the command is not in the list.
+4. User wants to close the back of the machine.
 
 IMPORTANT:
 You MUST return to me a Python dictionary containing the following:
@@ -20,25 +17,19 @@ Here is the response MUST look like this dictionary and don't add any further in
 {{"action": action based on the user response ,"message": message based on the user response, "data": data based on the below data required for the action}}
 
 Here is the example message for each action and don't copy it directly into the dictionary, it's just for reference:
-1. message value should reference the example "How many distance you want me to move?" if there is no distance provided. If there is a distance provided, the message should reference "Successfully moved to the `distance` meters".
-2. message value should reference the example greeting the user based on the name provided and ask to look at your camera. If there is no name provided, the message should reference asking the user to provide a name.
-3. message value should reference the example greeting the user based on the name provided and ask to look at your camera. If there is no name provided, the message should reference asking the user to provide a name.
-4. message value should reference the example saying the user that you are waiting for the temperature to be scanned.
-5. message value should reference the example responding to the user inquiries/questions or text.
-6. message value should reference the example responding to the user inquiries/questions or text.
-7. message value should reference the example saying that you will close the back of the machine.
- 
+1. message value should reference the example saying the user that you are waiting for the temperature to be scanned.
+2. message value should reference the example responding to the user inquiries/questions or text.
+3. message value should reference the example responding to the user inquiries/questions or text.
+4. message value should reference the example saying that you will close the back of the machine.
+
 The dictionary should look like this but not copy it directly into the dictionary, it's just for reference:
-{{"action": "1", "message": "Successfully moved to the `distance` meters", "data": {{"distance": "10" , "type": "meters"}}}}
+{{"action": "1", "message": "Your temperature is {{cel}} Celsius. Your temperature is {{fah}} Fahrenheit.", "data": {{"celsius" : "{{cel}}", "fahrenheit": "{{fah}}"}}}}
 
 Here is the example for the data:
-1. data value should reference the example "distance": "10" , "type": "meters" if the distance is provided by the user and if not provided by the user then the data should be "None". IMPORTANT NOTE: Always convert any distance to meters if the user does not say a meter distance
-2. data value should reference the example "name": "John Doe".
-3. data value should reference the example "name": "John Doe". 
-4. data value should reference the example "celcius" : "Your temperature is {{cel}} celcius" , "fahrenheit" : "Your temperature is {{fah}} fahrenheit".
-5. data value should reference the example "message": "Got it, thanks for letting me know!".
-6. data value should reference the example "message": "I'm not sure what you want or the command isn't recognized".
-7. it does not containe any value
+1. data value should reference the example "celsius" : "{{cel}}", "fahrenheit": "{{fah}}".
+2. data value should reference the example "message": "Got it, thanks for letting me know!".
+3. data value should reference the example "message": "I'm not sure what you want or the command isn't recognized".
+4. it does not contain any value. 
 """
 
 rule_for_identifiying_id_by_name = """
@@ -61,24 +52,34 @@ For example:
 
 
 
-rules_for_converstaion = """
-You are currently talking to a patient and based on the user response and your response.
-Make sure to contine responding to the user response and entertain the user.
+rules_for_converstaion = """ 
+You are currently talking to a patient and based on the user response and your response. Make sure to continue responding to the user response and entertain the user.
 
-You should return a response in programming python dictionary format like this : {{ 'response' : your response here }}
+You should return a response in programming python dictionary format like this: {{ 'response' : your response here }}
 
-If the user does not respond or the response is command that listed below;
-    1. User wants the machine to walk.
-    2. User wants to open the back of the machine or add/remove pills in the machine.
-    3. User wants to request a pill or ask when the pill will be distributed.
-    4. User wants to check the body temperature of the patient.  
-    7. User wants to close the back of the machine.
-Then you should return the corresponding number of the command below for example like this : {{"action": action based on the user response ,"message": message based on the user response}} based on the list of commands
+If the user does not respond or the response is a command that is listed below;
+1. User wants to check the body temperature of the patient.
+2. User wants to talk to you.
+3. You don't know what the user wants or the command is not in the list.
+4. User wants to close the back of the machine.
+Then you should return the corresponding number of the command below for example like this: {{"action": action based on the user response ,"message": message based on the user response}} based on the list of commands
 
-
-Now here is your past conversations;
+Now here is your past conversations; 
 {conversations}
 """
+
+rules_for_temperature = """
+Based on this temperature which is {{temp1}} Celsius and {{temp2}} Fahrenheit,
+Tell the user how cold or hot and also if it alarming or not. Because you are scanning the temperature of the patient.
+
+Return a response in programming python dictionary format like this: {{ 'message' : your response here }}
+
+"""
+
+
+
+
+
 
 
 if __name__ == "__main__":
