@@ -27,11 +27,10 @@ database = DataHandler()
 eyes = FacialRecognition()
 voice = VoiceUtils()
 recognizer = SpeechRecognitionUtils()
-brain = BrainUtils()
-# brain = None
+brain = BrainUtils() 
 event =  EventHandler()
 arduino = ArduinoConnection()
-# arduino.initialized() 
+arduino.initialized() 
 eyes.start_camera()
 
 
@@ -314,8 +313,8 @@ async def main_loop():
     global event
     global arduino
     
-    threading.Thread(target=fetch_data).start()
-    threading.Thread(target=eyes_loop).start() # For facial recognition
+    # threading.Thread(target=fetch_data).start()
+    # threading.Thread(target=eyes_loop).start() # For facial recognition
     # while True:
     #     time.sleep(1) 
     
@@ -327,7 +326,8 @@ async def main_loop():
                 time.sleep(0.5)
                 continue
             
-            text = recognizer.recognize_speech()
+            # text = recognizer.recognize_speech()
+            text = input("Command: ") # For testing purposes
             print(f"Text received: {text}")
             if text and not event.has_important_event:
                 response = await brain.generate_response(rules.rule_for_identifiying_command.format(text=text))
