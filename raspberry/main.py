@@ -31,7 +31,9 @@ brain = BrainUtils()
 # brain = None
 event =  EventHandler()
 arduino = ArduinoConnection()
-# arduino.initialized()
+# arduino.initialized() 
+eyes.start_camera()
+
 
 
 async def sample_function():
@@ -182,7 +184,6 @@ def eyes_loop():
     global brain
     global event
     
-    eyes.start_camera()
     
     try:
         while not event.close_down:

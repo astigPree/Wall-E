@@ -86,32 +86,32 @@ data = {
 #         print(value)
 
 # main()
-import serial
-import time
-from arduino_connection import ArduinoConnection
+# import serial
+# import time
+# from arduino_connection import ArduinoConnection
 
-arduino = ArduinoConnection()
-arduino.initialized(port='/dev/ttyACM0', baudrate=115200)
+# arduino = ArduinoConnection()
+# arduino.initialized(port='/dev/ttyACM0', baudrate=115200)
 
-# arduino = serial.Serial(port='COM4', baudrate=115200, timeout=0.1)
+# # arduino = serial.Serial(port='COM4', baudrate=115200, timeout=0.1)
 
-# def write_data(x):
-#     arduino.write(bytes(x + '\n', 'utf-8'))
+# # def write_data(x):
+# #     arduino.write(bytes(x + '\n', 'utf-8'))
 
-# def read_data():
-#     data = arduino.readline().decode('utf-8').rstrip()
-#     return data
+# # def read_data():
+# #     data = arduino.readline().decode('utf-8').rstrip()
+# #     return data
 
-while True:
-    command = input("Enter command (ON/OFF): ")
-    arduino.write(command)
-    # write_data(command)
-    time.sleep(2)
-    value = arduino.read()
-    print(value)
-    time.sleep(1)
-    value = arduino.read()
-    print(value)
+# while True:
+#     command = input("Enter command (ON/OFF): ")
+#     arduino.write(command)
+#     # write_data(command)
+#     time.sleep(2)
+#     value = arduino.read()
+#     print(value)
+#     time.sleep(1)
+#     value = arduino.read()
+#     print(value)
 
 
 
@@ -209,3 +209,10 @@ while True:
 
 
 
+from speech_recognition_utils import SpeechRecognitionUtils
+recognizer = SpeechRecognitionUtils()
+
+
+while True:
+    text = recognizer.recognize_speech()
+    print(f"Text received: {text}")
