@@ -30,7 +30,7 @@ recognizer = SpeechRecognitionUtils()
 brain = BrainUtils() 
 event =  EventHandler()
 arduino = ArduinoConnection()
-arduino.initialized() 
+# arduino.initialized() 
 eyes.start_camera()
 
 
