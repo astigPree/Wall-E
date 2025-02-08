@@ -314,9 +314,9 @@ async def main_loop():
     global arduino
     
     threading.Thread(target=fetch_data).start()
-    # threading.Thread(target=eyes_loop).start() # For facial recognition
-    while True:
-        time.sleep(1) 
+    threading.Thread(target=eyes_loop).start() # For facial recognition
+    # while True:
+    #     time.sleep(1) 
     
     
     try: 
