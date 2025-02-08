@@ -326,8 +326,8 @@ async def main_loop():
                 time.sleep(0.5)
                 continue
             
-            # text = recognizer.recognize_speech()
-            text = input("Command: ") # For testing purposes
+            text = recognizer.recognize_speech()
+            # text = input("Command: ") # For testing purposes
             print(f"Text received: {text}")
             if text and not event.has_important_event:
                 response = await brain.generate_response(rules.rule_for_identifiying_command.format(text=text))
