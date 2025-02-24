@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import Account, Nurse, Patient, Schedule
 from datetime import datetime
+import requests
 
 
 def index(request):
@@ -497,7 +498,21 @@ def notify_medication(request):
                 return JsonResponse({'error': 'Patient not found'}, status=404)
             
             # TODO: Message the emergency number
+            url = ""
+            params = {
+                "api_token": "",
+                "message": "",
+                "phone_number": "",
+            }
             
+            response = requests.post(url, data=params)
+            
+            if response.status_code != 200:
+                raise Exception(f"Failed to send notification: {response.text}")
+            
+            response_json = response.json()
+            if response_json.get("status", None) != 200:
+                raise Exception(f"Failed to send notification: {response_json.get('message', None)}")
             
             return JsonResponse({
                 'success': 'Currently Messaging the Patient Emergency Number'
@@ -507,3 +522,5 @@ def notify_medication(request):
         return JsonResponse({'error': str(e)}, status=500)
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
