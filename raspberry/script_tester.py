@@ -219,11 +219,11 @@ data = {
 
 
 
-import subprocess
+# import subprocess
 
-pt = subprocess.Popen(['/opt/vc/bin/vcgencmd', 'get_throttled'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-(res,err) = pt.communicate()
-res = res.decode().split("=")[1]
-res = res.rstrip("\n")
-print ("Current Power Issues?    = ",(int(res,0) & 0x01) == 0x01)
-print ("Any Power issues before? = ",(int(res,0) & 0x50000) == 0x50000)
+# pt = subprocess.Popen(['/opt/vc/bin/vcgencmd', 'get_throttled'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+# (res,err) = pt.communicate()
+# res = res.decode().split("=")[1]
+# res = res.rstrip("\n")
+# print ("Current Power Issues?    = ",(int(res,0) & 0x01) == 0x01)
+# print ("Any Power issues before? = ",(int(res,0) & 0x50000) == 0x50000)

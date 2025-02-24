@@ -23,8 +23,6 @@ ClosedCube_MAX30205 max30205;
 #define motor2pin1 34 // MOTOR B - 1 LEFT
 #define motor2pin2 36 // MOTOR B - 2 LEFT
 
-
-
 /* Create an instance of the RFID library */
 #define SDA_DIO 9
 #define RESET_DIO 8
@@ -33,6 +31,14 @@ byte defaultUID1[5] = {227 , 185 , 172 , 46 , 216 }; // RFID UUID 1
 byte defaultUID2[5] = {33 , 110 , 235 , 38 , 130};  // RFID UUID 2  
 unsigned long lastDebounceTime = 0;  // The last time the button state changed
 unsigned long debounceDelay = 5000;    // Debounce delay time in milliseconds
+
+
+// Define color sensor pins 
+#define S0 24
+#define S1 25
+#define S2 26
+#define S3 27
+#define sensorOut 28
 
 
 Servo lock;  // Create a servo object
@@ -55,27 +61,32 @@ void setup() {
   RC522.init();
   delay(1000);
 
+  // Locking System Setup
   lock.attach(lockservo); 
   lock.write(90);
   delay(2000);
 
+  // Pills Setup biogesic
   biogesic_servo.attach(biogesic);
   biogesic_servo.write(0);
   delay(2000);
 
+  // Pills Setup cremils
   cremils_servo.attach(cremils);
   cremils_servo.write(0);
   delay(2000);
  
+  // Pills Setup citirizene
   citirizene_servo.attach(citirizene);
   citirizene_servo.write(0);
   delay(2000);
  
+  // Pills Setup mefenamic
   mefenamic_servo.attach(mefenamic);
   mefenamic_servo.write(0);
   delay(2000);
 
-
+  // Motor Setups
   pinMode(motor1pin1, OUTPUT);
   pinMode(motor1pin2, OUTPUT);
   digitalWrite(motor1pin1,  LOW);
@@ -87,7 +98,19 @@ void setup() {
   digitalWrite(motor2pin2, LOW);
   delay(1000);
  
+  // Temperature Setups
   max30205.begin(0x48);
+  delay(1000);
+  
+  // Color Sensor Setup
+  pinMode(S0, OUTPUT);
+  pinMode(S1, OUTPUT);
+  pinMode(S2, OUTPUT);
+  pinMode(S3, OUTPUT);
+  pinMode(sensorOut, INPUT);
+  // Set Pulse Width scaling to 20%
+  digitalWrite(S0,HIGH);
+  digitalWrite(S1,LOW);
   delay(1000);
 
   Serial.print("Start the activity");
@@ -177,6 +200,7 @@ void loop() {
 
     if (data == "RED") { 
       Serial.println("Going to Red Patient...");
+      
     }
 
     if (data == "BLUE") { 
@@ -263,14 +287,51 @@ void loop() {
 }
 
 
-void clearUID(byte *uid)
-{
-  for (int i = 0; i < 5; i++)
-  {
-    uid[i] = 0;
-  }
+
+
+// Function to read Red Pulse Widths
+int getRedPW() {
+  // Set sensor to read Red only
+  digitalWrite(S2,LOW);
+  digitalWrite(S3,LOW);
+  // Define integer to represent Pulse Width
+  int PW;
+  // Read the output Pulse Width
+  PW = pulseIn(sensorOut, LOW);
+  PW = map(PW , 25 , 70 , 255, 0);
+  // Return the value
+  return PW;
 }
 
+// Function to read Green Pulse Widths
+int getGreenPW() {
+  // Set sensor to read Green only
+  digitalWrite(S2,HIGH);
+  digitalWrite(S3,HIGH);
+  // Define integer to represent Pulse Width
+  int PW;
+  // Read the output Pulse Width
+  PW = pulseIn(sensorOut, LOW);
+  PW = map(PW , 25 , 70 , 255, 0);
+  // Return the value
+  return PW;
+}
+
+// Function to read Blue Pulse Widths
+int getBluePW() {
+  // Set sensor to read Blue only
+  digitalWrite(S2,LOW);
+  digitalWrite(S3,HIGH);
+  // Define integer to represent Pulse Width
+  int PW;
+  // Read the output Pulse Width
+  PW = pulseIn(sensorOut, LOW);
+  PW = map(PW , 25 , 70 , 255, 0);
+  // Return the value
+  return PW;
+}
+
+ 
 // Function to compare two UIDs
 bool compareUID(byte *uid1, byte *uid2){
   for (int i = 0; i < 5; i++){
