@@ -3,30 +3,83 @@ import time
 import rules
 
 # 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
-
-from voice_utils import VoiceUtils
-
-voice = VoiceUtils()
-
-
-
-import speech_recognition as sr
+import pygame
+from gtts import gTTS
 import os
+import time
 
-r=sr.Recognizer()
-r.energy_threshold = 500
-with sr.Microphone() as source:
-    r.adjust_for_ambient_noise(source)
-    print("Say anything : ")
-    audio= r.listen(source)
-    try:
-        text = r.recognize_google(audio)
-        print("You said  :  "+text) 
-        voice.speak("You said  :  "+text)  
+# Initialize the mixer module
+pygame.mixer.init()
+
+class VoiceUtils:
+
+    def __init__(self):
+        self.text = None
+        self.language = 'en'
+        self.save_path = "speech.mp3"
+        self.is_playing = False
+
+    def update_text(self, text: str):
+        self.text = text
+
+    def update_language(self, language: str):
+        self.language = language
+
+    def stop_speak(self):
+        pygame.mixer.music.stop()
+        pygame.mixer.music.unload()
+        self.is_playing = False
+        time.sleep(1)
+
+    def speak(self, text: str):
+        print("Speaking ...")
+        if text:
+            while self.is_playing:
+                time.sleep(0.1)
+
+            self.is_playing = True
+            myobj = gTTS(text=self.text if text is None else text, lang=self.language, slow=False)
+            # Ensure the file can be overwritten
+            if os.path.exists(self.save_path):
+                os.remove(self.save_path)
+
+            # Saving the converted audio in an MP3 file
+            myobj.save(self.save_path)
+
+            # Load and play the audio file
+            pygame.mixer.music.load(self.save_path)
+            pygame.mixer.music.play()
+
+            while pygame.mixer.music.get_busy():
+                time.sleep(0.1)
+
+            self.is_playing = False
+            print("Done Speaking ...")
+
+# Example usage
+if __name__ == "__main__":
+    voice_utils = VoiceUtils()
+    voice_utils.speak("Hello, this is a test.")
 
 
-    except:
-        print("sorry, could not recognise")
+
+# import speech_recognition as sr
+# import os
+
+# r=sr.Recognizer()
+# r.energy_threshold = 500
+# with sr.Microphone() as source:
+#     r.adjust_for_ambient_noise(source)
+#     print("Say anything : ")
+#     audio= r.listen(source)
+#     try:
+#         text = r.recognize_google(audio)
+#         print("You said  :  "+text) 
+#         voice.speak("You said  :  "+text)  
+
+
+#     except:
+#         print("sorry, could not recognise")
 
 
 
