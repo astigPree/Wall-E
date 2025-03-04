@@ -8,6 +8,17 @@ import rules
 
 
 
+from voice_utils import VoiceUtils
+
+voice = VoiceUtils()
+
+voice.speak("Hello There! Could you repeat your request because i did not understand the message")  
+
+
+
+
+
+
 import speech_recognition as sr
 
 class SpeechRecognitionUtils:
@@ -44,17 +55,6 @@ while True:
 
 
 
-
-
-
-
-
-
-# from voice_utils import VoiceUtils
-
-# voice = VoiceUtils()
-
-# voice.speak("Hello There! Could you repeat your request because i did not understand the message")  
 
 
 
