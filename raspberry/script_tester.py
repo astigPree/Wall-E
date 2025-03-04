@@ -2,11 +2,41 @@ from my_tools import *
 import time
 import rules
 
-from voice_utils import VoiceUtils
+# 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
 
-voice = VoiceUtils()
 
-voice.speak("Hello There! Could you repeat your request because i did not understand the message")  
+
+
+from speech_recognition_utils import SpeechRecognitionUtils
+
+recognizer = SpeechRecognitionUtils()
+while True:
+    text = recognizer.recognize_speech()
+    print(f"Text received: {text}")
+    
+    
+
+
+
+
+
+
+
+
+
+# from voice_utils import VoiceUtils
+
+# voice = VoiceUtils()
+
+# voice.speak("Hello There! Could you repeat your request because i did not understand the message")  
+
+
+
+
+
+
+
+
 # data = send_post_request()
 # if data:
 #     print(f"Received data: {data}")
