@@ -14,7 +14,6 @@ while True:
     text = recognizer.recognize_speech()
     print(f"Text received: {text}")
     
-    
 
 
 
