@@ -27,7 +27,8 @@ import speech_recognition as sr
 #             except:
 #                 # print("Sorry, I did not get that")
 #                 pass
- 
+  
+
 class SpeechRecognitionUtils:
     def __init__(self):
         # Initialize recognizer class (for recognizing the speech)
@@ -36,7 +37,7 @@ class SpeechRecognitionUtils:
     def recognize_speech(self):
         # Reading Microphone as source
         # listening to the speech and store in audio_text variable
-        with sr.Microphone() as source:
+        with sr.Microphone(device_index=2) as source:
             print("You can start speaking.")
             audio_text = self.r.listen(source)
             
