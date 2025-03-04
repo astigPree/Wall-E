@@ -42,6 +42,7 @@ class VoiceUtils:
         
     
     def speak(self, text : str):
+        print("Speaking ...")
         if text:
             while self.is_playing:
                 time.sleep(0.1)
@@ -57,6 +58,7 @@ class VoiceUtils:
             myobj.save(self.save_path)
             playsound(self.save_path)
             self.is_playing = False
+            print("Done Speaking ...")
             
             
     
