@@ -8,6 +8,15 @@ import rules
 
 import speech_recognition as sr
 
+
+def list_microphones():
+    microphones = sr.Microphone.list_microphone_names()
+    for index, name in enumerate(microphones):
+        print(f"Microphone with index {index}: {name}")
+
+if __name__ == "__main__":
+    list_microphones()
+
 def take():
     r = sr.Recognizer()
     with sr.Microphone(device_index=2) as source:  # Using the correct index for your USB microphone
