@@ -8,10 +8,10 @@ class SpeechRecognitionUtils:
     # Initialize recognizer class (for recognizing the speech)
     r = sr.Recognizer()
 
-    def recognize_speech(self): 
+    def recognize_speech(self, device_index=0): 
         # Reading Microphone as source
         # listening the speech and store in audio_text variable
-        with sr.Microphone() as source:
+        with sr.Microphone(device_index=device_index) as source:
             print("You can start speaking.")
             audio_text = self.r.listen(source) 
             # recoginze_() method will throw a request
