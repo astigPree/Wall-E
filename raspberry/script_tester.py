@@ -17,38 +17,27 @@ import rules
 
 
 
-
-
 import speech_recognition as sr
 
-class SpeechRecognitionUtils:
-    def __init__(self):
-        # Initialize recognizer class (for recognizing the speech)
-        self.r = sr.Recognizer()
+def take():
+    r = sr.Recognizer()
+    with sr.Microphone(device_index=2) as source:  # Ensure the correct device index is specified
+        print("Listening...")
+        r.adjust_for_ambient_noise(source, duration=0.2)
+        audio = r.listen(source)
+    try:
+        print("Recognition.....")
+        cmd = r.recognize_google(audio)
+    except Exception as e:
+        print("Please say that again")
+        return "None"
+    return cmd
 
-    def recognize_speech(self):
-        # Reading Microphone as source
-        # listening to the speech and store in audio_text variable
-        with sr.Microphone(device_index=2) as source:
-            print("You can start speaking.")
-            self.r.pause_threshold = 1
-            audio_text = self.r.listen(source)
-            
-            try:
-                print("Recognizing...")
-                result = self.r.recognize_google(audio_text)
-                if result is not None:
-                    return result
-            except sr.UnknownValueError:
-                print("Google Speech Recognition could not understand audio")
-            except sr.RequestError as e:
-                print(f"Could not request results from Google Speech Recognition service; {e}")
-            return "None"
+# Example usage
+if __name__ == "__main__":
+    command = take()
+    print(f"Command received: {command}")
 
-recognizer = SpeechRecognitionUtils()
-while True:
-    text = recognizer.recognize_speech()
-    print(f"Text received: {text}")
 
 
     
