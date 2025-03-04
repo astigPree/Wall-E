@@ -7,33 +7,19 @@ import rules
 
 
 import speech_recognition as sr
+import os
 
-
-def list_microphones():
-    microphones = sr.Microphone.list_microphone_names()
-    for index, name in enumerate(microphones):
-        print(f"Microphone with index {index}: {name}")
-
-if __name__ == "__main__":
-    list_microphones()
-
-def take():
-    r = sr.Recognizer()
-    with sr.Microphone(device_index=2) as source:  # Using the correct index for your USB microphone
-        print("Listening...")
-        r.adjust_for_ambient_noise(source, duration=0.2)
-        audio = r.listen(source)
+r=sr.Recognizer()
+r.energy_threshold = 500
+with sr.Microphone() as source:
+    r.adjust_for_ambient_noise(source)
+    print("Say anything : ")
+    audio= r.listen(source)
     try:
-        print("Recognition.....")
-        cmd = r.recognize_google(audio)
-    except Exception as e:
-        print("Please say that again")
-        return "None"
-    return cmd
-
-if __name__ == "__main__":
-    command = take()
-    print(f"Command received: {command}")
+        text = r.recognize_google(audio)
+        print("You said  :  "+text)
+    except:
+        print("sorry, could not recognise")
 
 
 
