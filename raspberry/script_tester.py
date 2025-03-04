@@ -4,35 +4,39 @@ import rules
 
 # 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
 
-
-
+import logging
 import speech_recognition as sr
+
+# Configure logging to ignore ALSA messages
+logging.basicConfig(level=logging.INFO)
+logging.getLogger('pyalsa').setLevel(logging.ERROR)
 
 class SpeechRecognitionUtils:
     def __init__(self):
-        # Initialize recognizer class (for recognizing the speech)
         self.r = sr.Recognizer()
+        logging.info('Recognizer initialized')
 
     def recognize_speech(self):
-        # Reading Microphone as source
-        # listening to the speech and store in audio_text variable
         with sr.Microphone(device_index=2) as source:
+            logging.info('Microphone opened')
             print("You can start speaking.")
             audio_text = self.r.listen(source)
             
             try:
                 result = self.r.recognize_google(audio_text)
-                if result is not None:
-                    return result
+                logging.info(f'Recognition result: {result}')
+                return result
             except sr.UnknownValueError:
-                print("Google Speech Recognition could not understand audio")
+                logging.warning("Google Speech Recognition could not understand audio")
             except sr.RequestError as e:
-                print(f"Could not request results from Google Speech Recognition service; {e}")
+                logging.error(f"Could not request results from Google Speech Recognition service; {e}")
 
 recognizer = SpeechRecognitionUtils()
 while True:
     text = recognizer.recognize_speech()
     print(f"Text received: {text}")
+    logging.info(f"Text received: {text}")
+    time.sleep(1)
 
     
 
