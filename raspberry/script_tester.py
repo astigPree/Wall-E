@@ -6,22 +6,11 @@ import rules
 
 
 
-
-
-# from voice_utils import VoiceUtils
-
-# voice = VoiceUtils()
-
-# voice.speak("Hello There! Could you repeat your request because i did not understand the message")  
-
-
-
-
 import speech_recognition as sr
 
 def take():
     r = sr.Recognizer()
-    with sr.Microphone(device_index=2) as source:  # Ensure the correct device index is specified
+    with sr.Microphone(device_index=2) as source:  # Using the correct index for your USB microphone
         print("Listening...")
         r.adjust_for_ambient_noise(source, duration=0.2)
         audio = r.listen(source)
@@ -33,18 +22,24 @@ def take():
         return "None"
     return cmd
 
-# Example usage
 if __name__ == "__main__":
     command = take()
     print(f"Command received: {command}")
 
 
 
-    
 
 
 
 
+
+
+
+# from voice_utils import VoiceUtils
+
+# voice = VoiceUtils()
+
+# voice.speak("Hello There! Could you repeat your request because i did not understand the message")  
 
 
 
