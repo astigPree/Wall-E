@@ -4,6 +4,10 @@ import rules
 
 # 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
 
+from voice_utils import VoiceUtils
+
+voice = VoiceUtils()
+
 
 
 import speech_recognition as sr
@@ -17,7 +21,10 @@ with sr.Microphone() as source:
     audio= r.listen(source)
     try:
         text = r.recognize_google(audio)
-        print("You said  :  "+text)
+        print("You said  :  "+text) 
+        voice.speak("You said  :  "+text)  
+
+
     except:
         print("sorry, could not recognise")
 
