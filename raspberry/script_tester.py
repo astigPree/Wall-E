@@ -11,6 +11,7 @@ from deepface import DeepFace
 import cv2
 import os
 from PIL import Image
+from termcolor import colored
 
 class FacialRecognition:
     
@@ -32,6 +33,29 @@ class FacialRecognition:
         if self.cap is not None:
             self.cap.release()
         cv2.destroyAllWindows()
+    
+    def image_to_ascii(self, image, width=100):
+        # Convert OpenCV image (BGR) to PIL Image (RGB)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        pil_image = Image.fromarray(image)
+        
+        # Resize and convert to grayscale
+        aspect_ratio = pil_image.height / pil_image.width
+        new_height = int(width * aspect_ratio)
+        pil_image = pil_image.resize((width, new_height)).convert('L')
+       
+        # ASCII characters used to build the output text
+        ascii_chars = "@%#*+=-:. "
+        ascii_str = ''
+        for pixel_value in pil_image.getdata():
+            ascii_str += ascii_chars[pixel_value // 32]
+        
+        # Split the string based on the width of the image
+        ascii_list = [ascii_str[index: index + width] for index in range(0, len(ascii_str), width)]
+        
+        # Print each line of ASCII art
+        for line in ascii_list:
+            print(colored(line, 'green'))
 
 # Test the camera
 if __name__ == "__main__":
@@ -44,16 +68,12 @@ if __name__ == "__main__":
     
     if frame is not None:
         print("Image captured successfully!")
-        # Optionally save the captured image to a file
-        save_path = os.path.join(os.getcwd(), "captured_image.jpg")
-        cv2.imwrite(save_path, frame)
-        print(f"Image saved to {save_path}")
+        # Convert and display the captured image as ASCII art
+        facial_recognition.image_to_ascii(frame)
     else:
         print("Failed to capture image.")
 
     facial_recognition.close_camera()
-
-
 
 
 
