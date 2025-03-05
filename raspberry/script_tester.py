@@ -1,33 +1,72 @@
 from my_tools import *
 import time
 import rules
+import requests
 
 # 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
 
-from voice_utils import VoiceUtils
-
-voice = VoiceUtils()
 
 
+import cv2
 
-import speech_recognition as sr
-import os
+# Open the camera (0 is usually the default camera, change if necessary)
+cap = cv2.VideoCapture(3)
 
-r=sr.Recognizer()
-r.energy_threshold = 500
-with sr.Microphone() as source:
-    r.adjust_for_ambient_noise(source)
-    print("Say anything : ")
-    audio= r.listen(source)
-    try:
-        text = r.recognize_google(audio)
-        print("You said  :  "+text)
+while True:
+    # Capture frame-by-frame
+    ret, frame = cap.read()
+
+    # Display the resulting frame
+    cv2.imshow('Camera', frame)
+
+    # Break the loop on 'q' key press
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Release the capture and close windows
+cap.release()
+cv2.destroyAllWindows()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# from voice_utils import VoiceUtils
+
+# voice = VoiceUtils()
+
+
+# import speech_recognition as sr
+# import os
+
+# r=sr.Recognizer()
+# r.energy_threshold = 500
+# with sr.Microphone() as source:
+#     r.adjust_for_ambient_noise(source)
+#     print("Say anything : ")
+#     audio= r.listen(source)
+#     try:
+#         text = r.recognize_google(audio)
+#         print("You said  :  "+text)
                 
-        voice.speak("You said  :  "+text)  
+#         voice.speak("You said  :  "+text)  
 
 
-    except:
-        print("sorry, could not recognise")
+#     except:
+#         print("sorry, could not recognise")
 
 
 
@@ -43,6 +82,41 @@ with sr.Microphone() as source:
 # voice = VoiceUtils()
 
 # voice.speak("Hello There! Could you repeat your request because i did not understand the message")  
+
+
+
+
+
+
+
+
+# {'status': 200, 'message': 'Your SMS message has been successfully added to the queue and will be processed shortly.', 'message_id': 'iSms-BkKMxe'}
+
+# {'status': 200, 'message': 'Your SMS message has been successfully added to the queue and will be processed shortly.', 'message_id': 'iSms-PcPOoU'}
+#  GET https://sms.iprogtech.com/api/v1/sms_messages/status?api_token=1231asd1&message_id=iSms-XHYBk0
+# url = "https://sms.iprogtech.com/api/v1/sms_messages/status"
+# params = {
+#     "api_token": "70b0567b2c219b0d124aae40865a3a38aed55355",
+#     # "message" : "Hello, world! This is a test message",
+#     # "phone_number": "639512213008"
+#     "message_id" : "iSms-BkKMxe"
+# }
+# response = requests.get(url=url, params=params)
+
+# if response.ok:
+#     print("Message sent successfully")
+#     print(response.json())
+# else:
+#     print(f'Server responded with status: {response.status_code}')
+#     print(f'Error: {response.text}')
+
+
+
+
+
+
+
+
 
 
 
