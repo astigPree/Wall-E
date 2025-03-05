@@ -11,8 +11,8 @@ import cohere
 
 co = cohere.ClientV2("6KXJUorIR8sWsMs5x6GTjmMDTar57vWvFUKYrakT")
 response = co.chat(
-    model="command-r-plus", 
-    messages=[{"role": "user", "content": "hello world!"}]
+    model="command-r", 
+    messages=[{"role": "user", "content": "Explain to me the details of the command"}]
 )
 
 print(response)
