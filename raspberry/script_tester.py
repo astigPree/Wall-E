@@ -5,32 +5,10 @@
 
 # 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
 
+
 print("Starting Facial Recognition...")
-
-import cv2
-
-def list_cameras():
-    index = 0
-    arr = []
-    i = 10
-    while i > 0:
-        cap = cv2.VideoCapture(index)
-        if cap.read()[0]:
-            arr.append(index)
-            cap.release()
-        index += 1
-        i -= 1
-    return arr
-
-if __name__ == "__main__":
-    available_cameras = list_cameras()
-    if available_cameras:
-        print("Available camera indexes:", available_cameras)
-    else:
-        print("No cameras found.")
-
 from deepface import DeepFace
-# import cv2
+import cv2
 import os
 from PIL import Image
 
@@ -43,15 +21,17 @@ class FacialRecognition:
         self.cap = cv2.VideoCapture(camera)
     
     def get_face_by_camera(self):
+        if self.cap is None:
+            return None
         ret, frame = self.cap.read()
         if not ret:
             return None
         return frame
     
     def close_camera(self):
-        self.cap.release()
+        if self.cap is not None:
+            self.cap.release()
         cv2.destroyAllWindows()
-    
 
 # Test the camera
 if __name__ == "__main__":
@@ -64,15 +44,14 @@ if __name__ == "__main__":
     
     if frame is not None:
         print("Image captured successfully!")
-        # Display the captured image
-        cv2.imshow("Captured Image", frame)
-        cv2.waitKey(0)  # Wait until a key is pressed to close the window
-        cv2.destroyAllWindows()
+        # Optionally save the captured image to a file
+        save_path = os.path.join(os.getcwd(), "captured_image.jpg")
+        cv2.imwrite(save_path, frame)
+        print(f"Image saved to {save_path}")
     else:
         print("Failed to capture image.")
 
     facial_recognition.close_camera()
-
 
 
 
