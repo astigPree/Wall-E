@@ -32,6 +32,7 @@ class FacialRecognition:
 
 # Test the camera
 if __name__ == "__main__":
+    print("Starting camera...")
     facial_recognition = FacialRecognition()
     facial_recognition.start_camera(camera=0)
 
