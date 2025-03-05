@@ -6,74 +6,99 @@
 # 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
 
 
-print("Starting Facial Recognition...")
-from deepface import DeepFace
-import cv2
-import os
-from PIL import Image
-from termcolor import colored
 
-class FacialRecognition:
+import cohere
+
+co = cohere.ClientV2("6KXJUorIR8sWsMs5x6GTjmMDTar57vWvFUKYrakT")
+response = co.chat(
+    model="command-r-plus", 
+    messages=[{"role": "user", "content": "hello world!"}]
+)
+
+print(response)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# print("Starting Facial Recognition...")
+# from deepface import DeepFace
+# import cv2
+# import os
+# from PIL import Image
+# from termcolor import colored
+
+# class FacialRecognition:
     
-    number_to_try_detection = 0 # number of tries to detect a face 
-    similarity_rate = 20 # highest rate to identify similarity face
+#     number_to_try_detection = 0 # number of tries to detect a face 
+#     similarity_rate = 20 # highest rate to identify similarity face
     
-    def start_camera(self, camera=0):
-        self.cap = cv2.VideoCapture(camera)
+#     def start_camera(self, camera=0):
+#         self.cap = cv2.VideoCapture(camera)
     
-    def get_face_by_camera(self):
-        if self.cap is None:
-            return None
-        ret, frame = self.cap.read()
-        if not ret:
-            return None
-        return frame
+#     def get_face_by_camera(self):
+#         if self.cap is None:
+#             return None
+#         ret, frame = self.cap.read()
+#         if not ret:
+#             return None
+#         return frame
     
-    def close_camera(self):
-        if self.cap is not None:
-            self.cap.release()
-        cv2.destroyAllWindows()
+#     def close_camera(self):
+#         if self.cap is not None:
+#             self.cap.release()
+#         cv2.destroyAllWindows()
     
-    def image_to_ascii(self, image, width=100):
-        # Convert OpenCV image (BGR) to PIL Image (RGB)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        pil_image = Image.fromarray(image)
+#     def image_to_ascii(self, image, width=100):
+#         # Convert OpenCV image (BGR) to PIL Image (RGB)
+#         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+#         pil_image = Image.fromarray(image)
         
-        # Resize and convert to grayscale
-        aspect_ratio = pil_image.height / pil_image.width
-        new_height = int(width * aspect_ratio)
-        pil_image = pil_image.resize((width, new_height)).convert('L')
+#         # Resize and convert to grayscale
+#         aspect_ratio = pil_image.height / pil_image.width
+#         new_height = int(width * aspect_ratio)
+#         pil_image = pil_image.resize((width, new_height)).convert('L')
        
-        # ASCII characters used to build the output text
-        ascii_chars = "@%#*+=-:. "
-        ascii_str = ''
-        for pixel_value in pil_image.getdata():
-            ascii_str += ascii_chars[pixel_value // 32]
+#         # ASCII characters used to build the output text
+#         ascii_chars = "@%#*+=-:. "
+#         ascii_str = ''
+#         for pixel_value in pil_image.getdata():
+#             ascii_str += ascii_chars[pixel_value // 32]
         
-        # Split the string based on the width of the image
-        ascii_list = [ascii_str[index: index + width] for index in range(0, len(ascii_str), width)]
+#         # Split the string based on the width of the image
+#         ascii_list = [ascii_str[index: index + width] for index in range(0, len(ascii_str), width)]
         
-        # Print each line of ASCII art
-        for line in ascii_list:
-            print(colored(line, 'green'))
+#         # Print each line of ASCII art
+#         for line in ascii_list:
+#             print(colored(line, 'green'))
 
-# Test the camera
-if __name__ == "__main__":
-    print("Starting camera...")
-    facial_recognition = FacialRecognition()
-    facial_recognition.start_camera(camera=0)
+# # Test the camera
+# if __name__ == "__main__":
+#     print("Starting camera...")
+#     facial_recognition = FacialRecognition()
+#     facial_recognition.start_camera(camera=0)
 
-    print("Capturing image from camera...")
-    frame = facial_recognition.get_face_by_camera()
+#     print("Capturing image from camera...")
+#     frame = facial_recognition.get_face_by_camera()
     
-    if frame is not None:
-        print("Image captured successfully!")
-        # Convert and display the captured image as ASCII art
-        facial_recognition.image_to_ascii(frame)
-    else:
-        print("Failed to capture image.")
+#     if frame is not None:
+#         print("Image captured successfully!")
+#         # Convert and display the captured image as ASCII art
+#         facial_recognition.image_to_ascii(frame)
+#     else:
+#         print("Failed to capture image.")
 
-    facial_recognition.close_camera()
+#     facial_recognition.close_camera()
 
 
 
