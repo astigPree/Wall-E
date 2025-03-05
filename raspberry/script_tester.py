@@ -6,27 +6,48 @@ import requests
 # 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
 
 
-
+from deepface import DeepFace
 import cv2
+import os
+from PIL import Image
 
-# Open the camera (0 is usually the default camera, change if necessary)
-cap = cv2.VideoCapture(3)
+class FacialRecognition:
+    
+    number_to_try_detection = 0 # number of tries to detect a face 
+    similarity_rate = 20 # highest rate to identify similarity face
+    
+    def start_camera(self, camera=0):
+        self.cap = cv2.VideoCapture(camera)
+    
+    def get_face_by_camera(self):
+        ret, frame = self.cap.read()
+        if not ret:
+            return None
+        return frame
+    
+    def close_camera(self):
+        self.cap.release()
+        cv2.destroyAllWindows()
+    
 
-while True:
-    # Capture frame-by-frame
-    ret, frame = cap.read()
+# Test the camera
+if __name__ == "__main__":
+    facial_recognition = FacialRecognition()
+    facial_recognition.start_camera(camera=0)
 
-    # Display the resulting frame
-    cv2.imshow('Camera', frame)
+    print("Capturing image from camera...")
+    frame = facial_recognition.get_face_by_camera()
+    
+    if frame is not None:
+        print("Image captured successfully!")
+        # Display the captured image
+        cv2.imshow("Captured Image", frame)
+        cv2.waitKey(0)  # Wait until a key is pressed to close the window
+        cv2.destroyAllWindows()
+    else:
+        print("Failed to capture image.")
 
-    # Break the loop on 'q' key press
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# Release the capture and close windows
-cap.release()
-cv2.destroyAllWindows()
-
+    facial_recognition.close_camera()
 
 
 
