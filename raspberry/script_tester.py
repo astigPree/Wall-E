@@ -1,13 +1,36 @@
-from my_tools import *
-import time
-import rules
-import requests
+# from my_tools import *
+# import time
+# import rules
+# import requests
 
 # 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
 
+print("Starting Facial Recognition...")
+
+import cv2
+
+def list_cameras():
+    index = 0
+    arr = []
+    i = 10
+    while i > 0:
+        cap = cv2.VideoCapture(index)
+        if cap.read()[0]:
+            arr.append(index)
+            cap.release()
+        index += 1
+        i -= 1
+    return arr
+
+if __name__ == "__main__":
+    available_cameras = list_cameras()
+    if available_cameras:
+        print("Available camera indexes:", available_cameras)
+    else:
+        print("No cameras found.")
 
 from deepface import DeepFace
-import cv2
+# import cv2
 import os
 from PIL import Image
 
