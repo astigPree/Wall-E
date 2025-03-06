@@ -1,27 +1,40 @@
-# from my_tools import *
-# import time
-# import rules
-# import requests
+from my_tools import *
+import time
+import rules
+import requests
 
 # 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
 
 
 
 import cohere
+import json
+
+user = "Pakibukas ng pinto para makalagay ako ng pills"
+system_rules = rules.rule_for_identifiying_command.format(text=user)
 
 co = cohere.ClientV2("6KXJUorIR8sWsMs5x6GTjmMDTar57vWvFUKYrakT")
 response = co.chat(
     model="command-r", 
-    messages=[{"role": "user", "content": "Explain to me the details of the command"}]
+    messages=[
+        {"role": "system", "content": system_rules},
+        {"role": "user", "content": user}
+    ]
 )
 
-print(response)
+data = response.dict()
 
-
-
-
-
-
+for k in data:
+    print("================================")
+    print(data[k])
+    
+    if k == "message":
+        message: list = data[k]["content"]
+        for mes in message:
+            main_content = mes.get("text") 
+            if main_content:
+                print("Converted content : ", text_to_dictionary(main_content))
+             
 
 
 
@@ -163,14 +176,14 @@ print(response)
 
 # {'status': 200, 'message': 'Your SMS message has been successfully added to the queue and will be processed shortly.', 'message_id': 'iSms-PcPOoU'}
 #  GET https://sms.iprogtech.com/api/v1/sms_messages/status?api_token=1231asd1&message_id=iSms-XHYBk0
-# url = "https://sms.iprogtech.com/api/v1/sms_messages/status"
+# url = "https://sms.iprogtech.com/api/v1/sms_messages"
 # params = {
 #     "api_token": "70b0567b2c219b0d124aae40865a3a38aed55355",
-#     # "message" : "Hello, world! This is a test message",
-#     # "phone_number": "639512213008"
-#     "message_id" : "iSms-BkKMxe"
+#     "message" : "Hello, world! This is a test message",
+#     "phone_number": "639512213008"
+#     # "message_id" : "iSms-BkKMxe"
 # }
-# response = requests.get(url=url, params=params)
+# response = requests.post(url=url, params=params)
 
 # if response.ok:
 #     print("Message sent successfully")
@@ -178,15 +191,6 @@ print(response)
 # else:
 #     print(f'Server responded with status: {response.status_code}')
 #     print(f'Error: {response.text}')
-
-
-
-
-
-
-
-
-
 
 
 
