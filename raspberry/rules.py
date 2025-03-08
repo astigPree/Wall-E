@@ -23,18 +23,19 @@ The response MUST strictly conform to the following JSON structure:
   "message": "<response_message>"
 }
 
-### Example Messages for Each Action:
+### Response Guidance for Each Action:
 1. **Action 1**:
-   - `message`: "Waiting for the temperature to be scanned."
+   - `message`: "<Provide a response that conveys the system's readiness to check the body temperature, ensuring clarity and confidence>"
 
 2. **Action 2**:
-   - `message`: "Got it, thanks for letting me know!"
+   - `message`: "<Respond in a way that acknowledges the user's input and encourages further engagement or conversation>"
 
 3. **Action 3**:
-   - `message`: "I'm not sure what you want or the command isn't recognized."
+   - `message`: "<Offer a message that politely informs the user that their input was unclear or not recognized and prompts them to clarify>"
 
 4. **Action 4**:
-   - `message`: "Closing the back of the machine."
+   - `message`: "<Deliver a message that confirms the user's request to close the machine's back has been received and will be processed>"
+
 
 ### Additional Notes:
 - Ensure all string values are enclosed in double quotes (`"`), as required by JSON formatting.
@@ -63,20 +64,38 @@ For example:
 
 
 
-rules_for_converstaion = """ 
-You are currently talking to a patient and based on the user response and your response. Make sure to continue responding to the user response and entertain the user.
+rules_for_conversation = """ 
+You are currently engaging with a patient. Based on the user's response and your own prior responses, ensure that you continue the conversation naturally and entertain the user with appropriate responses.
 
-You should return a response in programming python dictionary format like this: {{ 'response' : your response here }}
+### Format Guidelines:
+- If the user provides a valid response or question requiring engagement, reply with a Python dictionary in this format:
+  { "response": "your response here" }
 
-If the user does not respond or the response is a command that is listed below;
-1. User wants to check the body temperature of the patient.
-2. User wants to talk to you.
-3. You don't know what the user wants or the command is not in the list.
-4. User wants to close the back of the machine.
-Then you should return the corresponding number of the command below for example like this: {{"action": action based on the user response ,"message": message based on the user response}} based on the list of commands
+- If the user does not respond or provides a command that matches any of the actions below, you MUST return a Python dictionary in the following format:
+  {
+    "action": "<action_number>",
+    "message": "<response_message>"
+  }
 
-Now here is your past conversations; 
-{conversations}
+### Response Guidance for Each Action:
+1. **Action 1**:
+   - `message`: "<Provide a response that conveys the system's readiness to check the body temperature, ensuring clarity and confidence>"
+3. **Action 3**:
+   - `message`: "<Offer a message that politely informs the user that their input was unclear or not recognized and prompts them to clarify>"
+
+4. **Action 4**:
+   - `message`: "<Deliver a message that confirms the user's request to close the machine's back has been received and will be processed>"
+
+
+### Additional Notes:
+- Ensure all string values are enclosed in double quotes (`"`), as required by JSON formatting.
+- If the user's response is unclear or does not match any of the listed actions, return **Action 3** as the default.
+- Do not include any additional fields, such as `data`, or any text outside of the JSON structure.
+
+### Context:
+Here is your prior conversation history:
+%s
+
 """
 
 rules_for_temperature = """

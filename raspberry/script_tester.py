@@ -200,12 +200,13 @@ import my_tools
 
 
 
-from voice_utils import VoiceUtils
+# from voice_utils import VoiceUtils
 
-voice = VoiceUtils()
+# voice = VoiceUtils()
 
-voice.speak("Hello There! Could you repeat your request because i did not understand the message")  
+# voice.speak("Hello There! Could you repeat your request because i did not understand the message")  
 
+# voice.speak("Hello There! Could you repeat your request because i did not understand the message") 
 
 
 

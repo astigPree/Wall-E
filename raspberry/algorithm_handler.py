@@ -15,7 +15,7 @@ RECORDING_VOICE_TIMEOUT = 3 # number of tries to recording the voice recognition
 
 
 
-async def algo_open_back_of_the_machine(
+def algo_open_back_of_the_machine(
     event : EventHandler , 
     voice : VoiceUtils , 
     db : DataHandler, 
@@ -67,7 +67,7 @@ async def algo_open_back_of_the_machine(
     while not response and brain_maximum_retry > 0:
         if event.stop_proccess:
             return
-        response = await brain.generate_response(rule_for_identifiying_id_by_name.format(text=name , options=options)) 
+        response = brain.generate_response(rule_for_identifiying_id_by_name.format(text=name , options=options)) 
         brain_maximum_retry -= 1
         
     # DATA : response = { 
@@ -79,7 +79,7 @@ async def algo_open_back_of_the_machine(
         voice.speak("Im sorry for that but I can't find you in the database. Please try again later")
         return
     
-    convert_response_to_list = my_tools.text_to_dictionary(response)
+    convert_response_to_list = my_tools.my_tools.text_to_dictionary(response)
     if not convert_response_to_list:
         voice.speak("I'm sorry but I can't process right now because there was a problem processing the response. Please try again later")
         return
@@ -135,7 +135,7 @@ def algo_machine_walk(
     
     
     
-async def algo_check_for_schedules(
+def algo_check_for_schedules(
     event : EventHandler , 
     voice : VoiceUtils , 
     db : DataHandler, 
@@ -191,7 +191,7 @@ async def algo_check_for_schedules(
     while not response and brain_maximum_retry > 0:
         if event.stop_proccess:
             return
-        response = await brain.generate_response(rule_for_identifiying_id_by_name.format(text=name , options=options)) 
+        response = brain.generate_response(rule_for_identifiying_id_by_name.format(text=name , options=options)) 
         brain_maximum_retry -= 1
         
     # DATA : response = { 
@@ -204,7 +204,7 @@ async def algo_check_for_schedules(
         voice.speak("Im sorry for that but I can't find you in the database. Please try again later")
         return
     
-    convert_response_to_list = my_tools.text_to_dictionary(response)
+    convert_response_to_list = my_tools.my_tools.text_to_dictionary(response)
     if not convert_response_to_list:
         voice.speak("I'm sorry but I can't process right now because there was a problem processing the response. Please try again later")
         return
@@ -268,16 +268,12 @@ async def algo_check_for_schedules(
         return
     
     
-async def algo_check_body_temperature( 
+def algo_check_body_temperature( 
     event : EventHandler , 
     voice : VoiceUtils , 
-    db : DataHandler, 
     brain : BrainUtils, 
-    recognizer : SpeechRecognitionUtils , 
-    eyes : FacialRecognition, 
     data : dict,
-    arduino : ArduinoConnection,
-    user_command : str
+    arduino : ArduinoConnection
     ):
     # 7. Senario in checking body temperature (NURSEs);
     # - The user can get the body temperature of the patient by using the machine tools.
@@ -309,14 +305,14 @@ async def algo_check_body_temperature(
     
     temp1 = sum(temps) / len(temps)
     temp2 = (temp1 * 1.8) + 32
-    response = await brain.generate_response(rules_for_temperature.format(temp1=temp1 , temp2=temp2)) 
+    response = brain.generate_response(rules_for_temperature.format(temp1=temp1 , temp2=temp2)) 
     voice.speak(response.get('message' , "The scanned body temperature is {temp1} Celsius and {temp2} Fahrenheit"))
     
     return
 
 
 
-async def algo_user_want_to_talk(
+def algo_user_want_to_talk(
     event : EventHandler , 
     voice : VoiceUtils ,  
     brain : BrainUtils, 
@@ -330,6 +326,7 @@ async def algo_user_want_to_talk(
     # - The machine will identify what position and where to go.
     # - The machine will move to the position and where to go.
     
+    print("algo_user_want_to_talk")
     if event.stop_proccess:
         return {}
     
@@ -340,47 +337,64 @@ async def algo_user_want_to_talk(
     past_conversation.append(user_conversation_placeholder.format(conversation=user_command))
     bot_message = data.get("message", "Hello There! Could you repeat your request because i did not understand the message")
     past_conversation.append(bot_conversation_placeholder.format(conversation=bot_message))
-    
+    event.user_commands = []
     voice.speak(bot_message)
     
     while True:
-        response = ""
-        for tries in range(RECORDING_VOICE_TIMEOUT):
-            
+        print("Inside of conversation while loop")
+        start_time = time.time()  # Record the start time
+        timeout = 180  # Timeout duration in seconds (3 minutes)
+        if event.stop_proccess:
+            return {}
+        
+        while event.is_recording or len(event.user_commands) < 1:
+            time.sleep(0.5)
             if event.stop_proccess:
                 return {}
+            # Check if the timeout has been exceeded
+            if time.time() - start_time > timeout:
+                print("3 minutes have passed, returning default response: {}")
+                return {}  # Automatically return {} if timeout is exceeded
+            print("Waiting for event to be recorded or user commands to be added")
+        
+        response = ".".join(event.user_commands)
+        past_conversation.append(user_conversation_placeholder.format(conversation=response))
+        event.user_commands = [] # reset user commands
+        
+        if event.stop_proccess:
+            return {}
+        
+        print("Thinking about the response...")
+        bot_response = brain.generate_response(rules_for_conversation % "".join(past_conversation))
+        print("Response:", bot_response)
             
-            response += recognizer.recognize_speech()
-            
-            if event.stop_proccess:
+        if event.stop_proccess:
+            return {}
+        
+        data : dict = my_tools.text_to_dictionary(bot_response)
+        if not data:
+            bot_response = brain.generate_cohere_response(command=rules_for_conversation % "".join(past_conversation), system=None)
+            data : dict = my_tools.text_to_dictionary(bot_response)
+            if not data:
+                voice.speak("Sorry, there was a problem. Please try again later.")
                 return {}
-            
-            if response and tries > 2 :
-                bot_response = await brain.generate_response(rules_for_converstaion.format(conversations=past_conversation.join("")))
-                    
-                if event.stop_proccess:
-                    return {}
-                
-                data : dict = text_to_dictionary(bot_response)
-                if not data:
-                    voice.speak("Sorry, there was a problem. Please try again later.")
-                    return {}
-                
-                bot_message = data.get("response" , None)
-                if not bot_message:
-                    action = data.get("action", None)
-                    if action is not None:
-                        return data
-                    voice.speak("Sorry, there was a problem. Please try again later.")
-                    return {}
-                
-                past_conversation.append(user_conversation_placeholder.format(conversation=response))
-                past_conversation.append(bot_conversation_placeholder.format(conversation=bot_message))
-                voice.speak(bot_message)
-                
-                break
+        
+        bot_message = data.get("response" , None)
+        if not bot_message:
+            action = data.get("action", None)
+            if action is not None:
+                return data
+            voice.speak("Sorry, there was a problem. Please try again later.")
+            return {}
+        
+        
+        
+        past_conversation.append(user_conversation_placeholder.format(conversation=response))
+        past_conversation.append(bot_conversation_placeholder.format(conversation=bot_message))
+        voice.speak(bot_message)
+        
 
-async def algo_user_command_not_exist(
+def algo_user_command_not_exist(
     event : EventHandler , 
     voice : VoiceUtils , 
     db : DataHandler, 
@@ -394,13 +408,11 @@ async def algo_user_command_not_exist(
     voice.speak(data.get("message", "The command you are looking for does not exist. Please try again"))
 
 
-async def algo_close_the_back_of_the_machine(
+def algo_close_the_back_of_the_machine(
     event : EventHandler , 
-    voice : VoiceUtils , 
-    db : DataHandler, 
+    voice : VoiceUtils ,  
     brain : BrainUtils, 
-    recognizer : SpeechRecognitionUtils , 
-    eyes : FacialRecognition, 
+    recognizer : SpeechRecognitionUtils ,  
     data : dict,
     user_command : str
     ):

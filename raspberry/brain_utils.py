@@ -29,14 +29,21 @@ class BrainUtils:
     
     def generate_cohere_response(self, command :  str , system : str):
         try:
-            
-            response = self.cohere_client.chat(
-                model="command-r", 
-                messages=[
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": command}
-                ]
-            )
+            if system:
+                response = self.cohere_client.chat(
+                    model="command-r", 
+                    messages=[
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": command}
+                    ]
+                )
+            else:
+                response = self.cohere_client.chat(
+                    model="command-r", 
+                    messages=[
+                        {"role": "user", "content": command}
+                    ]
+                )
             data = response.dict()
             
             for k in data:

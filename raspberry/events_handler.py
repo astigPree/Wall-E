@@ -5,6 +5,9 @@ import datetime
 
 class EventHandler:
     
+    user_commands : list[str] = []
+    is_recording : bool = False
+    
     close_down = False # True if we are closing down the system, False otherwise (default)
     
     has_important_event = False # True if there is a important event in the system, False otherwise (default)
