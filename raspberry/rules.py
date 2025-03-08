@@ -1,35 +1,46 @@
 
-rule_for_identifiying_command = """ 
-You are a machine controlled by a user. Given a user response "{text}", identify what the user wants and return to me what action the user wants. Here are the list of actions:
+rule_for_identifiying_command = """  
+Given a user response:
+"
+%s
+"
 
+Identify the user's intent and map it to one of the following actions:
 1. User wants to check the body temperature of the patient.
 2. User wants to talk to you.
-3. You don't know what the user wants or the command is not in the list.
+3. You don't know what the user wants, or the command is not in the list.
 4. User wants to close the back of the machine.
 
 IMPORTANT:
-You MUST return to me a Python dictionary containing the following:
-- action: The action that the user wants (e.g., "1").
-- message: The message that the machine should say to the user.
-- data: Additional data based on the additional requirements.
+You MUST return a Python dictionary in valid JSON format with the following fields:
+- `action`: The number corresponding to the user's action (e.g., "1") as a string.
+- `message`: A concise message that the machine should say to the user, based on the user's intent.
 
-Here is the response MUST look like this dictionary and don't add any further information or text outside the dictionary because I will parse it to a dictionary:
-{{"action": action based on the user response ,"message": message based on the user response, "data": data based on the below data required for the action}}
+### Response Format:
+The response MUST strictly conform to the following JSON structure:
+{
+  "action": "<action_number>",
+  "message": "<response_message>"
+}
 
-Here is the example message for each action and don't copy it directly into the dictionary, it's just for reference:
-1. message value should reference the example saying the user that you are waiting for the temperature to be scanned.
-2. message value should reference the example responding to the user inquiries/questions or text.
-3. message value should reference the example responding to the user inquiries/questions or text.
-4. message value should reference the example saying that you will close the back of the machine.
+### Example Messages for Each Action:
+1. **Action 1**:
+   - `message`: "Waiting for the temperature to be scanned."
 
-The dictionary should look like this but not copy it directly into the dictionary, it's just for reference:
-{{"action": "1", "message": "Your temperature is {{cel}} Celsius. Your temperature is {{fah}} Fahrenheit.", "data": {{"celsius" : "{{cel}}", "fahrenheit": "{{fah}}"}}}}
+2. **Action 2**:
+   - `message`: "Got it, thanks for letting me know!"
 
-Here is the example for the data:
-1. data value should reference the example "celsius" : "{{cel}}", "fahrenheit": "{{fah}}".
-2. data value should reference the example "message": "Got it, thanks for letting me know!".
-3. data value should reference the example "message": "I'm not sure what you want or the command isn't recognized".
-4. it does not contain any value. 
+3. **Action 3**:
+   - `message`: "I'm not sure what you want or the command isn't recognized."
+
+4. **Action 4**:
+   - `message`: "Closing the back of the machine."
+
+### Additional Notes:
+- Ensure all string values are enclosed in double quotes (`"`), as required by JSON formatting.
+- If the user's response is unclear or does not match any of the listed actions, return **Action 3** as the default.
+- Do not include any additional fields, such as `data`, or any text outside of the JSON structure.
+
 """
 
 rule_for_identifiying_id_by_name = """

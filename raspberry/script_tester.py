@@ -2,8 +2,49 @@ from my_tools import *
 import time
 import rules
 import requests
+import asyncio
+import my_tools
 
-# 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
+# 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 
+  
+
+# import json
+# import re
+
+# def text_to_dictionary(response: str):
+#     if not isinstance(response, str):
+#         print("Response must be a string")
+#         return None
+
+#     try:
+#         # Use a regex pattern to extract the full JSON content
+#         match = re.search(r'\{[\s\S]*\}', response)
+#         if match:
+#             # Extract the matched JSON-like text
+#             json_text = match.group(0)
+
+#             # Parse the JSON
+#             return json.loads(json_text)
+#         else:
+#             print("No JSON-like content found in the response")
+#             return None
+#     except json.JSONDecodeError as e:
+#         print(f"JSON parsing error: {e}")
+#     except Exception as e:
+#         print(f"Unexpected error: {e}")
+#     return None
+
+
+# text = """
+# {
+#   "action": "3",
+#   "message": "I'm not sure what you want or the command isn't recognized."
+# }
+# """
+
+# data = text_to_dictionary(text)
+# print(data)
+
 
 
 
@@ -159,11 +200,11 @@ import requests
 
 
 
-# from voice_utils import VoiceUtils
+from voice_utils import VoiceUtils
 
-# voice = VoiceUtils()
+voice = VoiceUtils()
 
-# voice.speak("Hello There! Could you repeat your request because i did not understand the message")  
+voice.speak("Hello There! Could you repeat your request because i did not understand the message")  
 
 
 
@@ -176,21 +217,21 @@ import requests
 
 # {'status': 200, 'message': 'Your SMS message has been successfully added to the queue and will be processed shortly.', 'message_id': 'iSms-PcPOoU'}
 #  GET https://sms.iprogtech.com/api/v1/sms_messages/status?api_token=1231asd1&message_id=iSms-XHYBk0
-url = "https://sms.iprogtech.com/api/v1/sms_messages"
-params = {
-    "api_token": "70b0567b2c219b0d124aae40865a3a38aed55355",
-    "message" : "Hello, world! This is a test message",
-    "phone_number": "639466142926",
-    "sms_provider": 1
-}
-response = requests.post(url=url, params=params)
+# url = "https://sms.iprogtech.com/api/v1/sms_messages"
+# params = {
+#     "api_token": "70b0567b2c219b0d124aae40865a3a38aed55355",
+#     "message" : "Hello, world! This is a test message",
+#     "phone_number": "639466142926",
+#     "sms_provider": 1
+# }
+# response = requests.post(url=url, params=params)
 
-if response.ok:
-    print("Message sent successfully")
-    print(response.json())
-else:
-    print(f'Server responded with status: {response.status_code}')
-    print(f'Error: {response.text}')
+# if response.ok:
+#     print("Message sent successfully")
+#     print(response.json())
+# else:
+#     print(f'Server responded with status: {response.status_code}')
+#     print(f'Error: {response.text}')
 
 
 

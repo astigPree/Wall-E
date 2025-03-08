@@ -318,11 +318,9 @@ async def algo_check_body_temperature(
 
 async def algo_user_want_to_talk(
     event : EventHandler , 
-    voice : VoiceUtils , 
-    db : DataHandler, 
+    voice : VoiceUtils ,  
     brain : BrainUtils, 
-    recognizer : SpeechRecognitionUtils , 
-    eyes : FacialRecognition, 
+    recognizer : SpeechRecognitionUtils ,  
     data : dict,
     user_command : str
     ):

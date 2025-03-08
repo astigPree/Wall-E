@@ -6,6 +6,7 @@ from gtts import gTTS
 
 # from playsound import playsound
 import pygame
+from pygame import mixer
 from playsound import playsound
 
 # This module is imported so that we can 
@@ -40,26 +41,50 @@ class VoiceUtils:
         pygame.mixer.music.unload()
         time.sleep(1)
         
-    
-    def speak(self, text : str):
+    def speak(self, text: str):
         print("Speaking ...")
         if text:
+            # Wait if audio is already playing
             while self.is_playing:
                 time.sleep(0.1)
             
             self.is_playing = True
-            myobj = gTTS(text=self.text if text is None else text, lang=self.language, slow=False)
-            # Ensure the file can be overwritten 
-            if os.path.exists(self.save_path): 
+
+            # Generate speech using gTTS
+            myobj = gTTS(text=text, lang=self.language, slow=False)
+
+            # Ensure the file can be overwritten
+            if os.path.exists(self.save_path):
                 os.remove(self.save_path)
-            
-            # Saving the converted audio in a mp3 file named
-            # welcome 
+
+            # Save the generated audio to the file
             myobj.save(self.save_path)
-            playsound(self.save_path)
+
+            # Try to play the audio using playsound
+            try:
+                time.sleep(0.1)
+                playsound(self.save_path)
+            except Exception as e:
+                print(f"Error playing audio with playsound: {e}")
+                print("Falling back to pygame...")
+
+                # Fallback to pygame
+                try:
+                    mixer.init()
+                    mixer.music.load(self.save_path)
+                    mixer.music.play()
+
+                    # Wait while the audio is playing
+                    while mixer.music.get_busy():
+                        time.sleep(0.1)
+                except Exception as pygame_error:
+                    print(f"Error playing audio with pygame: {pygame_error}")
+                finally:
+                    # Clean up pygame
+                    mixer.quit()
+
             self.is_playing = False
             print("Done Speaking ...")
-            
             
     
     # def speak(self , text : str):

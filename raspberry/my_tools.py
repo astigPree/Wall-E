@@ -117,27 +117,29 @@ def extract_filename(url):
 # print(filename)  # Output: nurse_image.jpg
 
 
-def text_to_dictionary(response : str):
+def text_to_dictionary(response: str):
+    if not isinstance(response, str):
+        print("Response must be a string")
+        return None
+
     try:
-        return json.loads(response)
-    except json.JSONDecodeError:
-        match = re.search(r'\{.*?\}', response) 
+        # Use a regex pattern to extract the full JSON content
+        match = re.search(r'\{[\s\S]*\}', response)
         if match:
-            # Extracted text
+            # Extract the matched JSON-like text
             json_text = match.group(0)
-            
-            # Convert to dictionary
-            try:
-                data_dict = json.loads(json_text)
-                
-                # Print the dictionary
-                return data_dict
-            except json.JSONDecodeError:
-                print("Failed to parse JSON from the response")
-                return None
+
+            # Parse the JSON
+            return json.loads(json_text)
         else:
-            print("No match found")
+            print("No JSON-like content found in the response")
             return None
+    except json.JSONDecodeError as e:
+        print(f"JSON parsing error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+    return None
+
         
 
 def text_to_list(text):
