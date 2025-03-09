@@ -221,8 +221,22 @@ def main():
             print("Starting the main event loop")
             print("These are the ids of the patiens to take medication : ", event.list_of_schedule_to_take)
 
+        if list(event.list_of_schedule_to_take) < 1:
+            # Do nothing if there are no schedules to take for the day
+            return None
 
-
+        while event.list_of_schedule_to_take > 0:
+            schedule = event.list_of_schedule_to_take.pop(0)
+            patient_id = schedule.get('patient' , None)
+            if patient_id is None:
+                print("Schedule has no patient_id")
+                continue
+            patient = database.patients.get(str(patient_id))
+            if not patient:
+                print(f"Patient {patient_id} not found in database")
+                continue
+            
+            # TODO: Apply walking here using arduino
 
 
 
