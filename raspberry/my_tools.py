@@ -9,6 +9,40 @@ import datetime
 
 SERVER_URL = "http://WellE.pythonanywhere.com"
 CONTROLLER_TOKEN = '1234567890'
+SMS_MESSAGE_URL = "https://sms.iprogtech.com/api/v1/sms_messages"
+SMS_TOKEN = "70b0567b2c219b0d124aae40865a3a38aed55355"
+# params = {
+#     "api_token": "70b0567b2c219b0d124aae40865a3a38aed55355",
+#     "message" : "Hello, world! This is a test message",
+#     "phone_number": "639466142926",
+#     "sms_provider": 1
+# }
+
+SMS_TAKEN_MEDICATION_TEXT = "Hello, this is Well-E, your AI-powered medical assistant. {patient_name} has successfully taken their scheduled medication today at {schedule_time}. Medication taken: {pill}. Thank you for trusting Well-E!"
+
+def send_message(message : str , phone_number : str):
+    if not message or not phone_number:
+        return
+    params = {
+        "api_token": SMS_TOKEN,
+        "message" : message,
+        "phone_number": phone_number,
+        "sms_provider": 1
+    }
+    try:
+        
+        response = requests.post(url=SMS_MESSAGE_URL, params=params)
+        if response.ok:
+            return response.json()
+        else:
+            print(f'Server responded with status: {response.status_code}')
+            print(f'Error: {response.json()}')
+            return None
+    except Exception as e:
+        print(f'Error: {e}')
+        return None
+
+
 
 def send_post_request():
     try:

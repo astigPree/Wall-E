@@ -221,11 +221,11 @@ def main():
             print("Starting the main event loop")
             print("These are the ids of the patiens to take medication : ", event.list_of_schedule_to_take)
 
-        if list(event.list_of_schedule_to_take) < 1:
+        if len(event.list_of_schedule_to_take) < 1:
             # Do nothing if there are no schedules to take for the day
             return None
 
-        while event.list_of_schedule_to_take > 0:
+        while len(event.list_of_schedule_to_take) > 0:
             schedule = event.list_of_schedule_to_take.pop(0)
             patient_id = schedule.get('patient' , None)
             if patient_id is None:
@@ -238,12 +238,21 @@ def main():
             
             # TODO: Apply walking here using arduino
 
+            
+            message = my_tools.SMS_TAKEN_MEDICATION_TEXT.format(
+                patient_name = patient.get('name' , 'No name'), 
+                schedule_time = schedule.get('set_time' , 'No time'), 
+                pill = schedule.get('pill' , 'No pill')
+            )
+            
+            my_tools.send_message(message , patient.get('phone_number' , None))
+            print("Sent message to patient")
 
 
 
 
 if __name__ == '__main__':
-    threading.Thread(target=start_listening).start() # start listening in a separate thread
+    # threading.Thread(target=start_listening).start() # start listening in a separate thread
     try:
         while not event.close_down:
             main()
