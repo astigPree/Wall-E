@@ -268,26 +268,24 @@ def check_date_status(date_str):
     else:
         return "Future"
 
-
+ 
 def check_time_status(time_str, minutes):
-    # Parse the input time string into a datetime object
-    input_time = datetime.datetime.strptime(time_str, "%H:%M").time()
-    
-    # Get the current time
+    # Parse the input time string into a datetime object (time today)
     now = datetime.datetime.now()
-    current_time = now.time()
+    input_time = datetime.datetime.strptime(time_str, "%H:%M").replace(year=now.year, month=now.month, day=now.day)
     
     # Create a time range: current_time ± minutes
-    time_window_start = (now - datetime.timedelta(minutes=minutes)).time()
-    time_window_end = (now + datetime.timedelta(minutes=minutes)).time()
+    time_window_start = now - datetime.timedelta(minutes=minutes)
+    time_window_end = now + datetime.timedelta(minutes=minutes)
     
     # Check if the input time is within the time window
-    if time_window_start <= input_time <= time_window_end and current_time < time_window_start:
+    if time_window_start <= input_time <= time_window_end:
         return "Present"
-    elif input_time < current_time:
+    elif input_time < now:
         return "Past"
     else:
         return "Future"
+
 
 # Example usage
 # time_to_check = "17:27"

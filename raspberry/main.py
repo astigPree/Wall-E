@@ -8,6 +8,7 @@ from events_handler import EventHandler
 import algorithm_handler as algo
 import rules
 import static_generated_txt
+import my_tools
 
 import time
 import threading
@@ -20,7 +21,10 @@ import sys
 if sys.platform == 'win32': 
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
       
-  
+
+OFFSET_MINUTE_TO_CALL_NAME = 10
+OFFSET_MINUTE_TO_VALID = 20
+
 event = EventHandler()
 database = DataHandler()
 ear = SpeechRecognitionUtils()
@@ -138,9 +142,84 @@ def main():
             if patients:
                 database.patients = patients
                 
+                
             if schedules:
                 database.schedules = schedules
-        
+
+            # TODO: Create an algorithm that check the schedule of the patients
+            # TODO: This is an important event and it should check the patient face to verify before despensing pills
+            # TODO: This is an important event and it should shout the patients name so they will be notified
+            for schedule_id , schedule in database.schedules.items():
+                print(schedule)
+                
+                if schedule_id in event.done_schedule:
+                    print(f"Schedule {schedule_id} has already been executed")
+                    threading.Thread(target=delete_schedule, args=(schedule_id,)).start() # delete the scheduled that already executed
+                    continue
+                
+                if schedule_id in event.pending_schedule:
+                    print(f"Schedule {schedule_id} is already in pending state")
+                    continue
+                
+                if schedule.get('set_date' , None):
+                    
+                    date_sched = my_tools.check_date_status(schedule.get('set_date' )) 
+                    print("Date scheduled is in the ", date_sched)
+                    if date_sched == "Past":
+                        # If the schedule is not current date, then we need to skip the action 
+                        threading.Thread(target=delete_schedule, args=(schedule_id,)).start() # delete the scheduled that already executed
+                        continue
+                    
+                if schedule.get('set_time', None):
+                    
+                    time_sched = my_tools.check_time_status(schedule.get('set_time') , OFFSET_MINUTE_TO_VALID)
+                    
+                    print("Time scheduled is in the ", time_sched)
+                    
+                    if time_sched == "Past": 
+                        # If the schedule is not current time, then we need to skip the action
+                        continue
+                    if time_sched == "Future": 
+                        # If the schedule is not current time, then we need to skip the action
+                        continue
+                
+                
+                
+                
+                patient_id = schedule.get('patient' , None)
+                if patient_id is None:
+                    print("Schedule has no patient_id")
+                    continue
+                
+                print("Patients Database : ", database.patients)
+                patient_data : dict = database.patients.get(str(patient_id))
+                if not patient_data:
+                    print(f"Patient {patient_id} not found in database")
+                    continue
+                
+                if patient_id not in event.patients_to_take_medication:
+                    print(f"Patient {patient_id} is not in list of patients to take medication, so adding it.")
+                    event.patients_to_take_medication[str(patient_id)] = patient_data
+                
+                if schedule_id not in event.pending_schedule:
+                    event.pending_schedule.append(schedule_id)
+                    event.list_of_schedule_to_take.append(schedule)
+                    
+                
+                # event.has_important_event = True 
+                # patient = database.patients.get(schedule.patient)
+                # # TODO : Check if nasa list_of_schedule_to_take then skip it
+                # if patient:
+                #     # TODO: I check kung meron pills ang selected medication
+                #     # TODO : Check if lumampas na an specific time na mag take san pills ma send san text message na wra katumar san bulong
+                #     voice.speak(f"{patient.get('name', 'No name Patient!')} IT'S TIME TO TAKE YOUR {schedule.get('pill' , 'PILLS').upper()}! DON'T FORGET YOUR MEDICATION!")
+                # event.has_important_event = False
+            
+            
+            # ----------------------------------------------------------------
+            # TODO: Create an algorithm that actionas the event.list_of_schedule_to_take
+            print("Starting the main event loop")
+            print("These are the ids of the patiens to take medication : ", event.list_of_schedule_to_take)
 
 
 

@@ -23,6 +23,8 @@ class EventHandler:
     
     patients = {} # List of patients ; patients = {patient : dict, patient : dict, patient : dict, patient : dict, patient : dict, patient : dict}
     patients_to_take_medication = {} # List of patients to take a medication 
+    done_schedule = [] # List of schedules id that have been done for this schedule
+    pending_schedule = [] # List of schedules id that have been pending for this schedule
     there_is_patient_need_to_take_medication = False # True if here is a patient need to take medication
     
     stop_proccess = False # True if we are stopping the procedure and we are not waiting for it to complete
@@ -49,9 +51,9 @@ class EventHandler:
     no_pills_mefenamic = False # no_pills_mefenamic = True if there is no pills in mefenamic
     
     
-    list_of_patients_to_take = []
+    list_of_schedule_to_take : list[dict] = []
     """
-    list_of_patients_to_take = [ patient_id, patient_id, ...]
+    list_of_schedule_to_take = [ schedule, schedule, ...]
     """
     
     
