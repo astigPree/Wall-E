@@ -252,7 +252,7 @@ def main():
 
 
 if __name__ == '__main__':
-    # threading.Thread(target=start_listening).start() # start listening in a separate thread
+    threading.Thread(target=start_listening).start() # start listening in a separate thread
     try:
         while not event.close_down:
             main()
