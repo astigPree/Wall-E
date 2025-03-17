@@ -216,15 +216,16 @@ void loop() {
     }
 
 
-    if (data == "BODYTEMP"){
-      for (int i = 0; i < 15; i++) {
-        Serial.println(max30205.readTemperature());
-        delay(100); // Wait 100ms for the temperature sensor to read the new value
+    if (data == "BODYTEMP") {
+      const int NUM_READINGS = 15;  // Number of temperature readings to send
+      for (int i = 0; i < NUM_READINGS; i++) {
+        float temp = max30205.readTemperature();
+        Serial.println(temp);  // Send the temperature reading
+        delay(100);  // Delay to stabilize sensor and allow data processing
       }
-      Serial.println("DONE");
-      
-      
+      Serial.println("DONE");  // Send a termination signal
     }
+
 
 
     delay(10);

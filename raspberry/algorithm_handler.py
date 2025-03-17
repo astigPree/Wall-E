@@ -268,46 +268,75 @@ def algo_check_for_schedules(
         return
     
     
-def algo_check_body_temperature( 
-    event : EventHandler , 
-    voice : VoiceUtils , 
-    brain : BrainUtils, 
-    data : dict,
-    arduino : ArduinoConnection
-    ):
-    # 7. Senario in checking body temperature (NURSEs);
-    # - The user can get the body temperature of the patient by using the machine tools.
-    # - The machine will identify the body temperature of the patient.
-    # - The machine will display the body temperature of the patient and speak the body temperature of the patient.
+    
+    
+def algo_check_body_temperature(
+    event: EventHandler, 
+    voice: VoiceUtils, 
+    brain: BrainUtils, 
+    data: dict, 
+    arduino: ArduinoConnection
+):
+    # Prompt the user to scan the body temperature
     if event.stop_proccess:
         return
      
-    voice.speak(data.get("message", "Please scan the body temperature using my machine tools body temperature sensor."))
+    voice.speak(data.get("message", "Please scan the body temperature using my machine's temperature sensor."))
     
-    
-    # TODO: Create a logic that connect arduino and raspberry pi using a wiring then get the body temperature from the arduino
+    # Initialize a list to collect temperature readings
     temps = []
-    
-    while True:
+    MAX_READINGS = 10  # Limit to avoid too many readings
+    start_time = time.time()  # Track start time to limit loop runtime
+
+    while len(temps) < MAX_READINGS:
         if event.stop_proccess:
             return
+        
         temp = arduino.read()
+        
         if temp is not None:
-            if temp == "DONE":
+            # Break when Arduino signals completion
+            if temp.strip().upper() == "DONE":
                 break
+            
             try:
                 temp = float(temp)
-                temps.append(temp)
+                # Ensure the temperature is within a realistic range
+                if 30.0 <= temp <= 45.0:  # Example range in Celsius
+                    temps.append(temp)
+                else:
+                    print(f"Warning: Unusual temperature reading: {temp}")
             except ValueError as e:
-                print(f"An error occurred: {e}")
-                continue 
-        time.sleep(1)
+                print(f"An error occurred while parsing temperature: {e}")
+        
+        # Time-limiting safety to prevent an infinite loop
+        if time.time() - start_time > 30:  # Timeout after 30 seconds
+            print("Timeout: No valid readings received.")
+            voice.speak("No valid temperature readings could be collected. Please try again.")
+            return
+        
+        time.sleep(1)  # Small delay for readability and stability
     
-    temp1 = sum(temps) / len(temps)
-    temp2 = (temp1 * 1.8) + 32
-    response = brain.generate_response(rules_for_temperature.format(temp1=temp1 , temp2=temp2)) 
-    voice.speak(response.get('message' , "The scanned body temperature is {temp1} Celsius and {temp2} Fahrenheit"))
-    
+    if not temps:
+        voice.speak("I couldn't detect any temperature data. Please ensure the sensor is working properly.")
+        return
+
+    # Calculate the average temperature
+    temp_celsius = sum(temps) / len(temps)
+    temp_fahrenheit = (temp_celsius * 1.8) + 32
+
+    # Generate and speak the result
+    result_message = brain.generate_response(
+        rules_for_temperature.format(temp1=temp_celsius, temp2=temp_fahrenheit)
+    )
+    voice.speak(
+        result_message.get(
+            "message", 
+            f"The scanned body temperature is {temp_celsius:.2f}°C and {temp_fahrenheit:.2f}°F."
+        )
+    )
+
+    # End the process successfully
     return
 
 
