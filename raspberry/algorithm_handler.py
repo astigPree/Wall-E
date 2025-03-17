@@ -277,67 +277,72 @@ def algo_check_body_temperature(
     data: dict, 
     arduino: ArduinoConnection
 ):
-    # Prompt the user to scan the body temperature
+    # Prompt the user to begin body temperature scanning
     if event.stop_proccess:
         return
-     
-    voice.speak(data.get("message", "Please scan the body temperature using my machine's temperature sensor."))
     
-    # Initialize a list to collect temperature readings
+    voice.speak(data.get("message", "Please scan the body temperature using my machine's temperature sensor."))
+    arduino.write("BODYTEMP".encode())
+
+    # Initialize variables for collecting readings
     temps = []
-    MAX_READINGS = 10  # Limit to avoid too many readings
-    start_time = time.time()  # Track start time to limit loop runtime
+    MAX_READINGS = 10
+    TIMEOUT = 30  # Timeout in seconds
+    start_time = time.time()
 
     while len(temps) < MAX_READINGS:
         if event.stop_proccess:
             return
-        
-        temp = arduino.read()
-        
-        if temp is not None:
-            # Break when Arduino signals completion
-            if temp.strip().upper() == "DONE":
-                break
-            
-            try:
-                temp = float(temp)
-                # Ensure the temperature is within a realistic range
-                if 30.0 <= temp <= 45.0:  # Example range in Celsius
+
+        try:
+            temp = arduino.read()  # Read data from Arduino
+            if temp:
+                # Check for termination signal
+                if temp.strip().upper() == "DONE":
+                    break
+
+                # Validate and process temperature data
+                temp = float(temp.strip())
+                if 30.0 <= temp <= 45.0:  # Validate within human body temperature range
                     temps.append(temp)
+                    print(f"Received temperature: {temp}°C")
                 else:
-                    print(f"Warning: Unusual temperature reading: {temp}")
-            except ValueError as e:
-                print(f"An error occurred while parsing temperature: {e}")
-        
-        # Time-limiting safety to prevent an infinite loop
-        if time.time() - start_time > 30:  # Timeout after 30 seconds
+                    print(f"Warning: Unusual temperature reading: {temp}°C")
+            else:
+                print("No data received, retrying...")
+
+        except ValueError as e:
+            print(f"Invalid temperature reading: {e}")
+
+        # Handle timeout to prevent infinite loops
+        if time.time() - start_time > TIMEOUT:
             print("Timeout: No valid readings received.")
             voice.speak("No valid temperature readings could be collected. Please try again.")
             return
         
-        time.sleep(1)  # Small delay for readability and stability
-    
+        time.sleep(1)  # Short delay between read attempts
+
+    # Ensure readings were collected
     if not temps:
         voice.speak("I couldn't detect any temperature data. Please ensure the sensor is working properly.")
         return
 
-    # Calculate the average temperature
-    temp_celsius = sum(temps) / len(temps)
-    temp_fahrenheit = (temp_celsius * 1.8) + 32
+    # Compute average temperature
+    avg_temp_celsius = sum(temps) / len(temps)
+    avg_temp_fahrenheit = (avg_temp_celsius * 1.8) + 32
 
-    # Generate and speak the result
-    result_message = brain.generate_response(
-        rules_for_temperature.format(temp1=temp_celsius, temp2=temp_fahrenheit)
+    # Generate the response message
+    response_message = brain.generate_response(
+        rules_for_temperature.format(temp1=avg_temp_celsius, temp2=avg_temp_fahrenheit)
     )
     voice.speak(
-        result_message.get(
+        response_message.get(
             "message", 
-            f"The scanned body temperature is {temp_celsius:.2f}°C and {temp_fahrenheit:.2f}°F."
+            f"The scanned body temperature is {avg_temp_celsius:.2f}°C and {avg_temp_fahrenheit:.2f}°F."
         )
     )
 
-    # End the process successfully
-    return
+    return  # Successfully complete the process
 
 
 

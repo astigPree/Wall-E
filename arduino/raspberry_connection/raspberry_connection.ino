@@ -5,9 +5,14 @@
 #include <RFID.h>
 
 #include <Wire.h>
-#include "ClosedCube_MAX30205.h"
+// #include "ClosedCube_MAX30205.h"
 
-ClosedCube_MAX30205 max30205;
+// ClosedCube_MAX30205 max30205;
+
+// Define constants
+const int lm35Pin = A1;         // LM35 sensor connected to analog pin A1
+const int NUM_READINGS = 15;    // Number of temperature readings to send
+const int DELAY_MS = 100;       // Delay between readings in milliseconds
 
 
 #define biogesic 4 // servo for biogesic pill dispenser
@@ -217,13 +222,25 @@ void loop() {
 
 
     if (data == "BODYTEMP") {
-      const int NUM_READINGS = 15;  // Number of temperature readings to send
       for (int i = 0; i < NUM_READINGS; i++) {
-        float temp = max30205.readTemperature();
-        Serial.println(temp);  // Send the temperature reading
-        delay(100);  // Delay to stabilize sensor and allow data processing
+        // Read raw temperature data from the LM35 sensor
+        int rawValue = analogRead(lm35Pin);
+
+        // Convert raw ADC value to millivolts
+        float mv = (rawValue / 1024.0) * 5000.0;  // Adjust if using an internal reference voltage
+        float celsius = mv / 10.0;                // LM35 produces 10mV/°C
+        
+        // Validate the temperature (range for human body temperatures)
+        if (celsius >= 30.0 && celsius <= 45.0) {
+          Serial.println(celsius, 2);            // Send valid temperature reading to Raspberry Pi
+        } else {
+          Serial.println("ERROR: Invalid reading"); // Send an error message for invalid readings
+        }
+
+        delay(DELAY_MS);                         // Delay between temperature readings
       }
-      Serial.println("DONE");  // Send a termination signal
+
+      Serial.println("DONE");                   // Signal the end of temperature readings
     }
 
 
