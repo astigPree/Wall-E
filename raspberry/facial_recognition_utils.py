@@ -10,6 +10,7 @@ class FacialRecognition:
     #     self.cap = cv2.VideoCapture(camera)
     number_to_try_detection = 0 # number of tries to detect a face 
     similarity_rate = 20 # highest rate to identify similarity face
+    cap = None
     
     def get_face_by_camera(self):
         ret, frame = self.cap.read()
@@ -22,7 +23,8 @@ class FacialRecognition:
         cv2.destroyAllWindows()
     
     def start_camera(self, camera=0):
-        self.cap = cv2.VideoCapture(camera)
+        if not self.cap:
+            self.cap = cv2.VideoCapture(camera)
     
     # def check_face_exists_in_database(self, face_image , face_in_database) -> bool:
     #     # Convert the frame from BGR to RGB

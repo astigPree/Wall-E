@@ -206,18 +206,27 @@ void loop() {
     if (data == "RED") { 
       Serial.println("Going to Red Patient...");
       
+      Serial.println("ARRIVED");
     }
 
     if (data == "BLUE") { 
       Serial.println("Going to Blue Patient...");
+
+      
+      Serial.println("ARRIVED");
     }
 
     if (data == "YELLOW") { 
       Serial.println("Going to Yellow Patient...");
+
+      
+      Serial.println("ARRIVED");
     }
 
     if (data == "BACK") { 
       Serial.println("Machine is going back to its original location");
+
+      Serial.println("ARRIVED");
     }
 
 

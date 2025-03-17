@@ -5,6 +5,7 @@ from database_handler import DataHandler
 from brain_utils import BrainUtils
 from voice_utils import VoiceUtils
 from events_handler import EventHandler
+from facial_recognition_utils import FacialRecognition
 import algorithm_handler as algo
 import rules
 import static_generated_txt
@@ -30,6 +31,7 @@ database = DataHandler()
 ear = SpeechRecognitionUtils()
 brain = BrainUtils()
 voice = VoiceUtils()
+eyes = FacialRecognition()
 
 
 def start_listening():
@@ -225,6 +227,7 @@ def main():
             # Do nothing if there are no schedules to take for the day
             return None
 
+        event.has_important_event = True
         while len(event.list_of_schedule_to_take) > 0:
             schedule = event.list_of_schedule_to_take.pop(0)
             patient_id = schedule.get('patient' , None)
@@ -238,10 +241,19 @@ def main():
             
             # TODO: Apply walking here using arduino
             schedule['color'] = patient.get('color' , 'RED')
-            
-            
-            
-            
+            if not algo.algo_machine_walk( event = event, eyes = eyes , voice = voice , recognizer=ear , brain = brain, arduino = None, data = schedule):
+                # Faild to walk to the patient location
+                print("Failed to walk to patient")
+                message = my_tools.SMS_NOT_TAKEN_MEDICATION_TEXT.format(
+                    patient_name = patient.get('name' , 'No name'), 
+                    schedule_time = schedule.get('set_time' , 'No time'), 
+                    pill = schedule.get('pill' , 'No pill')
+                )
+                my_tools.send_message(message , patient.get('phone_number' , None))
+                continue
+
+            # Identify the face of the user before dropping the pills
+            algo.algo_machine_drop_pills(event = event, database=database, voice = voice , brain = brain, recognizer = ear , arduino = None, eyes = eyes, data = schedule)
             
             message = my_tools.SMS_TAKEN_MEDICATION_TEXT.format(
                 patient_name = patient.get('name' , 'No name'), 
@@ -254,7 +266,8 @@ def main():
         
         
         # TODO: Apply walking here using arduino going back to its original position
-
+        
+        event.has_important_event = False
 
 
 

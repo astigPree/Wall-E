@@ -115,12 +115,11 @@ def algo_open_back_of_the_machine(
 
 def algo_machine_walk(
     event : EventHandler , 
-    voice : VoiceUtils , 
-    db : DataHandler, 
+    voice : VoiceUtils ,  
     brain : BrainUtils, 
-    recognizer : SpeechRecognitionUtils , 
-    eyes : FacialRecognition, 
+    recognizer : SpeechRecognitionUtils ,  
     arduino : ArduinoConnection,
+    eyes : FacialRecognition,
     data : dict):
     
     # 8. Senario in making the machine walk;
@@ -129,13 +128,117 @@ def algo_machine_walk(
     # - The machine will move to the position and where to go.
      
     if event.stop_proccess:
-        return
+        return False
     
-    # arduino.write("MOVE")
+    # Goto the located position based on the color
+    arduino.write(data.get('color', 'RED').encode())
+    # Check if the arduino is in the location already and timeout for 30 mins
+    start_time = time.time()
+    machine_already_in_location = False
+    while time.time() - start_time < 1800:  # 30 mins timeout
+        if event.stop_proccess:
+            return False
+        if arduino.read() == "ARRIVED":
+            machine_already_in_location = True
+            break
+        time.sleep(0.1)
+    
+    # If the arduino does not arrive in the location in 30 mins then the machine will not move
+    if not machine_already_in_location:
+        arduino.write("BACK".encode()) # Write the Arduino to go back to its original location
+        voice.speak("I'm sorry but i did not arrive in the location in 30 mins. Please try again later")
+        return False
+    
+    return True
+
+def algo_machine_drop_pills(
+    event : EventHandler , 
+    voice : VoiceUtils ,  
+    brain : BrainUtils, 
+    recognizer : SpeechRecognitionUtils ,  
+    arduino : ArduinoConnection,
+    eyes : FacialRecognition,
+    database : DataHandler,
+    data : dict):
+     
+    if event.stop_proccess:
+        return False
     
     
+    eyes.start_camera()
+    voice.speak(data.get('message', 'Please face my camera so i can see you if you are a patient'))
+    event.activate_scanning = True
+    event.open_eyes = True
+    
+    # Find extact face for 5 mins
+    start_time = time.time()
+    while time.time() - start_time < 300:  # 5 mins timeout
+        if event.stop_proccess:
+            event.activate_scanning = False
+            event.open_eyes = False
+            return False
+        frame = eyes.get_face_by_camera()
+        if frame is not None:
+            patient = database.patients.get(data.get('patient', '-1'), data.get('patient', '-1'))
+            filename = my_tools.extract_filename(patient.get('face')) 
+            if filename:
+                patient_face_path = os.path.join(database.patients_image_path, filename)
+                event.has_face_scanned = eyes.check_face_exists_in_database(face_image=frame, face_in_database=patient_face_path)
+                if event.has_face_scanned:
+                    event.detect_patient = True
+                    break
+        time.sleep(0.1)
+        
+    pill = data.get('pill', 'Biogesic')
+    # Drop the selected pills 
+    if pill == 'Biogesic':
+        voice.speak('Please wait while i dispense the Biogesic pills')
+        arduino.write("B".encode())
+    elif pill == 'Cremil S':
+        voice.speak('Please wait while i dispense the Cremil S pills')
+        arduino.write("S".encode())
+    elif pill == 'Citerizen':
+        voice.speak('Please wait while i dispense the Citerizen pills')
+        arduino.write("C".encode())
+    elif pill == 'Mefenamic':
+        voice.speak('Please wait while i dispense the Mefenamic pills')
+        arduino.write("M".encode())
+    
+    # Wait for 10 seconds to check if the pills is dispensed
+    start_time = time.time()
+    pill_has_drop = False
+    while time.time() - start_time < 10:  # 10 seconds timeout
+        if event.stop_proccess:
+            return False
+        if arduino.read() == "DROP":
+            pill_has_drop = True
+            break
+        time.sleep(0.1)
+    
+    if not pill_has_drop:
+        return False
     
     
+    # Go back the arduino and check if the 30 minutes have passed 
+    arduino.write("BACK")
+    start_time = time.time()
+    while (time.time() - start_time) < 1800:  # 30 mins timeout
+        if event.stop_proccess:
+            event.activate_scanning = False
+            event.open_eyes = False
+            event.has_face_scanned = False
+            event.detect_patient = False
+            return True
+        if arduino.read() == "ARRIVED":
+            break 
+        time.sleep(0.1)
+    
+    event.activate_scanning = False
+    event.open_eyes = False
+    event.has_face_scanned = False
+    event.detect_patient = False
+    
+    return True
     
 def algo_check_for_schedules(
     event : EventHandler , 
