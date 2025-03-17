@@ -237,7 +237,11 @@ def main():
                 continue
             
             # TODO: Apply walking here using arduino
-
+            schedule['color'] = patient.get('color' , 'RED')
+            
+            
+            
+            
             
             message = my_tools.SMS_TAKEN_MEDICATION_TEXT.format(
                 patient_name = patient.get('name' , 'No name'), 
@@ -247,6 +251,9 @@ def main():
             
             my_tools.send_message(message , patient.get('phone_number' , None))
             print("Sent message to patient")
+        
+        
+        # TODO: Apply walking here using arduino going back to its original position
 
 
 

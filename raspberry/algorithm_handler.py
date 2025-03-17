@@ -120,18 +120,20 @@ def algo_machine_walk(
     brain : BrainUtils, 
     recognizer : SpeechRecognitionUtils , 
     eyes : FacialRecognition, 
+    arduino : ArduinoConnection,
     data : dict):
     
     # 8. Senario in making the machine walk;
     # - The user will ask the machine to move.
     # - The machine will identify what position and where to go.
     # - The machine will move to the position and where to go.
-    
-    
-    speech_recognizer_maximum_retry = 10 # seconds timeout in seconds for processing speech recognition
-    brain_maximum_retry = 5 # seconds timeout in seconds for processing brain recognition
+     
     if event.stop_proccess:
         return
+    
+    # arduino.write("MOVE")
+    
+    
     
     
     
