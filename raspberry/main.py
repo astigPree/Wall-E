@@ -272,7 +272,9 @@ def main():
 
 
 if __name__ == '__main__':
+    voice.speak("Hello! I’m Well-E, your personal health care assistant, designed to transform and simplify health care management with the power of AI. From reminding you to take your medication to monitoring your body temperature, my advanced features—like facial recognition and task automation—ensure a secure, personalized, and seamless experience. Together, we’ll enhance your well-being and keep your health care journey organized and stress-free. How may I assist you today?")
     threading.Thread(target=start_listening).start() # start listening in a separate thread
+    
     try:
         while not event.close_down:
             main()

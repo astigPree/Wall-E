@@ -1,24 +1,30 @@
 #include <Servo.h>
+
 /* Include the standard Arduino SPI library */
 #include <SPI.h>
 /* Include the RFID library */
 #include <RFID.h>
 
 #include <Wire.h>
-// #include "ClosedCube_MAX30205.h"
 
-// ClosedCube_MAX30205 max30205;
 
-// Define constants
-const int lm35Pin = A1;         // LM35 sensor connected to analog pin A1
-const int NUM_READINGS = 15;    // Number of temperature readings to send
-const int DELAY_MS = 100;       // Delay between readings in milliseconds
+// #include <Adafruit_MLX90614.h>
+
+// Create an instance of the MLX90614 sensor
+// Adafruit_MLX90614 mlx = Adafruit_MLX90614();
+
+const int NUM_READINGS = 10;     // Number of samples for averaging
+const float CALIBRATION_OFFSET = 0.0; // Adjust for calibration if needed (e.g., offset to fine-tune temperature)
+
 
 
 #define biogesic 4 // servo for biogesic pill dispenser
 #define cremils 5 // servo for cremils pill dispenser
 #define citirizene 7 // servo for citirizene pill dispenser
 #define mefenamic 6 // servo for mefinamic pill dispenser
+#define pills_detector 40 // ir sensor for detecting pills drop
+bool pills_detected = false; // ir sensor boolean to check if the pilss has been detected
+uint8_t pills_detection_cycle = 3; // ir sensor how many times to try pills dropping
 
 #define lockservo 13 // locking system for pills lock
 
@@ -50,7 +56,7 @@ Servo lock;  // Create a servo object
 bool machine_is_locked = true;
  
 Servo biogesic_servo;
-Servo cremils_servo; 
+Servo cremils_servo;  
 Servo citirizene_servo; 
 Servo mefenamic_servo;
 
@@ -58,7 +64,8 @@ Servo mefenamic_servo;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  Serial.setTimeout(1);
+  // Serial.setTimeout(1);
+  Serial.println("ON Process");
 
   /* Enable the SPI interface */
   SPI.begin(); 
@@ -102,10 +109,14 @@ void setup() {
   digitalWrite(motor2pin1, LOW);
   digitalWrite(motor2pin2, LOW);
   delay(1000);
- 
-  // Temperature Setups
-  max30205.begin(0x48);
-  delay(1000);
+  
+
+  // if (!mlx.begin()) {
+  //   Serial.println("Error connecting to MLX90614. Check wiring.");
+  //   while (1); // Halt if sensor initialization fails
+  // }
+  Serial.println("MLX90614 Contactless Temperature Sensor Initialized");
+  delay(500);
   
   // Color Sensor Setup
   pinMode(S0, OUTPUT);
@@ -153,54 +164,102 @@ void loop() {
 
     if (data == "B") { 
       Serial.println("Biogesic Dropping...");
-      for (int pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
-        biogesic_servo.write(pos); // Tell servo to go to position in variable 'pos'
-        delay(5); // Wait 15 ms for the servo to reach the position
+      uint8_t pills_tries = 0;
+      while (!pills_detected && pills_tries < pills_detection_cycle){
+        for (uint8_t pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
+          biogesic_servo.write(pos); // Tell servo to go to position in variable 'pos'
+          if (digitalRead(pills_detector) == HIGH){
+            pills_detected = true;
+          }
+          delay(5); // Wait 15 ms for the servo to reach the position
+        }
+        for (uint8_t pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
+          biogesic_servo.write(pos); // Tell servo to go to position in variable 'pos'
+          if (digitalRead(pills_detector) == HIGH){
+            pills_detected = true;
+          }
+          delay(5); // Wait 15 ms for the servo to reach the position
+        }
+        if (pills_detected == LOW){
+          pills_tries = pills_tries + 1;
+        }
+
       }
-      for (int pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
-        biogesic_servo.write(pos); // Tell servo to go to position in variable 'pos'
-        delay(5); // Wait 15 ms for the servo to reach the position
+      if (pills_detected){
+        Serial.println("DROP"); 
+      } else{
+        Serial.println("EMPTY");
       }
-      Serial.println("DROP");
+      pills_detected = false;
     }
     
     if (data == "S") { 
       Serial.println("Cremils Dropping...");
-      for (int pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
-        cremils_servo.write(pos); // Tell servo to go to position in variable 'pos'
-        delay(5); // Wait 15 ms for the servo to reach the position
+      uint8_t pills_tries = 0;
+      while (!pills_detected && pills_tries < pills_detection_cycle){
+        for (uint8_t pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
+          cremils_servo.write(pos); // Tell servo to go to position in variable 'pos'
+          if (digitalRead(pills_detector) == HIGH){
+            pills_detected = true;
+          }
+          delay(5); // Wait 15 ms for the servo to reach the position
+        }
+        for (uint8_t pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
+          cremils_servo.write(pos); // Tell servo to go to position in variable 'pos'
+          if (digitalRead(pills_detector) == HIGH){
+            pills_detected = true;
+          }
+          delay(5); // Wait 15 ms for the servo to reach the position
+        }
       }
-      for (int pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
-        cremils_servo.write(pos); // Tell servo to go to position in variable 'pos'
-        delay(5); // Wait 15 ms for the servo to reach the position
+      if (pills_detected){
+        Serial.println("DROP"); 
+      } else{
+        Serial.println("EMPTY");
       }
-      Serial.println("DROP");
+      pills_detected = false;
     }
 
     if (data == "C") { 
       Serial.println("Citirizene Dropping...");
-      for (int pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
-        citirizene_servo.write(pos); // Tell servo to go to position in variable 'pos'
-        delay(5); // Wait 15 ms for the servo to reach the position
+      uint8_t pills_tries = 0;
+      while (!pills_detected && pills_tries < pills_detection_cycle){
+        for (uint8_t pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
+          citirizene_servo.write(pos); // Tell servo to go to position in variable 'pos'
+          delay(5); // Wait 15 ms for the servo to reach the position
+        }
+        for (uint8_t pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
+          citirizene_servo.write(pos); // Tell servo to go to position in variable 'pos'
+          delay(5); // Wait 15 ms for the servo to reach the position
+        }
       }
-      for (int pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
-        citirizene_servo.write(pos); // Tell servo to go to position in variable 'pos'
-        delay(5); // Wait 15 ms for the servo to reach the position
+      if (pills_detected){
+        Serial.println("DROP"); 
+      } else{
+        Serial.println("EMPTY");
       }
-      Serial.println("DROP");
+      pills_detected = false;
     }
 
     if (data == "M") { 
       Serial.println("Mefenamic Dropping...");
-      for (int pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
-        mefenamic_servo.write(pos); // Tell servo to go to position in variable 'pos'
-        delay(5); // Wait 15 ms for the servo to reach the position
+      uint8_t pills_tries = 0;
+      while (!pills_detected && pills_tries < pills_detection_cycle){
+        for (uint8_t pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
+          mefenamic_servo.write(pos); // Tell servo to go to position in variable 'pos'
+          delay(5); // Wait 15 ms for the servo to reach the position
+        }
+        for (uint8_t pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
+          mefenamic_servo.write(pos); // Tell servo to go to position in variable 'pos'
+          delay(5); // Wait 15 ms for the servo to reach the position
+        }
       }
-      for (int pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
-        mefenamic_servo.write(pos); // Tell servo to go to position in variable 'pos'
-        delay(5); // Wait 15 ms for the servo to reach the position
+      if (pills_detected){
+        Serial.println("DROP"); 
+      } else{
+        Serial.println("EMPTY");
       }
-      Serial.println("DROP");
+      pills_detected = false;
     }
 
     if (data == "RED") { 
@@ -230,27 +289,26 @@ void loop() {
     }
 
 
-    if (data == "BODYTEMP") {
-      for (int i = 0; i < NUM_READINGS; i++) {
-        // Read raw temperature data from the LM35 sensor
-        int rawValue = analogRead(lm35Pin);
+    // if (data == "BODYTEMP") { 
 
-        // Convert raw ADC value to millivolts
-        float mv = (rawValue / 1024.0) * 5000.0;  // Adjust if using an internal reference voltage
-        float celsius = mv / 10.0;                // LM35 produces 10mV/°C
-        
-        // Validate the temperature (range for human body temperatures)
-        if (celsius >= 30.0 && celsius <= 45.0) {
-          Serial.println(celsius, 2);            // Send valid temperature reading to Raspberry Pi
-        } else {
-          Serial.println("ERROR: Invalid reading"); // Send an error message for invalid readings
-        }
+    //   for (int i = 0; i < NUM_READINGS; i++) {
+    //     // Read object (target) temperature
+    //     float objectTemp = mlx.readObjectTempC() + CALIBRATION_OFFSET;
 
-        delay(DELAY_MS);                         // Delay between temperature readings
-      }
+    //     // Validate the temperature range (human body temperature range)
+    //     // if (objectTemp >= 30.0 && objectTemp <= 45.0) { 
+    //     //   // Serial.print("Valid Reading: ");
+    //     Serial.println(objectTemp, 2);
+    //       // Serial.println(" °C");
+    //     // } else {
+    //     //   // Serial.println("ERROR: Invalid reading");
+    //     // }
 
-      Serial.println("DONE");                   // Signal the end of temperature readings
-    }
+    //     delay(500); // Delay between readings
+    //   }
+    // }
+
+
 
 
 
@@ -261,7 +319,7 @@ void loop() {
 
   // Logic that don't need serial
   
-
+  // Serial.println("Happeming");
   // Opening Back and Clossing the back of the machine using rfid
   if (RC522.isCard()) {
     // Check if enough time has passed since the last action
