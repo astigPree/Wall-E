@@ -7,16 +7,40 @@ import my_tools
 
 # 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 
 
-
 import serial
+import time
 
 # Replace '/dev/ttyACM0' with your identified port
-arduino = serial.Serial('/dev/ttyACM0', baudrate=115200)
+arduino = serial.Serial('/dev/ttyACM0', baudrate=115200, timeout=1)
+time.sleep(2)  # Wait for the connection to initialize
 
-while True:
-    data = arduino.readline().decode('utf-8').strip()
-    print(f"Received: {data}")
+def send_command(command):
+    """Send a command to the Arduino over Serial."""
+    arduino.write((command + '\n').encode())  # Send the command as bytes with a newline
+    time.sleep(1)  # Give Arduino time to process and respond
+    while arduino.in_waiting > 0:  # Check if there's a response
+        response = arduino.readline().decode('utf-8').strip()
+        print(f"Arduino Response: {response}")
 
+try:
+    while True:
+        # Receive data from Arduino
+        if arduino.in_waiting > 0:  # Check if there is incoming data from Arduino
+            data = arduino.readline().decode('utf-8').strip()
+            print(f"Received from Arduino: {data}")
+
+        # Example: Send user input to Arduino
+        user_input = input("Enter a command for Arduino (or type 'exit' to quit): ")
+        if user_input.lower() == 'exit':
+            print("Closing connection. Goodbye!")
+            break
+        send_command(user_input)
+
+except KeyboardInterrupt:
+    print("Program interrupted. Closing connection.")
+
+finally:
+    arduino.close()  # Close the serial connection
 
 # import json
 # import re
