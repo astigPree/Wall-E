@@ -6,7 +6,17 @@ import asyncio
 import my_tools
 
 # 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 
-  
+
+
+import serial
+
+# Replace '/dev/ttyACM0' with your identified port
+arduino = serial.Serial('/dev/ttyACM0', baudrate=115200)
+
+while True:
+    data = arduino.readline().decode('utf-8').strip()
+    print(f"Received: {data}")
+
 
 # import json
 # import re
