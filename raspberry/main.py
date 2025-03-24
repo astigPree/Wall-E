@@ -240,17 +240,19 @@ def main():
                 continue
             
             # TODO: Apply walking here using arduino
-            schedule['color'] = patient.get('color' , 'RED')
-            if not algo.algo_machine_walk( event = event, eyes = eyes , voice = voice , recognizer=ear , brain = brain, arduino = None, data = schedule):
-                # Faild to walk to the patient location
-                print("Failed to walk to patient")
-                message = my_tools.SMS_NOT_TAKEN_MEDICATION_TEXT.format(
-                    patient_name = patient.get('name' , 'No name'), 
-                    schedule_time = schedule.get('set_time' , 'No time'), 
-                    pill = schedule.get('pill' , 'No pill')
-                )
-                my_tools.send_message(message , patient.get('phone_number' , None))
-                continue
+            voice.speak("Walking is currently not supported! Please wait for further updates")
+            # Uncomment when the waling is implemented
+            # schedule['color'] = patient.get('color' , 'RED')
+            # if not algo.algo_machine_walk( event = event, eyes = eyes , voice = voice , recognizer=ear , brain = brain, arduino = None, data = schedule):
+            #     # Faild to walk to the patient location
+            #     print("Failed to walk to patient")
+            #     message = my_tools.SMS_NOT_TAKEN_MEDICATION_TEXT.format(
+            #         patient_name = patient.get('name' , 'No name'), 
+            #         schedule_time = schedule.get('set_time' , 'No time'), 
+            #         pill = schedule.get('pill' , 'No pill')
+            #     )
+            #     my_tools.send_message(message , patient.get('phone_number' , None))
+            #     continue
 
             # Identify the face of the user before dropping the pills
             algo.algo_machine_drop_pills(event = event, database=database, voice = voice , brain = brain, recognizer = ear , arduino = None, eyes = eyes, data = schedule)

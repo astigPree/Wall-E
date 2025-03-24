@@ -170,8 +170,9 @@ def algo_machine_drop_pills(
     event.activate_scanning = True
     event.open_eyes = True
     
-    # Find extact face for 5 mins
+    # Find extact face for 5 mins 
     start_time = time.time()
+    last_speak_time = start_time  # Track the last time the reminder was spoken
     while time.time() - start_time < 300:  # 5 mins timeout
         if event.stop_proccess:
             event.activate_scanning = False
@@ -187,6 +188,12 @@ def algo_machine_drop_pills(
                 if event.has_face_scanned:
                     event.detect_patient = True
                     break
+                
+        # Speak the reminder every 60 seconds (1 minute)
+        if time.time() - last_speak_time >= 60:
+            voice.speak("Please face the camera so I can see you if you are a patient!")
+            last_speak_time = time.time()  # Update the last speak time
+            
         time.sleep(0.1)
         
     pill = data.get('pill', 'Biogesic')
@@ -207,7 +214,7 @@ def algo_machine_drop_pills(
     # Wait for 10 seconds to check if the pills is dispensed
     start_time = time.time()
     pill_has_drop = False
-    while time.time() - start_time < 10:  # 10 seconds timeout
+    while time.time() - start_time < 60:  # 10 seconds timeout
         if event.stop_proccess:
             return False
         if arduino.read() == "DROP":
