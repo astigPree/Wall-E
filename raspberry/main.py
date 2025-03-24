@@ -273,10 +273,20 @@ def main():
 
 
 
-if __name__ == '__main__':
-    voice.speak("Hello! I’m Well-E, your personal health care assistant, designed to transform and simplify health care management with the power of AI. From reminding you to take your medication to monitoring your body temperature, my advanced features—like facial recognition and task automation—ensure a secure, personalized, and seamless experience. Together, we’ll enhance your well-being and keep your health care journey organized and stress-free. How may I assist you today?")
+if __name__ == '__main__': 
+    generated_response = brain.generate_response(rules.rules_for_introduction)
+    decided_command : dict = text_to_dictionary(generated_response)
+    if not decided_command:
+        generated_response = brain.generate_cohere_response(rules.rules_for_introduction , rules.rules_for_introduction)
+        print("Generated response by cohere: ", generated_response)
+        decided_command : dict = text_to_dictionary(generated_response)
+        print("Generated response by cohere: ", decided_command)
+    if isinstance(decided_command, dict):
+        introduction = decided_command.get("message" , "Hello, I am Well-E, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?")
+    else:
+        introduction = "Hello, I am Well-E, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?"
+    voice.speak(introduction)
     threading.Thread(target=start_listening).start() # start listening in a separate thread
-    
     try:
         while not event.close_down:
             main()
