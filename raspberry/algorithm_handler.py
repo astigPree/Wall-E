@@ -179,6 +179,10 @@ def algo_machine_drop_pills(
             event.open_eyes = False
             return False
         frame = eyes.get_face_by_camera()
+        if frame:
+            print("Try To Find Face =================")
+        else:
+            print("Can't Find Face =================")
         if frame is not None:
             patient = database.patients.get(data.get('patient', '-1'), data.get('patient', '-1'))
             filename = my_tools.extract_filename(patient.get('face')) 
