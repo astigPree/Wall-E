@@ -162,105 +162,199 @@ void loop() {
 
     }
 
-    if (data == "B") { 
+  if (data == "B") {
       Serial.println("Biogesic Dropping...");
       uint8_t pills_tries = 0;
-      while (!pills_detected && pills_tries < pills_detection_cycle){
-        for (uint8_t pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
-          biogesic_servo.write(pos); // Tell servo to go to position in variable 'pos'
-          if (digitalRead(pills_detector) == HIGH){
-            pills_detected = true;
-          }
-          delay(5); // Wait 15 ms for the servo to reach the position
-        }
-        for (uint8_t pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
-          biogesic_servo.write(pos); // Tell servo to go to position in variable 'pos'
-          if (digitalRead(pills_detector) == HIGH){
-            pills_detected = true;
-          }
-          delay(5); // Wait 15 ms for the servo to reach the position
-        }
-        if (pills_detected == LOW){
-          pills_tries = pills_tries + 1;
-        }
-
-      }
-      if (pills_detected){
-        Serial.println("DROP"); 
-      } else{
-        Serial.println("EMPTY");
-      }
+      bool pills_detected2 = false;
       pills_detected = false;
-    }
+
+      while (!pills_detected && pills_tries < pills_detection_cycle) {
+          delay(300);
+
+          // Move servo from 0 to 120 degrees
+          pills_detected = moveServoWithDetection(biogesic_servo, 0, 120, 1);
+
+          // Additional scanning for falling pills
+          for (uint8_t scanning = 0; scanning < 60; scanning++) {
+              if (digitalRead(pills_detector) == LOW) {
+                  pills_detected = true;
+                  break;
+              }
+              delay(2);
+          }
+          delay(300);
+
+          // Move servo back from 120 to 0 degrees
+          pills_detected2 = moveServoWithDetection(biogesic_servo, 120, -1, -1);
+
+          // Retry logic if no pills are detected
+          if (!pills_detected && !pills_detected2) {
+              delay(1000); // Wait before retrying
+          }
+
+          pills_tries++;
+          Serial.print("Attempts: ");
+          Serial.println(pills_tries);
+          Serial.print("Pills detected: ");
+          Serial.println(pills_detected ? "YES" : "NO");
+      }
+
+      // Final result
+      if (pills_detected || pills_detected2) {
+          Serial.println("DROP");
+      } else {
+          Serial.println("EMPTY");
+      }
+
+      // Reset for next cycle
+      pills_detected = false;
+  }
+
     
-    if (data == "S") { 
-      Serial.println("Cremils Dropping...");
-      uint8_t pills_tries = 0;
-      while (!pills_detected && pills_tries < pills_detection_cycle){
-        for (uint8_t pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
-          cremils_servo.write(pos); // Tell servo to go to position in variable 'pos'
-          if (digitalRead(pills_detector) == HIGH){
-            pills_detected = true;
-          }
-          delay(5); // Wait 15 ms for the servo to reach the position
+    if (data == "S") {
+        Serial.println("Cremils Dropping...");
+        uint8_t pills_tries = 0;
+        bool pills_detected2 = false;
+        pills_detected = false;
+
+        while (!pills_detected && pills_tries < pills_detection_cycle) {
+            delay(300);
+
+            // Move servo from 0 to 180 degrees
+            pills_detected = moveServoWithDetection(cremils_servo, 0, 181, 1);
+
+            for(uint8_t scanning = 0; scanning < 60; scanning++){
+              if (digitalRead(pills_detector) == LOW) {
+                  pills_detected = true;
+                  break;
+              }
+              delay(2);
+            }
+            delay(300);
+        
+            // Move servo back from 180 to 0 degrees
+            pills_detected2 = moveServoWithDetection(cremils_servo, 180, -1, -1);
+
+            // Check pill detector
+            // pills_detected = isPillDetected(pills_detector);
+            
+            if (!pills_detected && !pills_detected2) {
+                delay(1000); // Wait before retrying
+            }
+
+            pills_tries++;
+            Serial.print("Attempts: ");
+            Serial.println(pills_tries);
+            Serial.print("Pills detected: ");
+            Serial.println(pills_detected ? "YES" : "NO");
         }
-        for (uint8_t pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
-          cremils_servo.write(pos); // Tell servo to go to position in variable 'pos'
-          if (digitalRead(pills_detector) == HIGH){
-            pills_detected = true;
-          }
-          delay(5); // Wait 15 ms for the servo to reach the position
+
+        if (pills_detected || pills_detected2) {
+            Serial.println("DROP");
+        } else {
+            Serial.println("EMPTY");
         }
-      }
-      if (pills_detected){
-        Serial.println("DROP"); 
-      } else{
-        Serial.println("EMPTY");
-      }
-      pills_detected = false;
+
+        pills_detected = false; // Reset for next cycle
     }
 
-    if (data == "C") { 
+    if (data == "C") {
       Serial.println("Citirizene Dropping...");
       uint8_t pills_tries = 0;
-      while (!pills_detected && pills_tries < pills_detection_cycle){
-        for (uint8_t pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
-          citirizene_servo.write(pos); // Tell servo to go to position in variable 'pos'
-          delay(5); // Wait 15 ms for the servo to reach the position
-        }
-        for (uint8_t pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
-          citirizene_servo.write(pos); // Tell servo to go to position in variable 'pos'
-          delay(5); // Wait 15 ms for the servo to reach the position
-        }
-      }
-      if (pills_detected){
-        Serial.println("DROP"); 
-      } else{
-        Serial.println("EMPTY");
-      }
+      bool pills_detected2 = false;
       pills_detected = false;
-    }
 
-    if (data == "M") { 
+      while (!pills_detected && pills_tries < pills_detection_cycle) {
+          delay(300);
+
+          // Move servo from 0 to 120 degrees
+          pills_detected = moveServoWithDetection(citirizene_servo, 0, 120, 1);
+
+          // Additional scanning for falling pills
+          for (uint8_t scanning = 0; scanning < 60; scanning++) {
+              if (digitalRead(pills_detector) == LOW) {
+                  pills_detected = true;
+                  break;
+              }
+              delay(2);
+          }
+          delay(300);
+
+          // Move servo back from 120 to 0 degrees
+          pills_detected2 = moveServoWithDetection(citirizene_servo, 120, -1, -1);
+
+          // Retry logic if no pills are detected
+          if (!pills_detected && !pills_detected2) {
+              delay(1000); // Wait before retrying
+          }
+
+          pills_tries++;
+          Serial.print("Attempts: ");
+          Serial.println(pills_tries);
+          Serial.print("Pills detected: ");
+          Serial.println(pills_detected ? "YES" : "NO");
+      }
+
+      // Final result
+      if (pills_detected || pills_detected2) {
+          Serial.println("DROP");
+      } else {
+          Serial.println("EMPTY");
+      }
+
+      // Reset for next cycle
+      pills_detected = false;
+  }
+
+
+  if (data == "M") {
       Serial.println("Mefenamic Dropping...");
       uint8_t pills_tries = 0;
-      while (!pills_detected && pills_tries < pills_detection_cycle){
-        for (uint8_t pos = 0; pos <= 180; pos += 1) { // Move servo from 0 to 180 degrees
-          mefenamic_servo.write(pos); // Tell servo to go to position in variable 'pos'
-          delay(5); // Wait 15 ms for the servo to reach the position
-        }
-        for (uint8_t pos = 180; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
-          mefenamic_servo.write(pos); // Tell servo to go to position in variable 'pos'
-          delay(5); // Wait 15 ms for the servo to reach the position
-        }
-      }
-      if (pills_detected){
-        Serial.println("DROP"); 
-      } else{
-        Serial.println("EMPTY");
-      }
+      bool pills_detected2 = false;
       pills_detected = false;
-    }
+
+      while (!pills_detected && pills_tries < pills_detection_cycle) {
+          delay(300);
+
+          // Move servo from 0 to 120 degrees
+          pills_detected = moveServoWithDetection(mefenamic_servo, 0, 120, 1);
+
+          // Additional scanning for falling pills
+          for (uint8_t scanning = 0; scanning < 60; scanning++) {
+              if (digitalRead(pills_detector) == LOW) {
+                  pills_detected = true;
+                  break;
+              }
+              delay(2);
+          }
+          delay(300);
+
+          // Move servo back from 120 to 0 degrees
+          pills_detected2 = moveServoWithDetection(mefenamic_servo, 120, -1, -1);
+
+          // Retry logic if no pills are detected
+          if (!pills_detected && !pills_detected2) {
+              delay(1000); // Wait before retrying
+          }
+
+          pills_tries++;
+          Serial.print("Attempts: ");
+          Serial.println(pills_tries);
+          Serial.print("Pills detected: ");
+          Serial.println(pills_detected ? "YES" : "NO");
+      }
+
+      // Final result
+      if (pills_detected || pills_detected2) {
+          Serial.println("DROP");
+      } else {
+          Serial.println("EMPTY");
+      }
+
+      // Reset for next cycle
+      pills_detected = false;
+  }
+
 
     if (data == "RED") { 
       Serial.println("Going to Red Patient...");
@@ -373,6 +467,31 @@ void loop() {
 
 
 
+
+bool moveServoWithDetection(Servo &myServo, int start, int end, int step) {
+    bool detected = false;
+    unsigned long previousMillis = 0;
+    const unsigned long servoDelay = 2; // Adjust delay for servo speed
+    int currentPos = start;
+
+    while (currentPos != end) {
+        unsigned long currentMillis = millis();
+        if (currentMillis - previousMillis >= servoDelay) {
+            previousMillis = currentMillis;
+            myServo.write(currentPos); // Move servo to the current position
+            currentPos += step;
+
+            // Check sensor state for real-time detection
+            if (digitalRead(pills_detector) == LOW) {
+                detected = true;
+                break; // Exit immediately if an object is detected
+            }
+        }
+    }
+    return detected;
+}
+
+ 
 
 // Function to read Red Pulse Widths
 int getRedPW() {
