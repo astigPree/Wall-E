@@ -234,6 +234,7 @@ def algo_machine_drop_pills(
         time.sleep(0.1)
     event.has_important_event = False
     
+    print("[!] Done checking if the pills is dispensed...")
     if not pill_has_drop:
         event.activate_scanning = False
         event.open_eyes = False
