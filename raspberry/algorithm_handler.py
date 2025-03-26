@@ -138,7 +138,7 @@ def algo_machine_walk(
     while time.time() - start_time < 1800:  # 30 mins timeout
         if event.stop_proccess:
             return False
-        if arduino.read() == "ARRIVED":
+        if "ARRIVED" in arduino.read():
             machine_already_in_location = True
             break
         time.sleep(0.1)
@@ -228,7 +228,7 @@ def algo_machine_drop_pills(
     while time.time() - start_time < 60:  # 10 seconds timeout
         if event.stop_proccess:
             return False
-        if arduino.read() == "DROP":
+        if "DROP" in arduino.read():
             pill_has_drop = True
             break
         time.sleep(0.1)
@@ -427,9 +427,9 @@ def algo_check_body_temperature(
             temp = arduino.read()  # Read data from Arduino
             if temp:
                 # Check for termination signal
-                if temp.strip().upper() == "DONE":
+                if "DONE" in temp:
                     break
-
+                # TODO: Update the temperature sensor logic here because it accept a list not a string
                 # Validate and process temperature data
                 temp = float(temp.strip())
                 if 30.0 <= temp <= 45.0:  # Validate within human body temperature range
