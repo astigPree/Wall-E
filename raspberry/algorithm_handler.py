@@ -165,7 +165,6 @@ def algo_machine_drop_pills(
         return False
     
     
-    eyes.start_camera()
     print("[!] Start Camera for pills identification...")
     voice.speak(data.get('message', 'Please face my camera so i can see you if you are a patient'))
     event.activate_scanning = True
