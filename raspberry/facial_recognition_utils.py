@@ -17,17 +17,12 @@ class FacialRecognition:
     def get_face_by_camera(self):
         try:
             if self.cap is None or not self.cap.isOpened():
-                print("Camera is not initialized.")
+                print("Camera is not initialized or failed to open.")
                 return None
 
             ret, frame = self.cap.read()
             if not ret or frame is None:
-                print("Failed to capture frame.")
-                return None
-
-            # Optional: Check frame properties
-            if not frame.any():  # Ensure it contains non-zero values
-                print("Frame is empty or invalid.")
+                print("Failed to capture frame from camera.")
                 return None
 
             return frame
@@ -35,6 +30,10 @@ class FacialRecognition:
             print(f"Error in get_face_by_camera: {e}")
             return None
 
+    def conver_frame_to_rgb(self, frame):
+        # Convert the frame to RGB format
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        return frame_rgb
 
     def close_camera(self):
         if self.cap is not None:

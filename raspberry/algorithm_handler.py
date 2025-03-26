@@ -174,29 +174,45 @@ def algo_machine_drop_pills(
     start_time = time.time()
     last_speak_time = start_time  # Track the last time the reminder was spoken
     while time.time() - start_time < 300:  # 5 mins timeout
-        if event.stop_proccess:
-            event.activate_scanning = False
-            event.open_eyes = False
-            return False
-        frame = eyes.get_face_by_camera() 
-        print("Try To Find Face =================")  
-        if frame is not None:
+        try:
+            if event.stop_proccess:
+                event.activate_scanning = False
+                event.open_eyes = False
+                return False
+
+            frame = eyes.get_face_by_camera()
+            if frame is None:
+                print("Can't Find Face =================")
+                continue
+
+            print("Try To Find Face =================")
+
+            conver_frame_to_rgb = eyes.conver_frame_to_rgb(frame)
+            # Validate and process the frame
             patient = database.patients.get(data.get('patient', '-1'), data.get('patient', '-1'))
-            filename = my_tools.extract_filename(patient.get('face')) 
+            filename = my_tools.extract_filename(patient.get('face'))
             if filename:
                 patient_face_path = os.path.join(database.patients_image_path, filename)
-                event.has_face_scanned = eyes.check_face_exists_in_database(face_image=frame, face_in_database=patient_face_path)
+                event.has_face_scanned = eyes.check_face_exists_in_database(
+                    face_image=conver_frame_to_rgb, face_in_database=patient_face_path
+                )
                 if event.has_face_scanned:
                     event.detect_patient = True
                     break
-                
-        # Speak the reminder every 60 seconds (1 minute)
-        if time.time() - last_speak_time >= 60:
-            voice.speak(f"Please take your medicine! {data.get('patient_name', 'Patient!')}")
-            last_speak_time = time.time()  # Update the last speak time
-        print("[!] Try To Find Face...")
-            
-        time.sleep(0.1)
+
+            # Speak reminders every 60 seconds
+            if time.time() - last_speak_time >= 60:
+                voice.speak(f"Please take your medicine! {data.get('patient_name', 'Patient!')}")
+                last_speak_time = time.time()
+
+            print("[!] Try To Find Face...")
+            time.sleep(0.1)
+        except Exception as e:
+            print(f"Error during face scanning: {e}")
+            event.activate_scanning = False
+            event.open_eyes = False
+            return False
+
     
     
     print("[!] Start pills dispensing...")
