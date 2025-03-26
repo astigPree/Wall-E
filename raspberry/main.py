@@ -6,6 +6,7 @@ from brain_utils import BrainUtils
 from voice_utils import VoiceUtils
 from events_handler import EventHandler
 from facial_recognition_utils import FacialRecognition
+from arduino_connection import ArduinoConnection
 import algorithm_handler as algo
 import rules
 import static_generated_txt
@@ -32,6 +33,7 @@ ear = SpeechRecognitionUtils()
 brain = BrainUtils()
 voice = VoiceUtils()
 eyes = FacialRecognition()
+arduino = ArduinoConnection()
 
 
 def start_listening():
@@ -256,7 +258,7 @@ def main():
 
             # Identify the face of the user before dropping the pills
             schedule['patient_name'] = patient.get('name' , 'Patient'),
-            algo.algo_machine_drop_pills(event = event, database=database, voice = voice , brain = brain, recognizer = ear , arduino = None, eyes = eyes, data = schedule)
+            algo.algo_machine_drop_pills(event = event, database=database, voice = voice , brain = brain, recognizer = ear , arduino = arduino, eyes = eyes, data = schedule)
             
             message = my_tools.SMS_TAKEN_MEDICATION_TEXT.format(
                 patient_name = patient.get('name' , 'No name'), 
