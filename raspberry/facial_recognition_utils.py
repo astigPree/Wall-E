@@ -21,14 +21,20 @@ class FacialRecognition:
                 return None
 
             ret, frame = self.cap.read()
-            if not ret:
+            if not ret or frame is None:
                 print("Failed to capture frame.")
+                return None
+
+            # Optional: Check frame properties
+            if not frame.any():  # Ensure it contains non-zero values
+                print("Frame is empty or invalid.")
                 return None
 
             return frame
         except Exception as e:
             print(f"Error in get_face_by_camera: {e}")
             return None
+
 
     def close_camera(self):
         if self.cap is not None:
