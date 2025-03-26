@@ -2,34 +2,41 @@ from deepface import DeepFace
 import cv2
 import os
 from PIL import Image
-# import imagehash
 
 class FacialRecognition:
-    
-    # def __init__(self , camera=0):
-    #     self.cap = cv2.VideoCapture(camera)
-    number_to_try_detection = 0 # number of tries to detect a face 
-    similarity_rate = 20 # highest rate to identify similarity face
-    cap = None
-    
-    def get_face_by_camera(self):
-        try:
-            ret, frame = self.cap.read()
-            if not ret:
-                return None
-        
-            return frame
-        except Exception as e:
-            print(e)
-            return None
-    
-    def close_camera(self):
-        self.cap.release()
-        cv2.destroyAllWindows()
-    
+    def __init__(self):
+        self.cap = None  # Instance-level variable
+
     def start_camera(self, camera=0):
         if not self.cap:
             self.cap = cv2.VideoCapture(camera)
+            if not self.cap.isOpened():
+                print(f"Failed to open camera {camera}.")
+                self.cap = None
+
+    def get_face_by_camera(self):
+        try:
+            if self.cap is None or not self.cap.isOpened():
+                print("Camera is not initialized.")
+                return None
+
+            ret, frame = self.cap.read()
+            if not ret:
+                print("Failed to capture frame.")
+                return None
+
+            return frame
+        except Exception as e:
+            print(f"Error in get_face_by_camera: {e}")
+            return None
+
+    def close_camera(self):
+        if self.cap is not None:
+            self.cap.release()
+            cv2.destroyAllWindows()
+        else:
+            print("Camera was not initialized.")
+
     
     # def check_face_exists_in_database(self, face_image , face_in_database) -> bool:
     #     # Convert the frame from BGR to RGB

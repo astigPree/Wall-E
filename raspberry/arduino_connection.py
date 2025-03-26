@@ -15,7 +15,9 @@ class ArduinoConnection:
         
         
     def read(self):
-        data = self.arduino.readline().decode('utf-8').rstrip()
+        data = self.arduino.readline()
+        if data:
+            data = data.decode('utf-8').rstrip()
         return data if data else None
     
     
