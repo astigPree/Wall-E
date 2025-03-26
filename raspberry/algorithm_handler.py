@@ -204,6 +204,7 @@ def algo_machine_drop_pills(
     
     print("[!] Start pills dispensing...")
     pill = data.get('pill', 'Biogesic')
+    print(f"[!] Drop the pills... {data.get('pill', 'Biogesic')}")
     # Drop the selected pills 
     if pill == 'Biogesic':
         voice.speak('Please wait while i dispense the Biogesic pills')
@@ -223,6 +224,7 @@ def algo_machine_drop_pills(
     # Wait for 10 seconds to check if the pills is dispensed
     start_time = time.time()
     pill_has_drop = False
+    event.has_important_event = True
     while time.time() - start_time < 60:  # 10 seconds timeout
         if event.stop_proccess:
             return False
@@ -230,6 +232,7 @@ def algo_machine_drop_pills(
             pill_has_drop = True
             break
         time.sleep(0.1)
+    event.has_important_event = False
     
     if not pill_has_drop:
         event.activate_scanning = False
