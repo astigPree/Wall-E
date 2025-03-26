@@ -13,10 +13,15 @@ class FacialRecognition:
     cap = None
     
     def get_face_by_camera(self):
-        ret, frame = self.cap.read()
-        if not ret:
+        try:
+            ret, frame = self.cap.read()
+            if not ret:
+                return None
+        
+            return frame
+        except Exception as e:
+            print(e)
             return None
-        return frame
     
     def close_camera(self):
         self.cap.release()
