@@ -166,6 +166,7 @@ def algo_machine_drop_pills(
     
     
     eyes.start_camera()
+    print("[!] Start Camera for pills identification...")
     voice.speak(data.get('message', 'Please face my camera so i can see you if you are a patient'))
     event.activate_scanning = True
     event.open_eyes = True
@@ -195,7 +196,9 @@ def algo_machine_drop_pills(
             last_speak_time = time.time()  # Update the last speak time
             
         time.sleep(0.1)
-        
+    
+    
+    print("[!] Start pills dispensing...")
     pill = data.get('pill', 'Biogesic')
     # Drop the selected pills 
     if pill == 'Biogesic':
@@ -211,6 +214,8 @@ def algo_machine_drop_pills(
         voice.speak('Please wait while i dispense the Mefenamic pills')
         arduino.write("M".encode())
     
+    
+    print("[!] Start to check if the pills is dispensed...")
     # Wait for 10 seconds to check if the pills is dispensed
     start_time = time.time()
     pill_has_drop = False
@@ -223,22 +228,26 @@ def algo_machine_drop_pills(
         time.sleep(0.1)
     
     if not pill_has_drop:
+        event.activate_scanning = False
+        event.open_eyes = False
+        event.has_face_scanned = False
+        event.detect_patient = False
         return False
     
     
     # Go back the arduino and check if the 30 minutes have passed 
-    arduino.write("BACK")
-    start_time = time.time()
-    while (time.time() - start_time) < 1800:  # 30 mins timeout
-        if event.stop_proccess:
-            event.activate_scanning = False
-            event.open_eyes = False
-            event.has_face_scanned = False
-            event.detect_patient = False
-            return True
-        if arduino.read() == "ARRIVED":
-            break 
-        time.sleep(0.1)
+    # arduino.write("BACK")
+    # start_time = time.time()
+    # while (time.time() - start_time) < 1800:  # 30 mins timeout
+    #     if event.stop_proccess:
+    #         event.activate_scanning = False
+    #         event.open_eyes = False
+    #         event.has_face_scanned = False
+    #         event.detect_patient = False
+    #         return True
+    #     if arduino.read() == "ARRIVED":
+    #         break 
+    #     time.sleep(0.1)
     
     event.activate_scanning = False
     event.open_eyes = False
