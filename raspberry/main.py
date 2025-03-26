@@ -255,6 +255,7 @@ def main():
             #     continue
 
             # Identify the face of the user before dropping the pills
+            schedule['patient_name'] = patient.get('name' , 'Patient'),
             algo.algo_machine_drop_pills(event = event, database=database, voice = voice , brain = brain, recognizer = ear , arduino = None, eyes = eyes, data = schedule)
             
             message = my_tools.SMS_TAKEN_MEDICATION_TEXT.format(

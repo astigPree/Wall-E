@@ -191,7 +191,7 @@ def algo_machine_drop_pills(
                 
         # Speak the reminder every 60 seconds (1 minute)
         if time.time() - last_speak_time >= 60:
-            voice.speak("Please face the camera so I can see you if you are a patient!")
+            voice.speak(f"Please take your medicine! {data.get("patient_name", 'Patient!')}")
             last_speak_time = time.time()  # Update the last speak time
             
         time.sleep(0.1)
