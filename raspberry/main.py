@@ -34,6 +34,7 @@ brain = BrainUtils()
 voice = VoiceUtils()
 eyes = FacialRecognition()
 arduino = ArduinoConnection()
+arduino.initialized()
 eyes.start_camera()
 
 def start_listening():
