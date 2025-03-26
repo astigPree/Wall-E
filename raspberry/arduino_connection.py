@@ -12,6 +12,7 @@ class ArduinoConnection:
     def write(self, data : str): 
         while self.arduino.in_waiting > 0:  # Check if there's a response
             _ = self.arduino.readline().decode('utf-8').strip()
+            print('Fetch : ', _)
         self.arduino.write((data + '\n').encode()) 
         time.sleep(1)
         
