@@ -197,6 +197,7 @@ def algo_machine_drop_pills(
         if time.time() - last_speak_time >= 60:
             voice.speak(f"Please take your medicine! {data.get('patient_name', 'Patient!')}")
             last_speak_time = time.time()  # Update the last speak time
+        print("[!] Try To Find Face...")
             
         time.sleep(0.1)
     
