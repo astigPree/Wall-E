@@ -8,10 +8,10 @@
 #include <Wire.h>
 
 
-// #include <Adafruit_MLX90614.h>
+#include <Adafruit_MLX90614.h>
 
 // Create an instance of the MLX90614 sensor
-// Adafruit_MLX90614 mlx = Adafruit_MLX90614();
+Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 
 const int NUM_READINGS = 10;     // Number of samples for averaging
 const float CALIBRATION_OFFSET = 0.0; // Adjust for calibration if needed (e.g., offset to fine-tune temperature)
@@ -44,12 +44,22 @@ unsigned long lastDebounceTime = 0;  // The last time the button state changed
 unsigned long debounceDelay = 5000;    // Debounce delay time in milliseconds
 
 
-// Define color sensor pins 
+// Define color sensor 1 pins ( LEFT )
 #define S0 24
 #define S1 25
 #define S2 26
 #define S3 27
 #define sensorOut 28
+
+// Define color sensor 2 pins ( RIGHT )
+#define S02 29
+#define S12 30
+#define S22 31
+#define S32 32
+#define sensorOut2 33 
+// Color thresholds
+const int tblue = 900; // Threshold for blue detection
+const int tred = 800;  // Threshold for red detection
 
 
 Servo lock;  // Create a servo object
@@ -65,6 +75,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   // Serial.setTimeout(1);
+  while (!Serial);
   Serial.println("ON Process");
 
   /* Enable the SPI interface */
@@ -110,24 +121,35 @@ void setup() {
   digitalWrite(motor2pin2, LOW);
   delay(1000);
   
-
-  // if (!mlx.begin()) {
-  //   Serial.println("Error connecting to MLX90614. Check wiring.");
-  //   while (1); // Halt if sensor initialization fails
-  // }
+  Serial.println("Connecting Temperature . . . ");
+  if (!mlx.begin()) {
+    Serial.println("Error connecting to MLX90614. Check wiring.");
+    while (1); // Halt if sensor initialization fails
+  }
+ 
   Serial.println("MLX90614 Contactless Temperature Sensor Initialized");
   delay(500);
   
-  // Color Sensor Setup
+  // Color sensor 1 setup
   pinMode(S0, OUTPUT);
   pinMode(S1, OUTPUT);
   pinMode(S2, OUTPUT);
   pinMode(S3, OUTPUT);
   pinMode(sensorOut, INPUT);
+
+  // Color sensor 2 setup
+  pinMode(S02, OUTPUT);
+  pinMode(S12, OUTPUT);
+  pinMode(S22, OUTPUT);
+  pinMode(S32, OUTPUT);
+  pinMode(sensorOut2, INPUT);
+
   // Set Pulse Width scaling to 20%
-  digitalWrite(S0,HIGH);
-  digitalWrite(S1,LOW);
-  delay(1000);
+  digitalWrite(S0, HIGH);
+  digitalWrite(S1, LOW);
+  digitalWrite(S02, HIGH);
+  digitalWrite(S12, LOW);
+  delay(500);
 
   Serial.print("Start the activity");
 }
@@ -356,55 +378,125 @@ void loop() {
   }
 
 
-    if (data == "RED") { 
-      Serial.println("Going to Red Patient...");
+    // if (data == "RED") { 
+    //   Serial.println("Going to Red Patient...");
       
-      Serial.println("ARRIVED");
-    }
+    //   Serial.println("ARRIVED");
+    // }
 
-    if (data == "BLUE") { 
-      Serial.println("Going to Blue Patient...");
-
-      
-      Serial.println("ARRIVED");
-    }
-
-    if (data == "YELLOW") { 
-      Serial.println("Going to Yellow Patient...");
+    // if (data == "BLUE") { 
+    //   Serial.println("Going to Blue Patient...");
 
       
-      Serial.println("ARRIVED");
+    //   Serial.println("ARRIVED");
+    // }
+
+    // if (data == "YELLOW") { 
+    //   Serial.println("Going to Yellow Patient...");
+
+      
+    //   Serial.println("ARRIVED");
+    // }
+
+    if ( data == "WALK"){
+      while (true) { 
+        // Read blue and red frequencies from sensor 1
+        int blue1 = readColor(S2, S3, LOW, HIGH, sensorOut); // Blue filter
+        int red1 = readColor(S2, S3, LOW, LOW, sensorOut);   // Red filter
+
+        // Read blue and red frequencies from sensor 2
+        int blue2 = readColor(S22, S32, LOW, HIGH, sensorOut2); // Blue filter
+        int red2 = readColor(S22, S32, LOW, LOW, sensorOut2);   // Red filter
+
+        // Stop logic: If red color is less than the threshold on both sensors
+        if (red1 < tred && red2 < tred) {
+          Serial.println("Motor Action: Stop (Red detected on both sensors)");
+          Serial.println("ARRIVED");
+          break
+        }else{
+          // Motor control logic based on blue detection
+          if (blue1 >= tblue && blue2 >= tblue) {
+            // Both sensors detect values greater than the blue threshold, move forward
+            Serial.println("Motor Action: Move Forward");
+          } else if (blue1 < tblue) {
+            // Sensor 1 detects blue (less than blue threshold), turn left
+            Serial.println("Motor Action: Turn Left");
+          } else if (blue2 < tblue) {
+            // Sensor 2 detects blue (less than blue threshold), turn right
+            Serial.println("Motor Action: Turn Right");
+          } else {
+            // Fallback logic if no conditions match
+            Serial.println("Motor Action: Idle or Stop");
+          }
+        }
+        delay(500); // Wait before the next reading
+
+      }
     }
+
+    if ( data == "STEP"){
+      // Use to move with out sensoring policy
+      Serial.println("Motor Action: Move Forward");
+    }
+
+
+    
 
     if (data == "BACK") { 
       Serial.println("Machine is going back to its original location");
+      while (true) { 
+        // Read blue and red frequencies from sensor 1
+        int blue1 = readColor(S2, S3, LOW, HIGH, sensorOut); // Blue filter
+        int red1 = readColor(S2, S3, LOW, LOW, sensorOut);   // Red filter
 
-      Serial.println("ARRIVED");
+        // Read blue and red frequencies from sensor 2
+        int blue2 = readColor(S22, S32, LOW, HIGH, sensorOut2); // Blue filter
+        int red2 = readColor(S22, S32, LOW, LOW, sensorOut2);   // Red filter
+
+        // Stop logic: If red color is less than the threshold on both sensors
+        if (red1 < tred && red2 < tred) {
+          Serial.println("Motor Action: Stop (Red detected on both sensors)");
+          Serial.println("ARRIVED");
+          break
+        }else{
+          // Motor control logic based on blue detection
+          if (blue1 >= tblue && blue2 >= tblue) {
+            // Both sensors detect values greater than the blue threshold, move forward
+            Serial.println("Motor Action: Move Forward");
+          } else if (blue1 < tblue) {
+            // Sensor 1 detects blue (less than blue threshold), turn left
+            Serial.println("Motor Action: Turn Left");
+          } else if (blue2 < tblue) {
+            // Sensor 2 detects blue (less than blue threshold), turn right
+            Serial.println("Motor Action: Turn Right");
+          } else {
+            // Fallback logic if no conditions match
+            Serial.println("Motor Action: Idle or Stop");
+          }
+        }
+        delay(500); // Wait before the next reading
+      }
     }
 
 
-    // if (data == "BODYTEMP") { 
+    if (data == "BODYTEMP") { 
 
-    //   for (int i = 0; i < NUM_READINGS; i++) {
-    //     // Read object (target) temperature
-    //     float objectTemp = mlx.readObjectTempC() + CALIBRATION_OFFSET;
+      for (int i = 0; i < NUM_READINGS; i++) {
+        // Read object (target) temperature
+        float objectTemp = mlx.readObjectTempC() + CALIBRATION_OFFSET;
 
-    //     // Validate the temperature range (human body temperature range)
-    //     // if (objectTemp >= 30.0 && objectTemp <= 45.0) { 
-    //     //   // Serial.print("Valid Reading: ");
-    //     Serial.println(objectTemp, 2);
-    //       // Serial.println(" °C");
-    //     // } else {
-    //     //   // Serial.println("ERROR: Invalid reading");
-    //     // }
+        // Validate the temperature range (human body temperature range)
+        // if (objectTemp >= 30.0 && objectTemp <= 45.0) { 
+        //   // Serial.print("Valid Reading: ");
+        Serial.println(objectTemp, 2);
+          // Serial.println(" °C");
+        // } else {
+        //   // Serial.println("ERROR: Invalid reading");
+        // }
 
-    //     delay(500); // Delay between readings
-    //   }
-    // }
-
-
-
-
+        delay(500); // Delay between readings
+      }
+    }
 
     delay(10);
 
@@ -465,7 +557,12 @@ void loop() {
 
 }
 
-
+// Function to read color frequency
+int readColor(int S2Pin, int S3Pin, int s2State, int s3State, int sensorPin) {
+  digitalWrite(S2Pin, s2State);
+  digitalWrite(S3Pin, s3State);
+  return pulseIn(sensorPin, LOW); // Measure the frequency for the selected color
+}
 
 
 bool moveServoWithDetection(Servo &myServo, int start, int end, int step) {
@@ -490,8 +587,6 @@ bool moveServoWithDetection(Servo &myServo, int start, int end, int step) {
     }
     return detected;
 }
-
- 
 
 // Function to read Red Pulse Widths
 int getRedPW() {
