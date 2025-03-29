@@ -189,8 +189,13 @@ def algo_machine_drop_pills(
 
             conver_frame_to_rgb = eyes.conver_frame_to_rgb(frame)
             # Validate and process the frame
-            patient = database.patients.get(data.get('patient', '-1'), data.get('patient', '-1'))
-            filename = my_tools.extract_filename(patient.get('face'))
+            patient = data.get('patient_data', None)
+            if patient is None:
+                raise ValueError("Patient data is missing or invalid.")
+            face = patient.get('face', None)
+            if face is None:
+                raise ValueError("Face data is missing or invalid.")
+            filename = my_tools.extract_filename(face)
             if filename:
                 patient_face_path = os.path.join(database.patients_image_path, filename)
                 event.has_face_scanned = eyes.check_face_exists_in_database(

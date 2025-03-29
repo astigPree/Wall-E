@@ -259,16 +259,30 @@ def main():
 
             # Identify the face of the user before dropping the pills
             schedule['patient_name'] = patient.get('name' , 'Patient'),
-            algo.algo_machine_drop_pills(event = event, database=database, voice = voice , brain = brain, recognizer = ear , arduino = arduino, eyes = eyes, data = schedule)
+            schedule['patient_data'] = patient
+            is_dropped = algo.algo_machine_drop_pills(event = event, database=database, voice = voice , brain = brain, recognizer = ear , arduino = arduino, eyes = eyes, data = schedule)
             
-            message = my_tools.SMS_TAKEN_MEDICATION_TEXT.format(
-                patient_name = patient.get('name' , 'No name'), 
-                schedule_time = schedule.get('set_time' , 'No time'), 
-                pill = schedule.get('pill' , 'No pill')
-            )
             
-            my_tools.send_message(message , patient.get('phone_number' , None))
+            if not is_dropped:
+                # Faild to drop the pills
+                print("Failed to drop the pills")
+                message = my_tools.SMS_MAYBE_TAKEN_OR_NOT_NEED_TO_VERIFY_TEXT.format(
+                    patient_name = patient.get('name' , 'No name'), 
+                    schedule_time = schedule.get('set_time' , 'No time'), 
+                    pill = schedule.get('pill' , 'No pill')
+                )
+                my_tools.send_message(message , patient.get('phone_number' , None))
+            else:
+                message = my_tools.SMS_TAKEN_MEDICATION_TEXT.format(
+                    patient_name = patient.get('name' , 'No name'), 
+                    schedule_time = schedule.get('set_time' , 'No time'), 
+                    pill = schedule.get('pill' , 'No pill')
+                )
+                
+                my_tools.send_message(message , patient.get('phone_number' , None))
             print("Sent message to patient")
+        
+        
         
         
         # TODO: Apply walking here using arduino going back to its original position
