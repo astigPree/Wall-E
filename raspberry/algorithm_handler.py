@@ -430,48 +430,31 @@ def algo_check_body_temperature(
         return
     
     voice.speak(data.get("message", "Please scan the body temperature using my machine's temperature sensor."))
-    arduino.write("BODYTEMP".encode())
+    arduino.write("BODYTEMP")
 
     # Initialize variables for collecting readings
-    temps = []
-    MAX_READINGS = 10
-    TIMEOUT = 30  # Timeout in seconds
+    temps = [] 
+    TIMEOUT = 180  # Timeout in seconds
     start_time = time.time()
-
-    while len(temps) < MAX_READINGS:
+    is_done_scanning = False
+    while not is_done_scanning:
         if event.stop_proccess:
             return
-
-        try:
-            temp = arduino.read()  # Read data from Arduino
-            if temp:
-                # Check for termination signal
-                if "DONE" in temp:
-                    break
-                # TODO: Update the temperature sensor logic here because it accept a list not a string
-                # Validate and process temperature data
-                temp = float(temp.strip())
-                if 30.0 <= temp <= 45.0:  # Validate within human body temperature range
-                    temps.append(temp)
-                    print(f"Received temperature: {temp}°C")
-                else:
-                    print(f"Warning: Unusual temperature reading: {temp}°C")
-            else:
-                print("No data received, retrying...")
-
-        except ValueError as e:
-            print(f"Invalid temperature reading: {e}")
-
-        # Handle timeout to prevent infinite loops
-        if time.time() - start_time > TIMEOUT:
-            print("Timeout: No valid readings received.")
-            voice.speak("No valid temperature readings could be collected. Please try again.")
-            return
         
-        time.sleep(1)  # Short delay between read attempts
+        if time.time() - start_time > TIMEOUT:
+            break
+        
+        response = arduino.read()
+        if "BODYTEMP" in response:
+            # Filter and convert to float
+            temps.extend([float(temp) for temp in response if temp.replace('.', '', 1).isdigit()] )
+            is_done_scanning = True
+        else:
+            temps.extend([float(temp) for temp in response if temp.replace('.', '', 1).isdigit()] )
+        time.sleep(0.1)
 
     # Ensure readings were collected
-    if not temps:
+    if len(temps) == 0:
         voice.speak("I couldn't detect any temperature data. Please ensure the sensor is working properly.")
         return
 

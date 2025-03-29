@@ -184,53 +184,53 @@ void loop() {
 
     }
 
-  if (data == "B") {
-      Serial.println("Biogesic Dropping...");
-      uint8_t pills_tries = 0;
-      bool pills_detected2 = false;
-      pills_detected = false;
+    if (data == "B") {
+        Serial.println("Biogesic Dropping...");
+        uint8_t pills_tries = 0;
+        bool pills_detected2 = false;
+        pills_detected = false;
 
-      while (!pills_detected && pills_tries < pills_detection_cycle) {
-          delay(300);
+        while (!pills_detected && pills_tries < pills_detection_cycle) {
+            delay(300);
 
-          // Move servo from 0 to 120 degrees
-          pills_detected = moveServoWithDetection(biogesic_servo, 0, 120, 1);
+            // Move servo from 0 to 120 degrees
+            pills_detected = moveServoWithDetection(biogesic_servo, 0, 120, 1);
 
-          // Additional scanning for falling pills
-          for (uint8_t scanning = 0; scanning < 60; scanning++) {
-              if (digitalRead(pills_detector) == LOW) {
-                  pills_detected = true;
-                  break;
-              }
-              delay(2);
-          }
-          delay(300);
+            // Additional scanning for falling pills
+            for (uint8_t scanning = 0; scanning < 60; scanning++) {
+                if (digitalRead(pills_detector) == LOW) {
+                    pills_detected = true;
+                    break;
+                }
+                delay(2);
+            }
+            delay(300);
 
-          // Move servo back from 120 to 0 degrees
-          pills_detected2 = moveServoWithDetection(biogesic_servo, 120, -1, -1);
+            // Move servo back from 120 to 0 degrees
+            pills_detected2 = moveServoWithDetection(biogesic_servo, 120, -1, -1);
 
-          // Retry logic if no pills are detected
-          if (!pills_detected && !pills_detected2) {
-              delay(1000); // Wait before retrying
-          }
+            // Retry logic if no pills are detected
+            if (!pills_detected && !pills_detected2) {
+                delay(1000); // Wait before retrying
+            }
 
-          pills_tries++;
-          Serial.print("Attempts: ");
-          Serial.println(pills_tries);
-          Serial.print("Pills detected: ");
-          Serial.println(pills_detected ? "YES" : "NO");
-      }
+            pills_tries++;
+            Serial.print("Attempts: ");
+            Serial.println(pills_tries);
+            Serial.print("Pills detected: ");
+            Serial.println(pills_detected ? "YES" : "NO");
+        }
 
-      // Final result
-      if (pills_detected || pills_detected2) {
-          Serial.println("DROP");
-      } else {
-          Serial.println("EMPTY");
-      }
+        // Final result
+        if (pills_detected || pills_detected2) {
+            Serial.println("DROP");
+        } else {
+            Serial.println("EMPTY");
+        }
 
-      // Reset for next cycle
-      pills_detected = false;
-  }
+        // Reset for next cycle
+        pills_detected = false;
+    }
 
     
     if (data == "S") {
@@ -326,56 +326,56 @@ void loop() {
 
       // Reset for next cycle
       pills_detected = false;
-  }
+    }
 
 
-  if (data == "M") {
-      Serial.println("Mefenamic Dropping...");
-      uint8_t pills_tries = 0;
-      bool pills_detected2 = false;
-      pills_detected = false;
+    if (data == "M") {
+        Serial.println("Mefenamic Dropping...");
+        uint8_t pills_tries = 0;
+        bool pills_detected2 = false;
+        pills_detected = false;
 
-      while (!pills_detected && pills_tries < pills_detection_cycle) {
-          delay(300);
+        while (!pills_detected && pills_tries < pills_detection_cycle) {
+            delay(300);
 
-          // Move servo from 0 to 120 degrees
-          pills_detected = moveServoWithDetection(mefenamic_servo, 0, 120, 1);
+            // Move servo from 0 to 120 degrees
+            pills_detected = moveServoWithDetection(mefenamic_servo, 0, 120, 1);
 
-          // Additional scanning for falling pills
-          for (uint8_t scanning = 0; scanning < 60; scanning++) {
-              if (digitalRead(pills_detector) == LOW) {
-                  pills_detected = true;
-                  break;
-              }
-              delay(2);
-          }
-          delay(300);
+            // Additional scanning for falling pills
+            for (uint8_t scanning = 0; scanning < 60; scanning++) {
+                if (digitalRead(pills_detector) == LOW) {
+                    pills_detected = true;
+                    break;
+                }
+                delay(2);
+            }
+            delay(300);
 
-          // Move servo back from 120 to 0 degrees
-          pills_detected2 = moveServoWithDetection(mefenamic_servo, 120, -1, -1);
+            // Move servo back from 120 to 0 degrees
+            pills_detected2 = moveServoWithDetection(mefenamic_servo, 120, -1, -1);
 
-          // Retry logic if no pills are detected
-          if (!pills_detected && !pills_detected2) {
-              delay(1000); // Wait before retrying
-          }
+            // Retry logic if no pills are detected
+            if (!pills_detected && !pills_detected2) {
+                delay(1000); // Wait before retrying
+            }
 
-          pills_tries++;
-          Serial.print("Attempts: ");
-          Serial.println(pills_tries);
-          Serial.print("Pills detected: ");
-          Serial.println(pills_detected ? "YES" : "NO");
-      }
+            pills_tries++;
+            Serial.print("Attempts: ");
+            Serial.println(pills_tries);
+            Serial.print("Pills detected: ");
+            Serial.println(pills_detected ? "YES" : "NO");
+        }
 
-      // Final result
-      if (pills_detected || pills_detected2) {
-          Serial.println("DROP");
-      } else {
-          Serial.println("EMPTY");
-      }
+        // Final result
+        if (pills_detected || pills_detected2) {
+            Serial.println("DROP");
+        } else {
+            Serial.println("EMPTY");
+        }
 
-      // Reset for next cycle
-      pills_detected = false;
-  }
+        // Reset for next cycle
+        pills_detected = false;
+    }
 
 
     // if (data == "RED") { 
@@ -496,6 +496,7 @@ void loop() {
 
         delay(500); // Delay between readings
       }
+      Serial.println("BODYTEMP")
     }
 
     delay(10);
