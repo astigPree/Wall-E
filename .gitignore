@@ -13,3 +13,6 @@ venv/
 aitextgen/
 
 .env
+
+
+raspberry/speech.mp3
