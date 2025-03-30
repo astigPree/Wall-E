@@ -22,7 +22,9 @@ import my_tools
 # 5. Enter this command to cmd : cd Desktop/Wall-E
 # 6. Enter this command to cmd : source env/bin/activate
 # 7. Enter this command to cmd : cd raspberry
-# 8. Enter this command to cmd : python main.py
+# 8. Enter this command to cmd : git pull
+# 9. Use this username "astigPree" and password "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"
+# 10. Enter this command to cmd : python main.py
 
 
 import serial
