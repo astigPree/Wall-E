@@ -5,8 +5,24 @@ import requests
 import asyncio
 import my_tools
 
-# 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 
+# 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
+# 1. Connect tru Ethernet Cable ( raspberry pi - laptop ) 
+#     Command : ssh pi@192.168.1.20
+#     Password : admin2025
+# 2. Setup raspberry pi connection to wifi device
+# 3. Remove the Ethernet Cable ( raspberry pi - laptop )
+# 4. Connect tru Wifi Network 
+#    Step :
+#          1. Scan wifi network using angry ip
+#          2. Find the raspberry pi network ip
+#          3. Connect to the raspberry pi network
+#          4. Enter this command to cmd : ssh pi@<ip-address> (ssh pi@192.168.1.79)
+#          5. Enter the password : admin2025
 
+# 5. Enter this command to cmd : cd Desktop/Wall-E
+# 6. Enter this command to cmd : source env/bin/activate
+# 7. Enter this command to cmd : cd raspberry
+# 8. Enter this command to cmd : python main.py
 
 
 import serial
