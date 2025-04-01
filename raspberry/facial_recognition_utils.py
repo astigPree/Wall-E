@@ -94,7 +94,7 @@ class FacialRecognition:
             print(f"Similarity score: {similarity}")
 
             # Set a threshold for similarity
-            if similarity > 0.8:  # Adjust threshold based on testing
+            if similarity > 0.5:  # Adjust threshold based on testing
                 print(f"Face matches with {face_in_database}")
                 return True
             else:
