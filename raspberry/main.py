@@ -11,7 +11,7 @@ import algorithm_handler as algo
 import rules
 import static_generated_txt
 import my_tools
-
+import os
 import time
 import threading
 import random 
@@ -241,7 +241,7 @@ def main():
             if patient_id is None:
                 print("Schedule has no patient_id")
                 continue
-            patient = database.patients.get(str(patient_id))
+            patient : dict = database.patients.get(str(patient_id))
             if not patient:
                 print(f"Patient {patient_id} not found in database")
                 continue
@@ -263,14 +263,96 @@ def main():
 
             # Identify the face of the user before dropping the pills
             schedule['patient_name'] = patient.get('name' , 'Patient'),
-            schedule['patient_data'] = patient
-            is_dropped = algo.algo_machine_drop_pills(
-                event = event, database=database, 
-                voice = voice , brain = brain, 
-                recognizer = ear , arduino = arduino, 
-                eyes = eyes, data = schedule,
-                # listening_thread=listening_thread
-            )
+            # schedule['patient_data'] = patient
+            # is_dropped = algo.algo_machine_drop_pills(
+            #     event = event, database=database, 
+            #     voice = voice , brain = brain, 
+            #     recognizer = ear , arduino = arduino, 
+            #     eyes = eyes, data = schedule,
+            #     # listening_thread=listening_thread
+            # )
+            
+            
+            
+            print("[!] Start Camera for pills identification...")
+            voice.speak(schedule.get('message', 'Please face my camera so i can see you if you are a patient and say "Yes" if you are ready'))
+            event.activate_scanning = True
+            event.open_eyes = True
+            
+            timeout = 180  # Timeout duration in seconds (3 minutes)
+            start_time = time.time()
+            while event.is_recording or len(event.user_commands) < 1:
+                time.sleep(0.5)
+                if event.stop_proccess:
+                    return False
+                # Check if the timeout has been exceeded
+                if time.time() - start_time > timeout:
+                    print("3 minutes have passed, returning default response: {}")
+                    voice.speak(schedule.get('message', 'I think you are not ready to receive the medication. Please try again later'))
+                    return False  # Automatically return {} if timeout is exceeded
+                print("Waiting for event to be recorded or user commands to be added")
+                if "yes" in event.user_commands:
+                    print("User confirmed, starting identification process...")
+                    if listening_thread is not None:
+                        event.down_recording = True
+                        listening_thread.join()
+                        listening_thread = None
+                        print("Down recording")
+                    else:
+                        print("No listening thread found, skipping identification process...")
+                    break
+            
+     
+            voice.speak(schedule.get('message', 'Please face my camera so i can see you if you are a patient'))
+            # Find extact face for 5 mins 
+            start_time = time.time()
+            last_speak_time = start_time  # Track the last time the reminder was spoken
+            while time.time() - start_time < 300:  # 5 mins timeout
+                try:
+                    if event.stop_proccess:
+                        event.activate_scanning = False
+                        event.open_eyes = False
+                        return False
+
+                    frame = eyes.get_face_by_camera()
+                    if frame is None:
+                        print("Can't Find Face =================")
+                        continue
+
+                    print("Try To Find Face =================")
+                    conver_frame_to_rgb = frame
+                    # conver_frame_to_rgb = eyes.conver_frame_to_rgb(frame)
+                    # Validate and process the frame
+                    # patient : dict = schedule.get('patient_data', None)
+                    if patient is None:
+                        raise ValueError("Patient data is missing or invalid.")
+                    face = patient.get('face', None)
+                    if face is None:
+                        raise ValueError("Face data is missing or invalid.")
+                    filename = my_tools.extract_filename(face)
+                    if filename:
+                        patient_face_path = os.path.join(database.patients_image_path, filename)
+                        event.has_face_scanned = eyes.check_face_exists_in_database(
+                            face_image=conver_frame_to_rgb, face_in_database=patient_face_path
+                        )
+                        if event.has_face_scanned:
+                            event.detect_patient = True
+                            break
+
+                    # Speak reminders every 60 seconds
+                    if time.time() - last_speak_time >= 60:
+                        voice.speak(f"Please take your medicine! {schedule.get('patient_name', 'Patient!')}")
+                        last_speak_time = time.time()
+
+                    print("[!] Try To Find Face...")
+                    time.sleep(0.1)
+                except Exception as e:
+                    print(f"Error during face scanning: {e}")
+                    event.activate_scanning = False
+                    event.open_eyes = False
+                    return False
+
+    
             
             
             # if not is_dropped:
