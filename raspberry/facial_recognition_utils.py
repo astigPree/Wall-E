@@ -60,50 +60,88 @@ class FacialRecognition:
 
     def resize_image(self, image):
         return cv2.resize(image, (128, 128)) 
-            
-        
-    def check_face_exists_in_database(self, face_image, face_in_database) -> bool:
-        try:
-            # Validate if the database image exists
-            if not os.path.exists(face_in_database):
-                print(f"Database image {face_in_database} does not exist.")
-                return False
+    
+    
+    
+    def check_face_exists_in_database(face_image, face_in_database):
+        # Convert both images to grayscale
+        face_image = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
+        face_database = cv2.imread(face_in_database, cv2.IMREAD_GRAYSCALE)
 
-            # Load the images
-            face_image_rgb = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
-            face_database = cv2.imread(face_in_database, cv2.IMREAD_GRAYSCALE)
+        # Resize images for consistency
+        face_image = cv2.resize(face_image, (128, 128))
+        face_database = cv2.resize(face_database, (128, 128))
 
-            if face_database is None:
-                print(f"Failed to load database image: {face_in_database}")
-                return False
+        # Initialize ORB detector
+        orb = cv2.ORB_create()
 
-            # Resize both images to the same size for comparison
-            face_image_rgb = cv2.resize(face_image_rgb, (128, 128))
-            face_database = cv2.resize(face_database, (128, 128))
+        # Detect keypoints and descriptors
+        kp1, des1 = orb.detectAndCompute(face_image, None)
+        kp2, des2 = orb.detectAndCompute(face_database, None)
 
-            # Compute histograms
-            hist1 = cv2.calcHist([face_image_rgb], [0], None, [256], [0, 256])
-            hist2 = cv2.calcHist([face_database], [0], None, [256], [0, 256])
-
-            # Normalize histograms
-            hist1 = cv2.normalize(hist1, hist1).flatten()
-            hist2 = cv2.normalize(hist2, hist2).flatten()
-
-            # Compare histograms using correlation
-            similarity = cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL)
-            print(f"Similarity score: {similarity}")
-
-            # Set a threshold for similarity
-            if similarity > 0.5:  # Adjust threshold based on testing
-                print(f"Face matches with {face_in_database}")
-                return True
-            else:
-                print(f"Face does not match with {face_in_database}")
-                return False
-
-        except Exception as e:
-            print(f"An error occurred during comparison: {e}")
+        if des1 is None or des2 is None:
+            print("No keypoints found in one or both images.")
             return False
+
+        # Match descriptors using Brute Force Matcher
+        bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+        matches = bf.match(des1, des2)
+        matches = sorted(matches, key=lambda x: x.distance)
+        print(f"Number of matches: {len(matches)}")
+        # Return the number of matches as a similarity score
+        return len(matches) > 30
+
+    # # Example usage
+    # similarity_score = compare_faces_with_orb(conver_frame_to_rgb, patient_face_path)
+    # print(f"ORB similarity score: {similarity_score}")
+    # if similarity_score > 50:  # Adjust threshold based on testing
+    #     print("Faces are similar!")
+    # else:
+    #     print("Faces are not similar.")
+
+        
+    # def check_face_exists_in_database(self, face_image, face_in_database) -> bool:
+    #     try:
+    #         # Validate if the database image exists
+    #         if not os.path.exists(face_in_database):
+    #             print(f"Database image {face_in_database} does not exist.")
+    #             return False
+
+    #         # Load the images
+    #         face_image_rgb = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
+    #         face_database = cv2.imread(face_in_database, cv2.IMREAD_GRAYSCALE)
+
+    #         if face_database is None:
+    #             print(f"Failed to load database image: {face_in_database}")
+    #             return False
+
+    #         # Resize both images to the same size for comparison
+    #         face_image_rgb = cv2.resize(face_image_rgb, (128, 128))
+    #         face_database = cv2.resize(face_database, (128, 128))
+
+    #         # Compute histograms
+    #         hist1 = cv2.calcHist([face_image_rgb], [0], None, [256], [0, 256])
+    #         hist2 = cv2.calcHist([face_database], [0], None, [256], [0, 256])
+
+    #         # Normalize histograms
+    #         hist1 = cv2.normalize(hist1, hist1).flatten()
+    #         hist2 = cv2.normalize(hist2, hist2).flatten()
+
+    #         # Compare histograms using correlation
+    #         similarity = cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL)
+    #         print(f"Similarity score: {similarity}")
+
+    #         # Set a threshold for similarity
+    #         if similarity > 0.5:  # Adjust threshold based on testing
+    #             print(f"Face matches with {face_in_database}")
+    #             return True
+    #         else:
+    #             print(f"Face does not match with {face_in_database}")
+    #             return False
+
+    #     except Exception as e:
+    #         print(f"An error occurred during comparison: {e}")
+    #         return False
     
     # def check_face_exists_in_database(self, face_image , face_in_database) -> bool:
     #     # Convert the frame from BGR to RGB
