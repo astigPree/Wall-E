@@ -1,7 +1,8 @@
-from deepface import DeepFace
+# from deepface import DeepFace
 import cv2
 import os
-from PIL import Image
+# from PIL import Image
+# import imagehash
 
 class FacialRecognition:
     def __init__(self):
@@ -42,26 +43,67 @@ class FacialRecognition:
         else:
             print("Camera was not initialized.")
 
-    def check_face_exists_in_database(self, face_image, face_in_database) -> bool: 
-        if not os.path.exists(face_in_database):
-            print(f"Database image {face_in_database} does not exist.")
-            return False
+    # def check_face_exists_in_database(self, face_image, face_in_database) -> bool: 
+    #     if not os.path.exists(face_in_database):
+    #         print(f"Database image {face_in_database} does not exist.")
+    #         return False
 
-        try:
-            # Log inputs for debugging
-            print(f"Checking face against database: {face_in_database}")
-            result = DeepFace.verify(face_image, face_in_database, enforce_detection=False)
-            print(f"DeepFace result: {result}")
-            return result['verified']
-        except Exception as e:
-            print(f"An error occurred during comparison: {e}")
-            return False
+    #     try:
+    #         # Log inputs for debugging
+    #         print(f"Checking face against database: {face_in_database}")
+    #         result = DeepFace.verify(face_image, face_in_database, enforce_detection=False)
+    #         print(f"DeepFace result: {result}")
+    #         return result['verified']
+    #     except Exception as e:
+    #         print(f"An error occurred during comparison: {e}")
+    #         return False
 
     def resize_image(self, image):
         return cv2.resize(image, (128, 128)) 
             
         
-    
+    def check_face_exists_in_database(self, face_image, face_in_database) -> bool:
+        try:
+            # Validate if the database image exists
+            if not os.path.exists(face_in_database):
+                print(f"Database image {face_in_database} does not exist.")
+                return False
+
+            # Load the images
+            face_image_rgb = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
+            face_database = cv2.imread(face_in_database, cv2.IMREAD_GRAYSCALE)
+
+            if face_database is None:
+                print(f"Failed to load database image: {face_in_database}")
+                return False
+
+            # Resize both images to the same size for comparison
+            face_image_rgb = cv2.resize(face_image_rgb, (128, 128))
+            face_database = cv2.resize(face_database, (128, 128))
+
+            # Compute histograms
+            hist1 = cv2.calcHist([face_image_rgb], [0], None, [256], [0, 256])
+            hist2 = cv2.calcHist([face_database], [0], None, [256], [0, 256])
+
+            # Normalize histograms
+            hist1 = cv2.normalize(hist1, hist1).flatten()
+            hist2 = cv2.normalize(hist2, hist2).flatten()
+
+            # Compare histograms using correlation
+            similarity = cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL)
+            print(f"Similarity score: {similarity}")
+
+            # Set a threshold for similarity
+            if similarity > 0.8:  # Adjust threshold based on testing
+                print(f"Face matches with {face_in_database}")
+                return True
+            else:
+                print(f"Face does not match with {face_in_database}")
+                return False
+
+        except Exception as e:
+            print(f"An error occurred during comparison: {e}")
+            return False
     
     # def check_face_exists_in_database(self, face_image , face_in_database) -> bool:
     #     # Convert the frame from BGR to RGB
@@ -82,21 +124,21 @@ class FacialRecognition:
     #         return False
             
 
-    def check_face_exists_in_frame(face_image) -> str:
-        try:
-            # Check if there is a face
-            faces = DeepFace.extract_faces(img_path=None, img=face_image, enforce_detection=False)
-            if len(faces) == 0:
-                print("No faces detected.")
-                return 'empty'
-            if len(faces) > 1:
-                print("Multiple faces detected. Please ensure only one face is present.")
-                return 'multiple'
-            else:
-                return 'face'
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return 'error'
+    # def check_face_exists_in_frame(face_image) -> str:
+    #     try:
+    #         # Check if there is a face
+    #         faces = DeepFace.extract_faces(img_path=None, img=face_image, enforce_detection=False)
+    #         if len(faces) == 0:
+    #             print("No faces detected.")
+    #             return 'empty'
+    #         if len(faces) > 1:
+    #             print("Multiple faces detected. Please ensure only one face is present.")
+    #             return 'multiple'
+    #         else:
+    #             return 'face'
+    #     except Exception as e:
+    #         print(f"An error occurred: {e}")
+    #         return 'error'
 
     
     def save_face_to_database(self, face_image, face_name):
