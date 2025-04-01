@@ -300,7 +300,9 @@ def main():
                         print("Down recording")
                     else:
                         print("No listening thread found, skipping identification process...")
+                    time.sleep(0.5)
                     break
+                    
             
      
             voice.speak(schedule.get('message', 'Please face my camera so i can see you if you are a patient'))
