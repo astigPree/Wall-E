@@ -37,12 +37,14 @@ arduino = ArduinoConnection()
 arduino.initialized()
 eyes.start_camera()
 
+listening_thread : threading.Thread = None
+
 def start_listening():
     global ear  
     global voice
     global event
     try: 
-        while not event.close_down:
+        while not event.close_down and not event.down_recording:
             if not voice.is_playing:
                 print("Waiting for voice command...")
                 event.is_recording = True
@@ -64,6 +66,7 @@ def start_listening():
 
 def main():
     global event 
+    global listening_thread
     if len(event.user_commands) > 0 and not event.has_important_event:
         # print("Starting to analyze the commands...")
         
@@ -260,7 +263,13 @@ def main():
             # Identify the face of the user before dropping the pills
             schedule['patient_name'] = patient.get('name' , 'Patient'),
             schedule['patient_data'] = patient
-            is_dropped = algo.algo_machine_drop_pills(event = event, database=database, voice = voice , brain = brain, recognizer = ear , arduino = arduino, eyes = eyes, data = schedule)
+            is_dropped = algo.algo_machine_drop_pills(
+                event = event, database=database, 
+                voice = voice , brain = brain, 
+                recognizer = ear , arduino = arduino, 
+                eyes = eyes, data = schedule,
+                listening_thread=listening_thread
+            )
             
             
             # if not is_dropped:
@@ -287,6 +296,7 @@ def main():
         
         # TODO: Apply walking here using arduino going back to its original position
         
+        listening_thread = threading.Thread(target=start_listening).start() # start listening in a separate thread
         event.has_important_event = False
 
 
@@ -304,7 +314,7 @@ if __name__ == '__main__':
     # else:
     #     introduction = "Hello, I am Well-E, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?"
     # voice.speak(introduction)
-    threading.Thread(target=start_listening).start() # start listening in a separate thread
+    listening_thread = threading.Thread(target=start_listening).start() # start listening in a separate thread
     try:
         while not event.close_down:
             main()

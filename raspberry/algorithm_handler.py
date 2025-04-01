@@ -9,6 +9,7 @@ import time
 from rules import *
 import my_tools
 import os
+import threading
 
 SCANNING_FACIAL_RECOGNITION_TIMEOUT = 50 # seconds timeout in seconds for processing face recognition  
 COMPARING_FACIAL_RECOGNITION_TIMEOUT = 2 # number of tries to compare the face recognition
@@ -160,17 +161,42 @@ def algo_machine_drop_pills(
     arduino : ArduinoConnection,
     eyes : FacialRecognition,
     database : DataHandler,
-    data : dict):
+    data : dict,
+    listening_thread : threading.Thread
+    ):
      
     if event.stop_proccess:
         return False
     
     
     print("[!] Start Camera for pills identification...")
-    voice.speak(data.get('message', 'Please face my camera so i can see you if you are a patient'))
+    voice.speak(data.get('message', 'Please face my camera so i can see you if you are a patient and say "Yes" if you are ready'))
     event.activate_scanning = True
     event.open_eyes = True
     
+    timeout = 180  # Timeout duration in seconds (3 minutes)
+    start_time = time.time()
+    while event.is_recording or len(event.user_commands) < 1:
+        time.sleep(0.5)
+        if event.stop_proccess:
+            return False
+        # Check if the timeout has been exceeded
+        if time.time() - start_time > timeout:
+            print("3 minutes have passed, returning default response: {}")
+            voice.speak(data.get('message', 'I think you are not ready to receive the medication. Please try again later'))
+            return False  # Automatically return {} if timeout is exceeded
+        print("Waiting for event to be recorded or user commands to be added")
+        if "yes" in event.user_commands:
+            print("User confirmed, starting identification process...")
+            if listening_thread is not None:
+                event.down_recording = True
+                listening_thread.join()
+                listening_thread = None
+            break
+            
+    
+    
+    voice.speak(data.get('message', 'Please face my camera so i can see you if you are a patient'))
     # Find extact face for 5 mins 
     start_time = time.time()
     last_speak_time = start_time  # Track the last time the reminder was spoken
