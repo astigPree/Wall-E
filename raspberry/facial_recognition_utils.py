@@ -57,7 +57,7 @@ class FacialRecognition:
             print(f"An error occurred during comparison: {e}")
             return False
 
-    def resize_image(image):
+    def resize_image(self, image):
         return cv2.resize(image, (128, 128)) 
             
         
