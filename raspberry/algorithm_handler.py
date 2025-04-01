@@ -162,8 +162,9 @@ def algo_machine_drop_pills(
     eyes : FacialRecognition,
     database : DataHandler,
     data : dict,
-    listening_thread : threading.Thread
+    # listening_thread : threading.Thread
     ):
+    global listening_thread
      
     if event.stop_proccess:
         return False

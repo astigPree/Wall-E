@@ -268,7 +268,7 @@ def main():
                 voice = voice , brain = brain, 
                 recognizer = ear , arduino = arduino, 
                 eyes = eyes, data = schedule,
-                listening_thread=listening_thread
+                # listening_thread=listening_thread
             )
             
             
