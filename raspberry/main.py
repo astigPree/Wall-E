@@ -68,6 +68,10 @@ def start_listening():
 def main():
     global event 
     global listening_thread
+    if listening_thread is None:
+        listening_thread = threading.Thread(target=start_listening)
+        listening_thread.start()
+        
     if len(event.user_commands) > 0 and not event.has_important_event:
         # print("Starting to analyze the commands...")
         
@@ -381,7 +385,8 @@ def main():
         
         # TODO: Apply walking here using arduino going back to its original position
         
-        listening_thread = threading.Thread(target=start_listening).start() # start listening in a separate thread
+        listening_thread = threading.Thread(target=start_listening)
+        listening_thread.start() # start listening in a separate thread
         event.has_important_event = False
 
 
@@ -399,7 +404,7 @@ if __name__ == '__main__':
     # else:
     #     introduction = "Hello, I am Well-E, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?"
     # voice.speak(introduction)
-    listening_thread = threading.Thread(target=start_listening).start() # start listening in a separate thread
+    # listening_thread = threading.Thread(target=start_listening).start() # start listening in a separate thread
     try:
         while not event.close_down:
             main()
