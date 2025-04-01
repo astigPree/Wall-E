@@ -89,7 +89,7 @@ class FacialRecognition:
         matches = sorted(matches, key=lambda x: x.distance)
         print(f"Number of matches: {len(matches)}")
         # Return the number of matches as a similarity score
-        return len(matches) > 50
+        return len(matches) > 60
 
     # # Example usage
     # similarity_score = compare_faces_with_orb(conver_frame_to_rgb, patient_face_path)
