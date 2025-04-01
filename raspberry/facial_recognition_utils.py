@@ -42,6 +42,26 @@ class FacialRecognition:
         else:
             print("Camera was not initialized.")
 
+    def check_face_exists_in_database(self, face_image, face_in_database) -> bool: 
+        if not os.path.exists(face_in_database):
+            print(f"Database image {face_in_database} does not exist.")
+            return False
+
+        try:
+            # Log inputs for debugging
+            print(f"Checking face against database: {face_in_database}")
+            result = DeepFace.verify(face_image, face_in_database, enforce_detection=False)
+            print(f"DeepFace result: {result}")
+            return result['verified']
+        except Exception as e:
+            print(f"An error occurred during comparison: {e}")
+            return False
+
+    def resize_image(image):
+        return cv2.resize(image, (128, 128)) 
+            
+        
+    
     
     # def check_face_exists_in_database(self, face_image , face_in_database) -> bool:
     #     # Convert the frame from BGR to RGB
@@ -61,19 +81,6 @@ class FacialRecognition:
     #     else:
     #         return False
             
-    def check_face_exists_in_database(self, face_image , face_in_database) -> bool:
-        try:
-            # Compare the captured face with the saved image
-            result = DeepFace.verify(face_image, face_in_database, enforce_detection=False) 
-            if result['verified']:
-                print(f"Face matches with {face_in_database}")
-                return True
-            else:
-                print(f"Face does not match with {face_in_database}")
-                return False
-        except Exception as e:
-            print(f"An error occurred during comparison: {e}")
-            return False
 
     def check_face_exists_in_frame(face_image) -> str:
         try:

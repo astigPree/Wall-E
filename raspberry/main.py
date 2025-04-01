@@ -326,6 +326,9 @@ def main():
                         continue
 
                     print("Try To Find Face =================")
+                    # Resize the frame immediately after capturing it
+                    frame = eyes.resize_image(frame)
+                    
                     conver_frame_to_rgb = frame
                     # conver_frame_to_rgb = eyes.conver_frame_to_rgb(frame)
                     # Validate and process the frame
@@ -333,14 +336,20 @@ def main():
                     if patient is None:
                         raise ValueError("Patient data is missing or invalid.")
                     face = patient.get('face', None)
+                    print("Check Face =================")
                     if face is None:
                         raise ValueError("Face data is missing or invalid.")
                     filename = my_tools.extract_filename(face)
+                    print(f"Face image file: {filename}")
                     if filename:
                         patient_face_path = os.path.join(database.patients_image_path, filename)
-                        event.has_face_scanned = eyes.check_face_exists_in_database(
-                            face_image=conver_frame_to_rgb, face_in_database=patient_face_path
-                        )
+                        try:
+                            event.has_face_scanned = eyes.check_face_exists_in_database(
+                                face_image=conver_frame_to_rgb, face_in_database=patient_face_path
+                            )
+                        except Exception as e:
+                            print(f"Error during face scanning: {e}")
+                        print(f"Has face scanned: {event.has_face_scanned}")
                         if event.has_face_scanned:
                             event.detect_patient = True
                             break
@@ -357,7 +366,7 @@ def main():
                     event.activate_scanning = False
                     event.open_eyes = False
                     return False
-
+                
     
             
             
@@ -379,14 +388,16 @@ def main():
                 
             #     my_tools.send_message(message , patient.get('phone_number' , None))
             print("Sent message to patient")
-        
+            
+            time.sleep(0.5)
+            listening_thread = threading.Thread(target=start_listening)
+            listening_thread.start() # start listening in a separate thread
+            
         
         
         
         # TODO: Apply walking here using arduino going back to its original position
         
-        listening_thread = threading.Thread(target=start_listening)
-        listening_thread.start() # start listening in a separate thread
         event.has_important_event = False
 
 
