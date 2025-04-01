@@ -268,14 +268,7 @@ def main():
             # Identify the face of the user before dropping the pills
             schedule['patient_name'] = patient.get('name' , 'Patient'),
             # schedule['patient_data'] = patient
-            # is_dropped = algo.algo_machine_drop_pills(
-            #     event = event, database=database, 
-            #     voice = voice , brain = brain, 
-            #     recognizer = ear , arduino = arduino, 
-            #     eyes = eyes, data = schedule,
-            #     # listening_thread=listening_thread
-            # )
-            
+
             
             
             print("[!] Start Camera for pills identification...")
@@ -311,6 +304,7 @@ def main():
      
             voice.speak(schedule.get('message', 'Please face my camera so i can see you if you are a patient'))
             # Find extact face for 5 mins 
+            
             start_time = time.time()
             last_speak_time = start_time  # Track the last time the reminder was spoken
             while time.time() - start_time < 300:  # 5 mins timeout
@@ -364,9 +358,21 @@ def main():
                     print(f"Error during face scanning: {e}")
                     event.activate_scanning = False
                     event.open_eyes = False
-                    return False
                 
-    
+
+            if not event.has_face_scanned:
+                print("Failed to find face after 5 minutes")
+                voice.speak(schedule.get('message', 'I think you are not ready to receive the medication. Please try again later'))
+                continue
+            
+            # TODO: Implement the machine drop pills here using arduino
+            is_dropped = algo.algo_machine_drop_pills(
+                event = event, database=database, 
+                voice = voice , brain = brain, 
+                recognizer = ear , arduino = arduino, 
+                eyes = eyes, data = schedule, 
+            )
+            
             
             
             # if not is_dropped:
