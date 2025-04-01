@@ -63,7 +63,7 @@ class FacialRecognition:
     
     
     
-    def check_face_exists_in_database(face_image, face_in_database):
+    def check_face_exists_in_database(self, face_image, face_in_database):
         # Convert both images to grayscale
         face_image = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
         face_database = cv2.imread(face_in_database, cv2.IMREAD_GRAYSCALE)
