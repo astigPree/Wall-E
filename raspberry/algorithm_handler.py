@@ -8,6 +8,7 @@ from arduino_connection import ArduinoConnection
 import time
 from rules import *
 import my_tools
+import os
 
 SCANNING_FACIAL_RECOGNITION_TIMEOUT = 50 # seconds timeout in seconds for processing face recognition  
 COMPARING_FACIAL_RECOGNITION_TIMEOUT = 2 # number of tries to compare the face recognition
