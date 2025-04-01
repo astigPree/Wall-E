@@ -192,6 +192,9 @@ def algo_machine_drop_pills(
                 event.down_recording = True
                 listening_thread.join()
                 listening_thread = None
+                print("Down recording")
+            else:
+                print("No listening thread found, skipping identification process...")
             break
             
     
