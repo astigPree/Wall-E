@@ -326,8 +326,7 @@ def main():
                         continue
 
                     print("Try To Find Face =================")
-                    # Resize the frame immediately after capturing it
-                    frame = eyes.resize_image(frame)
+                    # Resize the frame immediately after capturing it 
                     
                     conver_frame_to_rgb = frame
                     # conver_frame_to_rgb = eyes.conver_frame_to_rgb(frame)
