@@ -187,8 +187,8 @@ def algo_machine_drop_pills(
                 continue
 
             print("Try To Find Face =================")
-
-            conver_frame_to_rgb = eyes.conver_frame_to_rgb(frame)
+            conver_frame_to_rgb = frame
+            # conver_frame_to_rgb = eyes.conver_frame_to_rgb(frame)
             # Validate and process the frame
             patient = data.get('patient_data', None)
             if patient is None:

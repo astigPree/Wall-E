@@ -30,10 +30,10 @@ class FacialRecognition:
             print(f"Error in get_face_by_camera: {e}")
             return None
 
-    def conver_frame_to_rgb(self, frame):
-        # Convert the frame to RGB format
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        return frame_rgb
+    # def conver_frame_to_rgb(self, frame):
+    #     # Convert the frame to RGB format
+    #     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    #     return frame_rgb
 
     def close_camera(self):
         if self.cap is not None:
