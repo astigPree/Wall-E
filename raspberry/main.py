@@ -298,9 +298,9 @@ def main():
                 if "yes" in event.user_commands:
                     print("User confirmed, starting identification process...")
                     if listening_thread is not None:
-                        event.down_recording = True
-                        listening_thread.join()
-                        listening_thread = None
+                        # event.down_recording = True
+                        # listening_thread.join()
+                        # listening_thread = None
                         print("Down recording")
                     else:
                         print("No listening thread found, skipping identification process...")
@@ -389,8 +389,8 @@ def main():
             print("Sent message to patient")
             event.user_commands = []
             time.sleep(0.5)
-            listening_thread = threading.Thread(target=start_listening)
-            listening_thread.start() # start listening in a separate thread
+            # listening_thread = threading.Thread(target=start_listening)
+            # listening_thread.start() # start listening in a separate thread
             
         
         
