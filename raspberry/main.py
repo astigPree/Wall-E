@@ -62,6 +62,7 @@ def start_listening():
         print(f"Error: {e}")
         event.close_down = True
         time.sleep(1)
+    print("================ End of listening thread =================")
         
 
 def main():
