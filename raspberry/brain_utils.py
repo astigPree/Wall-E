@@ -9,8 +9,7 @@ g4f.debug.logging = True
 g4f.debug.version_check = False
 
 import time 
-import asyncio
-
+import asyncio 
 
 class BrainUtils:
     
@@ -78,9 +77,13 @@ class BrainUtils:
                 print(f"Error: {e}")
                 return None
 
-        # Run the asynchronous generator and capture its result
-        generated = asyncio.run(main_generator())
-        return generated
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            # Schedule the coroutine and wait for the result
+            return loop.run_until_complete(main_generator())
+        else:
+            return asyncio.run(main_generator())
+
 
 
 

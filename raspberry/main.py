@@ -387,7 +387,7 @@ def main():
                 
             #     my_tools.send_message(message , patient.get('phone_number' , None))
             print("Sent message to patient")
-            
+            event.user_commands = []
             time.sleep(0.5)
             listening_thread = threading.Thread(target=start_listening)
             listening_thread.start() # start listening in a separate thread
