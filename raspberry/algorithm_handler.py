@@ -133,7 +133,7 @@ def algo_machine_walk(
         return False
     
     # Goto the located position based on the color
-    arduino.write(data.get('color', 'RED').encode())
+    arduino.write("WALK")
     # Check if the arduino is in the location already and timeout for 30 mins
     start_time = time.time()
     machine_already_in_location = False
@@ -145,13 +145,7 @@ def algo_machine_walk(
             break
         time.sleep(0.1)
     
-    # If the arduino does not arrive in the location in 30 mins then the machine will not move
-    if not machine_already_in_location:
-        arduino.write("BACK".encode()) # Write the Arduino to go back to its original location
-        voice.speak("I'm sorry but i did not arrive in the location in 30 mins. Please try again later")
-        return False
-    
-    return True
+    return machine_already_in_location
 
 def algo_machine_drop_pills(
     event : EventHandler , 
@@ -168,88 +162,6 @@ def algo_machine_drop_pills(
      
     if event.stop_proccess:
         return False
-    
-    
-    # print("[!] Start Camera for pills identification...")
-    # voice.speak(data.get('message', 'Please face my camera so i can see you if you are a patient and say "Yes" if you are ready'))
-    # event.activate_scanning = True
-    # event.open_eyes = True
-    
-    # timeout = 180  # Timeout duration in seconds (3 minutes)
-    # start_time = time.time()
-    # while event.is_recording or len(event.user_commands) < 1:
-    #     time.sleep(0.5)
-    #     if event.stop_proccess:
-    #         return False
-    #     # Check if the timeout has been exceeded
-    #     if time.time() - start_time > timeout:
-    #         print("3 minutes have passed, returning default response: {}")
-    #         voice.speak(data.get('message', 'I think you are not ready to receive the medication. Please try again later'))
-    #         return False  # Automatically return {} if timeout is exceeded
-    #     print("Waiting for event to be recorded or user commands to be added")
-    #     if "yes" in event.user_commands:
-    #         print("User confirmed, starting identification process...")
-    #         if listening_thread is not None:
-    #             event.down_recording = True
-    #             listening_thread.join()
-    #             listening_thread = None
-    #             print("Down recording")
-    #         else:
-    #             print("No listening thread found, skipping identification process...")
-    #         break
-            
-    
-    
-    # voice.speak(data.get('message', 'Please face my camera so i can see you if you are a patient'))
-    # # Find extact face for 5 mins 
-    # start_time = time.time()
-    # last_speak_time = start_time  # Track the last time the reminder was spoken
-    # while time.time() - start_time < 300:  # 5 mins timeout
-    #     try:
-    #         if event.stop_proccess:
-    #             event.activate_scanning = False
-    #             event.open_eyes = False
-    #             return False
-
-    #         frame = eyes.get_face_by_camera()
-    #         if frame is None:
-    #             print("Can't Find Face =================")
-    #             continue
-
-    #         print("Try To Find Face =================")
-    #         conver_frame_to_rgb = frame
-    #         # conver_frame_to_rgb = eyes.conver_frame_to_rgb(frame)
-    #         # Validate and process the frame
-    #         patient = data.get('patient_data', None)
-    #         if patient is None:
-    #             raise ValueError("Patient data is missing or invalid.")
-    #         face = patient.get('face', None)
-    #         if face is None:
-    #             raise ValueError("Face data is missing or invalid.")
-    #         filename = my_tools.extract_filename(face)
-    #         if filename:
-    #             patient_face_path = os.path.join(database.patients_image_path, filename)
-    #             event.has_face_scanned = eyes.check_face_exists_in_database(
-    #                 face_image=conver_frame_to_rgb, face_in_database=patient_face_path
-    #             )
-    #             if event.has_face_scanned:
-    #                 event.detect_patient = True
-    #                 break
-
-    #         # Speak reminders every 60 seconds
-    #         if time.time() - last_speak_time >= 60:
-    #             voice.speak(f"Please take your medicine! {data.get('patient_name', 'Patient!')}")
-    #             last_speak_time = time.time()
-
-    #         print("[!] Try To Find Face...")
-    #         time.sleep(0.1)
-    #     except Exception as e:
-    #         print(f"Error during face scanning: {e}")
-    #         event.activate_scanning = False
-    #         event.open_eyes = False
-    #         return False
-
-    
     
     print("[!] Start pills dispensing...")
     pill = data.get('pill', 'Biogesic')
@@ -292,20 +204,6 @@ def algo_machine_drop_pills(
         event.detect_patient = False
         return False
     
-    
-    # Go back the arduino and check if the 30 minutes have passed 
-    # arduino.write("BACK")
-    # start_time = time.time()
-    # while (time.time() - start_time) < 1800:  # 30 mins timeout
-    #     if event.stop_proccess:
-    #         event.activate_scanning = False
-    #         event.open_eyes = False
-    #         event.has_face_scanned = False
-    #         event.detect_patient = False
-    #         return True
-    #     if arduino.read() == "ARRIVED":
-    #         break 
-    #     time.sleep(0.1)
     
     event.activate_scanning = False
     event.open_eyes = False
@@ -609,6 +507,7 @@ def algo_close_the_back_of_the_machine(
     voice : VoiceUtils ,  
     brain : BrainUtils, 
     recognizer : SpeechRecognitionUtils ,  
+    arduino : ArduinoConnection,
     data : dict,
     user_command : str
     ):
@@ -619,6 +518,19 @@ def algo_close_the_back_of_the_machine(
     voice.speak(data.get("message", "Wait, I will slowly close the pills drawers."))
     
     # TODO: Create a logic that connect arduino and close the back of the machine
+    arduino.write("LOCK")
+    time_start = time.time()
+    while time.time() - time_start < 10:
+        if event.stop_proccess:
+            return
+        if "LOCK" in arduino.read():
+            break
+        time.sleep(0.1)
+    
+
+
+        
+
     
     return
 

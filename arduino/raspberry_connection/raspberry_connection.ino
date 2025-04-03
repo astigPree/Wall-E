@@ -29,11 +29,6 @@ uint8_t pills_detection_cycle = 3; // ir sensor how many times to try pills drop
 #define lockservo 13 // locking system for pills lock
 
 
-#define motor1pin1 30 // MOTOR A - 1 RIGHT 
-#define motor1pin2 32 // MOTOR A - 2 RIGHT
-#define motor2pin1 34 // MOTOR B - 1 LEFT
-#define motor2pin2 36 // MOTOR B - 2 LEFT
-
 /* Create an instance of the RFID library */
 #define SDA_DIO 9
 #define RESET_DIO 8
@@ -58,9 +53,19 @@ unsigned long debounceDelay = 5000;    // Debounce delay time in milliseconds
 #define S32 32
 #define sensorOut2 33 
 // Color thresholds
-const int tblue = 900; // Threshold for blue detection
-const int tred = 800;  // Threshold for red detection
+const int tblue = 400; // Threshold for blue detection
+const int tred = 400;  // Threshold for red detection
 
+
+#define RWhell 36
+#define RDirection 37
+#define LWhell 38
+#define LDirection 39
+
+bool walking_with_blue_sensor = false;
+bool walking_with_with_out_sensor = false;
+unsigned long last_step_time = 0;
+const unsigned long step_interval = 5000; // 1 second in milliseconds
 
 Servo lock;  // Create a servo object
 bool machine_is_locked = true;
@@ -109,17 +114,6 @@ void setup() {
   mefenamic_servo.write(0);
   delay(2000);
 
-  // Motor Setups
-  pinMode(motor1pin1, OUTPUT);
-  pinMode(motor1pin2, OUTPUT);
-  digitalWrite(motor1pin1,  LOW);
-  digitalWrite(motor1pin2, LOW);
-  
-  pinMode(motor2pin1,  OUTPUT);
-  pinMode(motor2pin2, OUTPUT);
-  digitalWrite(motor2pin1, LOW);
-  digitalWrite(motor2pin2, LOW);
-  delay(1000);
   
   Serial.println("Connecting Temperature . . . ");
   if (!mlx.begin()) {
@@ -130,31 +124,122 @@ void setup() {
   Serial.println("MLX90614 Contactless Temperature Sensor Initialized");
   delay(500);
   
-  // Color sensor 1 setup
+  // Set sensor pins as outputs
   pinMode(S0, OUTPUT);
   pinMode(S1, OUTPUT);
   pinMode(S2, OUTPUT);
   pinMode(S3, OUTPUT);
-  pinMode(sensorOut, INPUT);
 
-  // Color sensor 2 setup
   pinMode(S02, OUTPUT);
   pinMode(S12, OUTPUT);
   pinMode(S22, OUTPUT);
   pinMode(S32, OUTPUT);
-  pinMode(sensorOut2, INPUT);
 
-  // Set Pulse Width scaling to 20%
+  // Set sensor frequency scaling
   digitalWrite(S0, HIGH);
   digitalWrite(S1, LOW);
   digitalWrite(S02, HIGH);
   digitalWrite(S12, LOW);
+
+  // Set sensorOut pins as input
+  pinMode(sensorOut, INPUT);
+  pinMode(sensorOut2, INPUT);
   delay(500);
+
+  // Setup Nema Motor
+  pinMode( RWhell, OUTPUT );
+  pinMode( RDirection, OUTPUT);
+  pinMode( LWhell, OUTPUT );
+  pinMode( LWhell, OUTPUT);
+  delay(2000);
+
+  digitalWrite(RDirection,HIGH);
+  digitalWrite(LDirection,HIGH);
 
   Serial.print("Start the activity");
 }
 
 void loop() { 
+
+  if (walking_with_blue_sensor) {
+    // Read blue and red frequencies from sensor 1
+    int blue1 = readColor(S2, S3, LOW, HIGH, sensorOut); // Blue filter
+    int red1 = readColor(S2, S3, LOW, LOW, sensorOut);   // Red filter
+
+    // Read blue and red frequencies from sensor 2
+    int blue2 = readColor(S22, S32, LOW, HIGH, sensorOut2); // Blue filter
+    int red2 = readColor(S22, S32, LOW, LOW, sensorOut2);   // Red filter
+    // Serial.print("Red 1 : ");
+    // Serial.println(red1);
+    // Serial.print("Red 2 : ");
+    // Serial.println(red2);
+    // delayMicroseconds(250);
+    // Stop logic: If red color is less than the threshold on both sensors
+    if (red1 < tred && red2 < tred) {
+      // Serial.println("Motor Action: Stop (Red detected on both sensors)");
+      stopMotors(); // Stop when red is detected
+      Serial.println("ARRIVED");
+      walking_with_blue_sensor = false; 
+      return;
+    } else{
+      // Motor control logic based on blue detection
+      if (blue1 >= tblue && blue2 >= tblue) {
+        // Both sensors detect values greater than the blue threshold, move forward
+        moveForward();
+        Serial.println("Motor Action: Move Forward");
+      } else if (blue1 < tblue) {
+        // Sensor 1 detects blue (less than blue threshold), turn left
+        turnLeft();
+        Serial.println("Motor Action: Turn Left");
+      } else if (blue2 < tblue) {
+        // Sensor 2 detects blue (less than blue threshold), turn right
+        turnRight(); // Turn right if blue2 is below threshold
+        Serial.println("Motor Action: Turn Right");
+      } else {
+        // Fallback logic if no conditions match
+        stopMotors(); // Fallback if no conditions match
+        Serial.println("Motor Action: Idle or Stop");
+      }
+    }
+    return;
+  }
+
+  if (walking_with_with_out_sensor) {
+    unsigned long current_time = millis();
+    if (current_time - last_step_time >= step_interval) {
+      last_step_time = current_time;
+      // Read blue and red frequencies from sensor 1
+      int blue1 = readColor(S2, S3, LOW, HIGH, sensorOut); // Blue filter
+      int red1 = readColor(S2, S3, LOW, LOW, sensorOut);   // Red filter
+
+      // Read blue and red frequencies from sensor 2
+      int blue2 = readColor(S22, S32, LOW, HIGH, sensorOut2); // Blue filter
+      int red2 = readColor(S22, S32, LOW, LOW, sensorOut2);   // Red filter
+
+      if (blue1 >= tblue && blue2 >= tblue) {
+        // Both sensors detect values greater than the blue threshold, move forward
+        moveForward();
+        Serial.println("Motor Action: Move Forward");
+      } else if (blue1 < tblue) {
+        // Sensor 1 detects blue (less than blue threshold), turn left
+        turnLeft();
+        Serial.println("Motor Action: Turn Left");
+      } else if (blue2 < tblue) {
+        // Sensor 2 detects blue (less than blue threshold), turn right
+        turnRight(); // Turn right if blue2 is below threshold
+        Serial.println("Motor Action: Turn Right");
+      } else {
+        // Fallback logic if no conditions match
+        stopMotors(); // Fallback if no conditions match
+        Serial.println("Motor Action: Idle or Stop");
+      }
+    } else {
+      Serial.println("Motor Action: Idle or Stop");
+      stopMotors();
+      walking_with_with_out_sensor = false;
+    }
+    return;
+  }
 
   // Check if there is any incoming data from the serial port
   if (Serial.available() > 0) {
@@ -171,6 +256,7 @@ void loop() {
       machine_is_locked = true;
       Serial.println("Locking The Back Of The Machine ..."); 
       lockTheBackOfTheMachine();
+      Serial.println("LOCK");
     }
 
     if (data == "UNLOCK"){
@@ -194,10 +280,10 @@ void loop() {
             delay(300);
 
             // Move servo from 0 to 120 degrees
-            pills_detected = moveServoWithDetection(biogesic_servo, 0, 120, 1);
+            pills_detected = moveServoWithDetection(biogesic_servo, 0, 151, 1);
 
             // Additional scanning for falling pills
-            for (uint8_t scanning = 0; scanning < 60; scanning++) {
+            for (uint8_t scanning = 0; scanning < 100; scanning++) {
                 if (digitalRead(pills_detector) == LOW) {
                     pills_detected = true;
                     break;
@@ -207,7 +293,7 @@ void loop() {
             delay(300);
 
             // Move servo back from 120 to 0 degrees
-            pills_detected2 = moveServoWithDetection(biogesic_servo, 120, -1, -1);
+            pills_detected2 = moveServoWithDetection(biogesic_servo, 150, -1, -1);
 
             // Retry logic if no pills are detected
             if (!pills_detected && !pills_detected2) {
@@ -245,7 +331,7 @@ void loop() {
             // Move servo from 0 to 180 degrees
             pills_detected = moveServoWithDetection(cremils_servo, 0, 181, 1);
 
-            for(uint8_t scanning = 0; scanning < 60; scanning++){
+            for(uint8_t scanning = 0; scanning < 100; scanning++){
               if (digitalRead(pills_detector) == LOW) {
                   pills_detected = true;
                   break;
@@ -290,10 +376,10 @@ void loop() {
           delay(300);
 
           // Move servo from 0 to 120 degrees
-          pills_detected = moveServoWithDetection(citirizene_servo, 0, 120, 1);
+          pills_detected = moveServoWithDetection(citirizene_servo, 0, 121, 1);
 
           // Additional scanning for falling pills
-          for (uint8_t scanning = 0; scanning < 60; scanning++) {
+          for (uint8_t scanning = 0; scanning < 100; scanning++) {
               if (digitalRead(pills_detector) == LOW) {
                   pills_detected = true;
                   break;
@@ -339,10 +425,10 @@ void loop() {
             delay(300);
 
             // Move servo from 0 to 120 degrees
-            pills_detected = moveServoWithDetection(mefenamic_servo, 0, 120, 1);
+            pills_detected = moveServoWithDetection(mefenamic_servo, 0, 181, 1);
 
             // Additional scanning for falling pills
-            for (uint8_t scanning = 0; scanning < 60; scanning++) {
+            for (uint8_t scanning = 0; scanning < 100; scanning++) {
                 if (digitalRead(pills_detector) == LOW) {
                     pills_detected = true;
                     break;
@@ -352,7 +438,7 @@ void loop() {
             delay(300);
 
             // Move servo back from 120 to 0 degrees
-            pills_detected2 = moveServoWithDetection(mefenamic_servo, 120, -1, -1);
+            pills_detected2 = moveServoWithDetection(mefenamic_servo, 180, -1, -1);
 
             // Retry logic if no pills are detected
             if (!pills_detected && !pills_detected2) {
@@ -378,104 +464,23 @@ void loop() {
     }
 
 
-    // if (data == "RED") { 
-    //   Serial.println("Going to Red Patient...");
-      
-    //   Serial.println("ARRIVED");
-    // }
-
-    // if (data == "BLUE") { 
-    //   Serial.println("Going to Blue Patient...");
-
-      
-    //   Serial.println("ARRIVED");
-    // }
-
-    // if (data == "YELLOW") { 
-    //   Serial.println("Going to Yellow Patient...");
-
-      
-    //   Serial.println("ARRIVED");
-    // }
-
     if ( data == "WALK"){
-      while (true) { 
-        // Read blue and red frequencies from sensor 1
-        int blue1 = readColor(S2, S3, LOW, HIGH, sensorOut); // Blue filter
-        int red1 = readColor(S2, S3, LOW, LOW, sensorOut);   // Red filter
-
-        // Read blue and red frequencies from sensor 2
-        int blue2 = readColor(S22, S32, LOW, HIGH, sensorOut2); // Blue filter
-        int red2 = readColor(S22, S32, LOW, LOW, sensorOut2);   // Red filter
-
-        // Stop logic: If red color is less than the threshold on both sensors
-        if (red1 < tred && red2 < tred) {
-          Serial.println("Motor Action: Stop (Red detected on both sensors)");
-          Serial.println("ARRIVED");
-          break
-        }else{
-          // Motor control logic based on blue detection
-          if (blue1 >= tblue && blue2 >= tblue) {
-            // Both sensors detect values greater than the blue threshold, move forward
-            Serial.println("Motor Action: Move Forward");
-          } else if (blue1 < tblue) {
-            // Sensor 1 detects blue (less than blue threshold), turn left
-            Serial.println("Motor Action: Turn Left");
-          } else if (blue2 < tblue) {
-            // Sensor 2 detects blue (less than blue threshold), turn right
-            Serial.println("Motor Action: Turn Right");
-          } else {
-            // Fallback logic if no conditions match
-            Serial.println("Motor Action: Idle or Stop");
-          }
-        }
-        delay(500); // Wait before the next reading
-
-      }
+      walking_with_blue_sensor = true;
+      return;
     }
 
     if ( data == "STEP"){
       // Use to move with out sensoring policy
-      Serial.println("Motor Action: Move Forward");
+      walking_with_with_out_sensor = true;
+      return;
     }
-
-
-    
+ 
 
     if (data == "BACK") { 
       Serial.println("Machine is going back to its original location");
-      while (true) { 
-        // Read blue and red frequencies from sensor 1
-        int blue1 = readColor(S2, S3, LOW, HIGH, sensorOut); // Blue filter
-        int red1 = readColor(S2, S3, LOW, LOW, sensorOut);   // Red filter
-
-        // Read blue and red frequencies from sensor 2
-        int blue2 = readColor(S22, S32, LOW, HIGH, sensorOut2); // Blue filter
-        int red2 = readColor(S22, S32, LOW, LOW, sensorOut2);   // Red filter
-
-        // Stop logic: If red color is less than the threshold on both sensors
-        if (red1 < tred && red2 < tred) {
-          Serial.println("Motor Action: Stop (Red detected on both sensors)");
-          Serial.println("ARRIVED");
-          break
-        }else{
-          // Motor control logic based on blue detection
-          if (blue1 >= tblue && blue2 >= tblue) {
-            // Both sensors detect values greater than the blue threshold, move forward
-            Serial.println("Motor Action: Move Forward");
-          } else if (blue1 < tblue) {
-            // Sensor 1 detects blue (less than blue threshold), turn left
-            Serial.println("Motor Action: Turn Left");
-          } else if (blue2 < tblue) {
-            // Sensor 2 detects blue (less than blue threshold), turn right
-            Serial.println("Motor Action: Turn Right");
-          } else {
-            // Fallback logic if no conditions match
-            Serial.println("Motor Action: Idle or Stop");
-          }
-        }
-        delay(500); // Wait before the next reading
-      }
+      walking_with_blue_sensor = true;
+      walking_with_with_out_sensor = false;
+      return;
     }
 
 
@@ -496,7 +501,7 @@ void loop() {
 
         delay(500); // Delay between readings
       }
-      Serial.println("BODYTEMP")
+      Serial.println("BODYTEMP");
     }
 
     delay(10);
@@ -562,7 +567,9 @@ void loop() {
 int readColor(int S2Pin, int S3Pin, int s2State, int s3State, int sensorPin) {
   digitalWrite(S2Pin, s2State);
   digitalWrite(S3Pin, s3State);
-  return pulseIn(sensorPin, LOW); // Measure the frequency for the selected color
+  // return pulseIn(sensorPin, LOW); // Measure the frequency for the selected color
+  return pulseIn(sensorPin, LOW, 100000); // 100ms timeout
+
 }
 
 
@@ -656,39 +663,40 @@ void lockTheBackOfTheMachine(){
   }
 }
 
-void moveForward(){
-  digitalWrite(motor1pin1,  HIGH);
-  digitalWrite(motor1pin2, LOW);
-
-  digitalWrite(motor2pin1, HIGH);
-  digitalWrite(motor2pin2, LOW); 
+void moveForward() {
+    digitalWrite(RDirection, HIGH); // Forward direction for right motor
+    digitalWrite(LDirection, HIGH); // Forward direction for left motor
+    digitalWrite(RWhell, HIGH);
+    digitalWrite(LWhell, HIGH);
+    delayMicroseconds(250); // Smooth stepping
+    digitalWrite(RWhell, LOW);
+    digitalWrite(LWhell, LOW);
+    delayMicroseconds(250);
 }
 
-void moveBackWard(){
-  digitalWrite(motor1pin1,  LOW);
-  digitalWrite(motor1pin2, HIGH);
-  digitalWrite(motor2pin1, LOW);
-  digitalWrite(motor2pin2, HIGH);  
+void turnLeft() {
+    digitalWrite(RDirection, HIGH); // Right motor forward
+    digitalWrite(LDirection, LOW);  // Left motor reverse
+    digitalWrite(RWhell, HIGH);
+    digitalWrite(LWhell, HIGH);
+    delayMicroseconds(250);
+    digitalWrite(RWhell, LOW);
+    digitalWrite(LWhell, LOW);
+    delayMicroseconds(250);
 }
 
-void moveRightForward(){
-  digitalWrite(motor1pin1,  HIGH);
-  digitalWrite(motor1pin2, LOW); 
+void turnRight() {
+    digitalWrite(RDirection, LOW);  // Right motor reverse
+    digitalWrite(LDirection, HIGH); // Left motor forward
+    digitalWrite(RWhell, HIGH);
+    digitalWrite(LWhell, HIGH);
+    delayMicroseconds(250);
+    digitalWrite(RWhell, LOW);
+    digitalWrite(LWhell, LOW);
+    delayMicroseconds(250);
 }
 
-void moveLeftForward(){
-  digitalWrite(motor2pin1, HIGH);
-  digitalWrite(motor2pin2, LOW);  
-} 
-
-void moveRightBackWard(){ 
-  digitalWrite(motor1pin1,  LOW);
-  digitalWrite(motor1pin2, HIGH); 
+void stopMotors() {
+    digitalWrite(RWhell, LOW);
+    digitalWrite(LWhell, LOW);
 }
-
-void moveLeftBackWard(){
-  digitalWrite(motor2pin1,  LOW);
-  digitalWrite(motor2pin2, HIGH);  
-}
-
-

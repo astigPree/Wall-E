@@ -100,9 +100,9 @@ Here is your prior conversation history:
 
 rules_for_temperature = """
 Based on this temperature which is {{temp1}} Celsius and {{temp2}} Fahrenheit,
-Tell the user how cold or hot and also if it alarming or not. Because you are scanning the temperature of the patient.
+Tell the user how cold or hot and also if it alarming or not. Because you are scanning the temperature of the patient and you are a machine designed for healthcare.
 
-Return a response in programming python dictionary format like this: {{ 'message' : your response here }}
+Return a response in programming python dictionary format like this: {{ 'message' : <your response here> }}
 
 """
 

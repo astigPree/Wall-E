@@ -77,16 +77,22 @@ def main():
         
         user_overall_commands = " ~ ".join(event.user_commands)
         # print("Applying commands : ", user_overall_commands)
-        generated_response = brain.generate_response(rules.rule_for_identifiying_command % user_overall_commands)
-        print("Generated response by gpt4free: ", generated_response)
+        # generated_response = brain.generate_response(rules.rule_for_identifiying_command % user_overall_commands)
+        # print("Generated response by gpt4free: ", generated_response)
+        # decided_command : dict = text_to_dictionary(generated_response)
+        # print("Generated response by gpt4free: ", decided_command)
+        # if not decided_command:
+        generated_response = brain.generate_cohere_response(user_overall_commands , rules.rule_for_identifiying_command % user_overall_commands)
+        print("Generated response by cohere: ", generated_response)
         decided_command : dict = text_to_dictionary(generated_response)
-        print("Generated response by gpt4free: ", decided_command)
+        print("Generated response by cohere: ", decided_command)
+        
+        print("Decided command : ", decided_command)
         if not decided_command:
-            generated_response = brain.generate_cohere_response(user_overall_commands , rules.rule_for_identifiying_command % user_overall_commands)
-            print("Generated response by cohere: ", generated_response)
-            decided_command : dict = text_to_dictionary(generated_response)
-            print("Generated response by cohere: ", decided_command)
-            
+            voice.speak(random.choice(static_generated_txt.list_of_not_recognized_commands_text))
+            event.user_commands = []
+            return
+        
             
         if decided_command.get('action') == "2" or decided_command.get('action') == 2:
             # TODO: Simulate talking to the user based on it question
@@ -100,12 +106,7 @@ def main():
                 user_command=user_overall_commands
             )
         
-        print("Decided command : ", decided_command)
-        if not decided_command:
-            voice.speak(random.choice(static_generated_txt.list_of_not_recognized_commands_text))
-            event.user_commands = []
-            return
-        
+
         if decided_command.get('action') == "1" or decided_command.get('action') == 1:
             # TODO: Simulate the checking of body temperature
             print("Checking body temperature")
@@ -128,6 +129,7 @@ def main():
                 voice=voice, 
                 brain=brain,
                 recognizer=ear,
+                arduino=arduino,
                 data=decided_command,
                 user_command=user_overall_commands
             )
@@ -253,24 +255,30 @@ def main():
             # TODO: Apply walking here using arduino
             voice.speak("Walking is currently not supported! Please wait for further updates")
             # Uncomment when the waling is implemented
-            # schedule['color'] = patient.get('color' , 'RED')
-            # if not algo.algo_machine_walk( event = event, eyes = eyes , voice = voice , recognizer=ear , brain = brain, arduino = None, data = schedule):
-            #     # Faild to walk to the patient location
-            #     print("Failed to walk to patient")
-            #     message = my_tools.SMS_NOT_TAKEN_MEDICATION_TEXT.format(
-            #         patient_name = patient.get('name' , 'No name'), 
-            #         schedule_time = schedule.get('set_time' , 'No time'), 
-            #         pill = schedule.get('pill' , 'No pill')
-            #     )
-            #     my_tools.send_message(message , patient.get('phone_number' , None))
-            #     continue
+            schedule['color'] = patient.get('color' , 'RED')
+            has_reached = algo.algo_machine_walk( 
+                event = event, eyes = eyes , 
+                voice = voice , 
+                recognizer=ear , brain = brain, 
+                arduino = None, data = schedule
+            )
+            
+            
+            if not has_reached:
+                # Faild to walk to the patient location
+                print("Failed to walk to patient")
+                message = my_tools.SMS_NOT_TAKEN_MEDICATION_TEXT.format(
+                    patient_name = patient.get('name' , 'No name'), 
+                    schedule_time = schedule.get('set_time' , 'No time'), 
+                    pill = schedule.get('pill' , 'No pill')
+                )
+                my_tools.send_message(message , patient.get('phone_number' , None))
+                continue
 
             # Identify the face of the user before dropping the pills
             schedule['patient_name'] = patient.get('name' , 'Patient'),
             # schedule['patient_data'] = patient
 
-            
-            
             print("[!] Start Camera for pills identification...")
             voice.speak(schedule.get('message', 'Please face my camera so i can see you if you are a patient and say "Yes" if you are ready'))
             event.activate_scanning = True
@@ -288,7 +296,12 @@ def main():
                     voice.speak(schedule.get('message', 'I think you are not ready to receive the medication. Please try again later'))
                     return False  # Automatically return {} if timeout is exceeded
                 print("Waiting for event to be recorded or user commands to be added")
-                if "yes" in event.user_commands:
+                it_has_yes = False
+                for command in event.user_commands:
+                    if "yes" in command.lower():
+                        it_has_yes = True
+                        break
+                if it_has_yes:
                     print("User confirmed, starting identification process...")
                     if listening_thread is not None:
                         # event.down_recording = True
@@ -375,23 +388,23 @@ def main():
             
             
             
-            # if not is_dropped:
-            #     # Faild to drop the pills
-            #     print("Failed to drop the pills")
-            #     message = my_tools.SMS_MAYBE_TAKEN_OR_NOT_NEED_TO_VERIFY_TEXT.format(
-            #         patient_name = patient.get('name' , 'No name'), 
-            #         schedule_time = schedule.get('set_time' , 'No time'), 
-            #         pill = schedule.get('pill' , 'No pill')
-            #     )
-            #     my_tools.send_message(message , patient.get('phone_number' , None))
-            # else:
-            #     message = my_tools.SMS_TAKEN_MEDICATION_TEXT.format(
-            #         patient_name = patient.get('name' , 'No name'), 
-            #         schedule_time = schedule.get('set_time' , 'No time'), 
-            #         pill = schedule.get('pill' , 'No pill')
-            #     )
-                
-            #     my_tools.send_message(message , patient.get('phone_number' , None))
+            if not is_dropped:
+                # Faild to drop the pills
+                print("Failed to drop the pills")
+                message = my_tools.SMS_MAYBE_TAKEN_OR_NOT_NEED_TO_VERIFY_TEXT.format(
+                    patient_name = patient.get('name' , 'No name'), 
+                    schedule_time = schedule.get('set_time' , 'No time'), 
+                    pill = schedule.get('pill' , 'No pill')
+                )
+                my_tools.send_message(message , patient.get('phone_number' , None))
+            else:
+                message = my_tools.SMS_TAKEN_MEDICATION_TEXT.format(
+                    patient_name = patient.get('name' , 'No name'), 
+                    schedule_time = schedule.get('set_time' , 'No time'), 
+                    pill = schedule.get('pill' , 'No pill')
+                )
+                my_tools.send_message(message , patient.get('phone_number' , None))
+
             print("Sent message to patient")
             event.user_commands = []
             time.sleep(0.5)
@@ -402,25 +415,30 @@ def main():
         
         
         # TODO: Apply walking here using arduino going back to its original position
+        arduino.write("BACK")
+        start_time = time.time()
+        while time.time() - start_time < 300:
+            if "ARRIVED" in arduino.read():
+                break
+            if event.stop_proccess:
+                break
+            time.sleep(0.1)
         
         event.has_important_event = False
 
 
 
 if __name__ == '__main__': 
-    # generated_response = brain.generate_response(rules.rules_for_introduction)
-    # decided_command : dict = text_to_dictionary(generated_response)
-    # if not decided_command:
-    #     generated_response = brain.generate_cohere_response(rules.rules_for_introduction , rules.rules_for_introduction)
-    #     print("Generated response by cohere: ", generated_response)
-    #     decided_command : dict = text_to_dictionary(generated_response)
-    #     print("Generated response by cohere: ", decided_command)
-    # if isinstance(decided_command, dict):
-    #     introduction = decided_command.get("message" , "Hello, I am Well-E, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?")
-    # else:
-    #     introduction = "Hello, I am Well-E, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?"
-    # voice.speak(introduction)
-    # listening_thread = threading.Thread(target=start_listening).start() # start listening in a separate thread
+    generated_response = brain.generate_cohere_response(rules.rules_for_introduction , rules.rules_for_introduction)
+    print("Generated response by cohere: ", generated_response)
+    decided_command : dict = text_to_dictionary(generated_response)
+    print("Generated response by cohere: ", decided_command)
+    if isinstance(decided_command, dict):
+        introduction = decided_command.get("message" , "Hello, I am Well-E, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?")
+    else:
+        introduction = "Hello, I am Well-E, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?"
+    voice.speak(introduction)
+    listening_thread = threading.Thread(target=start_listening).start() # start listening in a separate thread
     try:
         while not event.close_down:
             main()

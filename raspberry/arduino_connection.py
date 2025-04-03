@@ -24,6 +24,7 @@ class ArduinoConnection:
         while self.arduino.in_waiting > 0:  # Check if there's a response
             response = self.arduino.readline().decode('utf-8').strip()
             data.append(response)
+        self.unread_data = []
         return data
     
     
