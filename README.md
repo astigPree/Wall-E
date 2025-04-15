@@ -85,6 +85,82 @@ You can now access your Raspberry Pi using the following methods:
 Following these steps, your Windows PC should successfully connect to your Raspberry Pi through the LAN cable, allowing seamless communication and access via its static IP (`192.168.1.20`). Let me know if any part of the setup needs clarification!
 
 
+Here's how you can proceed with setting up Wi-Fi on your Raspberry Pi, disconnecting the LAN cable, and accessing it over the network:
+
+---
+
+### **Setup Wi-Fi on Raspberry Pi**
+1. **Configure Wi-Fi Settings**:
+   - Open the terminal on your Raspberry Pi.
+   - Edit the Wi-Fi configuration file:
+     ```bash
+     sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+     ```
+   - Add the following lines, replacing `Your_SSID` and `Your_PASSWORD` with your Wi-Fi network name and password:
+     ```bash
+     network={
+         ssid="Your_SSID"
+         psk="Your_PASSWORD"
+     }
+     ```
+   - Save the file (`Ctrl + O`, then `Ctrl + X`) and restart the Wi-Fi service:
+     ```bash
+     sudo systemctl restart dhcpcd
+     ```
+
+2. **Verify Wi-Fi Connection**:
+   - Check if the Raspberry Pi has connected to Wi-Fi:
+     ```bash
+     ifconfig wlan0
+     ```
+   - Look for an `inet` IP address under `wlan0`. This is the Raspberry Pi's Wi-Fi IP address.
+
+3. **Find the Raspberry Pi’s IP Address**:
+   - If the IP address doesn’t appear, use the following command to find it:
+     ```bash
+     hostname -I
+     ```
+   - Note down the Wi-Fi IP address.
+
+---
+
+### **Disconnect LAN Cable**
+1. Now that the Raspberry Pi is connected to Wi-Fi, it’s safe to disconnect the Ethernet (LAN) cable from the Raspberry Pi and Windows PC.
+2. Ensure both the Raspberry Pi and Windows PC are connected to the same local Wi-Fi network.
+
+---
+
+### **Access Raspberry Pi Without LAN Cable**
+To access your Raspberry Pi using the Wi-Fi IP:
+
+1. **Scan the Network for Devices**:
+   - Use a tool like **Angry IP Scanner** to confirm the Raspberry Pi’s IP address.
+   - Open Angry IP Scanner, scan your local network, and look for the Raspberry Pi (hostname might appear as "raspberrypi").
+
+2. **Access Via Command Prompt**:
+   - Open Command Prompt on your Windows PC and ping the Raspberry Pi’s Wi-Fi IP to ensure connectivity:
+     ```bash
+     ping <Wi-Fi_IP>
+     ```
+   - If you get replies, you’re ready to access the Raspberry Pi.
+
+3. **Access Services**:
+   - **SSH**:
+     ```bash
+     ssh pi@<Wi-Fi_IP>
+     ```
+     Enter the Raspberry Pi’s password to log in.
+   - **File Sharing**:
+     - Open File Explorer on your PC and enter:
+       ```bash
+       \\<Wi-Fi_IP>
+       ```
+
+---
+
+### **Important Note**
+Accessing the Raspberry Pi via its IP address requires that both devices remain on the same local network (same Wi-Fi). You’re now fully set up to use the Raspberry Pi wirelessly. Let me know if you face any challenges!
+
 =============================================================================================================================
 
 Here's the updated, complete guide for connecting and setting up your Arduino Mega:
