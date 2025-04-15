@@ -1,5 +1,5 @@
 
-------------------------------------------------------------------------------------------------------------------------
+=============================================================================================================================
 Here’s the complete guide to connect your Raspberry Pi to a Windows PC using a LAN cable and access it via the LAN port:
 
 ---
@@ -85,9 +85,9 @@ You can now access your Raspberry Pi using the following methods:
 Following these steps, your Windows PC should successfully connect to your Raspberry Pi through the LAN cable, allowing seamless communication and access via its static IP (`192.168.1.20`). Let me know if any part of the setup needs clarification!
 
 
-------------------------------------------------------------------------------------------------------------------------
+=============================================================================================================================
 
-Certainly! Here's the updated, complete guide for connecting and setting up your Arduino Mega:
+Here's the updated, complete guide for connecting and setting up your Arduino Mega:
 
 ---
 
@@ -141,4 +141,39 @@ Certainly! Here's the updated, complete guide for connecting and setting up your
 #### **7. Temperature Sensor (MLX90614)**
 - Connect the **SDA** and **SCL** pins of the temperature sensor to the corresponding **SDA** and **SCL** pins on your Arduino Mega (Pins **20** and **21**).
 
----
+=============================================================================================================================
+
+Here's the updated instructions for connecting devices to your Raspberry Pi USB ports based on the ASCII layout:
+
+```
++-----------------------+----------------------+
+|      MICROPHONE       |       ARDUINO        |  <-- Top Row
+|       (Port 1)        |       (Port 3)       |
++-----------------------+----------------------+
+|        CAMERA         |        EMPTY         |  <-- Bottom Row
+|       (Port 2)        |       (Port 4)       |
++-----------------------+----------------------+
+```
+
+### **Connection Instructions**
+1. **Port 1 (Microphone):**
+   - Plug your microphone into the **top-left USB port** (Port 1).
+   - Ensure it is compatible with Raspberry Pi's USB input (e.g., USB microphones).
+
+2. **Port 2 (Camera):**
+   - Connect your camera to the **bottom-left USB port** (Port 2).
+   - This port should handle your camera's USB connection correctly.
+
+3. **Port 3 (Arduino Mega):**
+   - Connect your Arduino Mega to the **top-right USB port** (Port 3).
+   - Use a USB cable compatible with the Arduino Mega for seamless communication.
+
+4. **Port 4 (Empty):**
+   - Leave the **bottom-right USB port** (Port 4) vacant unless you need to connect another peripheral later.
+
+### Additional Notes:
+- Arrange cables neatly to avoid interference.
+- Confirm that all devices are recognized by the Raspberry Pi after setup.
+- If you experience issues, ensure you have the necessary drivers or libraries installed for each device.
+
+Let me know if you'd like help with troubleshooting or additional configuration! 😊
