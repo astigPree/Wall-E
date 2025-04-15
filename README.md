@@ -86,3 +86,59 @@ Following these steps, your Windows PC should successfully connect to your Raspb
 
 
 ------------------------------------------------------------------------------------------------------------------------
+
+Certainly! Here's the updated, complete guide for connecting and setting up your Arduino Mega:
+
+---
+
+### **Arduino Mega Pinout Guide**
+
+#### **1. Servo Motors for Pill Dispensers**
+- **Biogesic Servo:** Connect the signal pin to Pin **4**.
+- **Cremils Servo:** Connect the signal pin to Pin **5**.
+- **Citirizene Servo:** Connect the signal pin to Pin **7**.
+- **Mefenamic Servo:** Connect the signal pin to Pin **6**.
+
+#### **2. Pills Detector (IR Sensor)**
+- **IR Sensor:** Connect the signal pin to Pin **40**.
+
+#### **3. Lock Servo Motor**
+- **Lock Servo:** Connect the signal pin to Pin **13**.
+
+#### **4. RFID Module**
+- **SDA (Serial Data):** Connect to Pin **9** on the Arduino Mega.
+- **RST (Reset):** Connect to Pin **8** on the Arduino Mega.
+- **MOSI (Master-Out Slave-In):** Connect to Pin **51** on the Arduino Mega.
+- **MISO (Master-In Slave-Out):** Connect to Pin **50** on the Arduino Mega.
+- **SCK (Clock):** Connect to Pin **52** on the Arduino Mega.
+- **GND (Ground):** Connect to any GND pin on the Arduino Mega.
+- **3.3V or 5V Power:** Connect to the 3.3V or 5V pin (depending on the RFID module's requirements).
+
+#### **5. Color Sensors**
+- **Left Sensor:**
+  - **S0:** Connect to Pin **24**.
+  - **S1:** Connect to Pin **25**.
+  - **S2:** Connect to Pin **26**.
+  - **S3:** Connect to Pin **27**.
+  - **Sensor Out:** Connect to Pin **28**.
+
+- **Right Sensor:**
+  - **S0:** Connect to Pin **29**.
+  - **S1:** Connect to Pin **30**.
+  - **S2:** Connect to Pin **31**.
+  - **S3:** Connect to Pin **32**.
+  - **Sensor Out:** Connect to Pin **33**.
+
+#### **6. Motor Drivers for Wheels**
+- **Right Wheel:**
+  - **Motor Pin:** Connect to Pin **36**.
+  - **Direction Pin:** Connect to Pin **37**.
+
+- **Left Wheel:**
+  - **Motor Pin:** Connect to Pin **38**.
+  - **Direction Pin:** Connect to Pin **39**.
+
+#### **7. Temperature Sensor (MLX90614)**
+- Connect the **SDA** and **SCL** pins of the temperature sensor to the corresponding **SDA** and **SCL** pins on your Arduino Mega (Pins **20** and **21**).
+
+---
