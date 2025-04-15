@@ -176,4 +176,3 @@ Here's the updated instructions for connecting devices to your Raspberry Pi USB 
 - Confirm that all devices are recognized by the Raspberry Pi after setup.
 - If you experience issues, ensure you have the necessary drivers or libraries installed for each device.
 
-Let me know if you'd like help with troubleshooting or additional configuration! 😊
