@@ -1,12 +1,12 @@
 
-from g4f.client import Client
-from g4f.Provider import RetryProvider, Free2GPT , Pizzagpt
-import g4f.debug
+# from g4f.client import Client
+# from g4f.Provider import RetryProvider, Free2GPT , Pizzagpt
+# import g4f.debug
 
 import cohere
 
-g4f.debug.logging = True
-g4f.debug.version_check = False
+# g4f.debug.logging = True
+# g4f.debug.version_check = False
 
 import time 
 import asyncio 
@@ -14,9 +14,9 @@ import asyncio
 class BrainUtils:
     
     # client = Client()
-    client = Client(
-        provider=RetryProvider([Pizzagpt , Free2GPT], shuffle=False)
-    )
+    # client = Client(
+    #     provider=RetryProvider([Pizzagpt , Free2GPT], shuffle=False)
+    # )
     # model = "gpt-4o-mini"
     model = ""
     
@@ -59,30 +59,30 @@ class BrainUtils:
             return None
 
 
-    def generate_response(self, command: str):
-        """
-        Generates a response based on the provided text.
-        """
-        async def main_generator():
-            try:
-                response = self.client.chat.completions.create(
-                    model=self.model,
-                    messages=[
-                        {"role": "user", "content": command}
-                    ],
-                )
-                self.debounce = 2  # Reset the delay
-                return response.choices[0].message.content
-            except Exception as e:
-                print(f"Error: {e}")
-                return None
+    # def generate_response(self, command: str):
+    #     """
+    #     Generates a response based on the provided text.
+    #     """
+    #     async def main_generator():
+    #         try:
+    #             response = self.client.chat.completions.create(
+    #                 model=self.model,
+    #                 messages=[
+    #                     {"role": "user", "content": command}
+    #                 ],
+    #             )
+    #             self.debounce = 2  # Reset the delay
+    #             return response.choices[0].message.content
+    #         except Exception as e:
+    #             print(f"Error: {e}")
+    #             return None
 
-        loop = asyncio.get_event_loop()
-        if loop.is_running():
-            # Schedule the coroutine and wait for the result
-            return loop.run_until_complete(main_generator())
-        else:
-            return asyncio.run(main_generator())
+    #     loop = asyncio.get_event_loop()
+    #     if loop.is_running():
+    #         # Schedule the coroutine and wait for the result
+    #         return loop.run_until_complete(main_generator())
+    #     else:
+    #         return asyncio.run(main_generator())
 
 
 
