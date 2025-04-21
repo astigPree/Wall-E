@@ -528,10 +528,6 @@ def algo_close_the_back_of_the_machine(
             break
         time.sleep(0.1)
     
-
-
-        
-
     
     return
 

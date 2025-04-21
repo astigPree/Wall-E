@@ -133,6 +133,7 @@ def main():
                 data=decided_command,
                 user_command=user_overall_commands
             )
+            
 
         
         event.user_commands = []
@@ -415,6 +416,8 @@ def main():
         
         
         # TODO: Apply walking here using arduino going back to its original position
+        arduino.write("STEP")
+        time.sleep(2) # Give Arduino time to process and respond
         arduino.write("BACK")
         start_time = time.time()
         while time.time() - start_time < 300:
