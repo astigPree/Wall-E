@@ -393,7 +393,7 @@ def algo_check_body_temperature(
 
     # Generate the response message
     response_message = brain.generate_cohere_response(
-        rules_for_temperature.format(temp1=avg_temp_celsius, temp2=avg_temp_fahrenheit)
+        system=rules_for_temperature.format(temp1=avg_temp_celsius, temp2=avg_temp_fahrenheit)
     )
     response_message = my_tools.text_to_dictionary(response_message)
     voice.speak(
@@ -460,7 +460,7 @@ def algo_user_want_to_talk(
             return {}
         
         print("Thinking about the response...")
-        bot_response = brain.generate_cohere_response(rules_for_conversation % "".join(past_conversation))
+        bot_response = brain.generate_cohere_response(command=rules_for_conversation % "".join(past_conversation), system=None)
         print("Response:", bot_response)
             
         if event.stop_proccess:
