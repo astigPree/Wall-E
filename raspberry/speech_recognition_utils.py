@@ -11,10 +11,10 @@ class SpeechRecognitionUtils:
         self.r.energy_threshold = 500
         self.r.pause_threshold = 2
 
-    def recognize_speech(self, device_index = 1): 
+    def recognize_speech(self, device_index=0): 
         # Reading Microphone as source
         # listening the speech and store in audio_text variable
-        with sr.Microphone(device_index=device_index) as source:  # Change index based on detected microphones
+        with sr.Microphone() as source:
             print("You can start speaking.")
             self.r.adjust_for_ambient_noise(source)
             audio_text = self.r.listen(source) 
