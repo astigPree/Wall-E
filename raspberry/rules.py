@@ -42,7 +42,7 @@ The response MUST strictly conform to the following JSON structure:
    - `message`: "<Deliver a message that confirms the user's request to open the machine's back has been received and will be processed>"
 
 6. **Action 6**:
-   - `message`: "<Deliver a message that politely ask if the user want to dispense mefinamic, biogesic, cetirizine or cremil-s>"
+   - `message`: "<No Response>"
    
 ### Additional Notes:
 - Ensure all string values are enclosed in double quotes (`"`), as required by JSON formatting.
