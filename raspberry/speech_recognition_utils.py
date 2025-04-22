@@ -9,6 +9,7 @@ class SpeechRecognitionUtils:
         # Initialize recognizer class (for recognizing the speech)
         self.r = sr.Recognizer()
         self.r.energy_threshold = 500
+        self.r.pause_threshold = 2
 
     def recognize_speech(self, device_index = 1): 
         # Reading Microphone as source
