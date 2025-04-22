@@ -118,7 +118,7 @@ def main():
                 voice=voice,
                 brain=brain,
                 data=decided_command,
-                arduino=None
+                arduino=arduino
             )
         elif decided_command.get('action') == "3" or decided_command.get('action') == 3:
             # TODO: Simulate repeating the questions
