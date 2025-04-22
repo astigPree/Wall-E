@@ -25,7 +25,7 @@ class SpeechRecognitionUtils:
             try:
                 # using google speech recognition
                 # print("Text: "+r.recognize_google(audio_text))
-                result = self.r.recognize_google(audio_text) 
+                result = self.r.recognize_google(audio_text, language="fil-PH") 
                 if result is not None:
                     return result
             except:
