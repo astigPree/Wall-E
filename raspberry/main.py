@@ -72,6 +72,7 @@ def main():
     global event 
     global listening_thread
     global is_machine_open
+    global arduino
     # if listening_thread is None:
     #     print("Starting listening thread...")
     #     listening_thread = threading.Thread(target=start_listening)
@@ -293,7 +294,7 @@ def main():
                 event = event, eyes = eyes , 
                 voice = voice , 
                 recognizer=ear , brain = brain, 
-                arduino = None, data = schedule
+                arduino = arduino, data = schedule
             )
             
             
