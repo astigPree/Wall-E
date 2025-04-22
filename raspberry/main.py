@@ -18,6 +18,8 @@ import random
 import asyncio
 import sys   
 
+
+
 # sys.setrecursionlimit(2097152)    # adjust numbers
 # threading.stack_size(134217728)   # for your needs
 
@@ -39,6 +41,7 @@ arduino = ArduinoConnection()
 arduino.initialized()
 eyes.start_camera()
 
+is_machine_open = False
 listening_thread : threading.Thread = None
 
 def start_listening():
@@ -74,7 +77,7 @@ def main():
     #     print("Starting listening thread...")
     #     listening_thread = threading.Thread(target=start_listening)
     #     listening_thread.start()
-        
+    decided_command = None
     if len(event.user_commands) > 0 and not event.has_important_event:
         # print("Starting to analyze the commands...")
         
@@ -127,17 +130,42 @@ def main():
         elif decided_command.get('action') == "4" or decided_command.get('action') == 4:
             # TODO: Simulate closing the back of the machine
             print("Closing the back of the machine")
-            algo.algo_close_the_back_of_the_machine(
-                event=event,
-                voice=voice, 
-                brain=brain,
-                recognizer=ear,
-                arduino=arduino,
-                data=decided_command,
-                user_command=user_overall_commands
-            )
+            # algo.algo_close_the_back_of_the_machine(
+            #     event=event,
+            #     voice=voice, 
+            #     brain=brain,
+            #     recognizer=ear,
+            #     arduino=arduino,
+            #     data=decided_command,
+            #     user_command=user_overall_commands
+            # )
             
-
+            if is_machine_open:
+                voice.speak(data.get("message", "Wait, I will slowly close the pills drawers."))
+            else:
+                voice.speak(data.get("message", "Wait, I will slowly open the pills drawers."))
+            
+            # TODO: Create a logic that connect arduino and close the back of the machine
+            if is_machine_open:
+                arduino.write("LOCK")
+                time_start = time.time()
+                while time.time() - time_start < 10:
+                    if event.stop_proccess:
+                        return
+                    if "LOCK" in arduino.read():
+                        break
+                    time.sleep(0.1)
+                is_machine_open = True
+            else: 
+                arduino.write("UNLOCK")
+                time_start = time.time()
+                while time.time() - time_start < 10:
+                    if event.stop_proccess:
+                        return
+                    if "UNLOCK" in arduino.read():
+                        break
+                    time.sleep(0.1)
+                is_machine_open = False
         
         event.user_commands = []
         

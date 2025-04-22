@@ -267,6 +267,7 @@ void loop() {
       machine_is_locked = false;
       Serial.println("Unlocking The Back Of The Machine ...");
       unlockTheBackOfTheMachine();
+      Serial.println("UNLOCK");
 
     }
 
