@@ -146,7 +146,7 @@ def main():
                 time_start = time.time()
                 while time.time() - time_start < 10:
                     if event.stop_proccess:
-                        return
+                        break
                     if "LOCK" in arduino.read():
                         break
                     time.sleep(0.1)
@@ -163,7 +163,7 @@ def main():
                 time_start = time.time()
                 while time.time() - time_start < 10:
                     if event.stop_proccess:
-                        return
+                        break
                     if "UNLOCK" in arduino.read():
                         break
                     time.sleep(0.1)
@@ -191,7 +191,7 @@ def main():
                     start_time = time.time()  
                     while time.time() - start_time < 60:  # 10 seconds timeout
                         if event.stop_proccess:
-                            return False
+                            break
                         if "DROP" in arduino.read(): 
                             break
                         time.sleep(0.1) 
