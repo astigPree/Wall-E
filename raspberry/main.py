@@ -18,6 +18,8 @@ import random
 import asyncio
 import sys   
 
+# sys.setrecursionlimit(2097152)    # adjust numbers
+# threading.stack_size(134217728)   # for your needs
 
 # Set the event loop policy conditionally for Windows 
 if sys.platform == 'win32': 
@@ -68,7 +70,8 @@ def start_listening():
 def main():
     global event 
     global listening_thread
-    if listening_thread is None:
+    if listening_thread is None or not listening_thread:
+        print("Starting listening thread...")
         listening_thread = threading.Thread(target=start_listening)
         listening_thread.start()
         
@@ -431,9 +434,6 @@ def main():
         
         event.has_important_event = False
 
-
-listening_thread = None
-
 if __name__ == '__main__': 
     # generated_response = brain.generate_cohere_response(rules.rules_for_introduction , rules.rules_for_introduction)
     # print("Generated response by cohere: ", generated_response)
@@ -445,7 +445,8 @@ if __name__ == '__main__':
     #     introduction = "Hello, I am Well-E, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?"
     # voice.speak(introduction)
     time.sleep(1)
-    listening_thread = threading.Thread(target=start_listening).start() # start listening in a separate thread
+    listening_thread = threading.Thread(target=start_listening)
+    listening_thread.start() # start listening in a separate thread
     time.sleep(1)
     try:
         while not event.close_down:

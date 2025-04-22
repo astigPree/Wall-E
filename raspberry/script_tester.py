@@ -25,12 +25,11 @@ import my_tools
 # 8. Enter this command to cmd : git pull
 # 9. Use this username "astigPree" and password "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"
 # 10. Enter this command to cmd : python main.py
-import pyaudio
+import sys
+import threading
 
-p = pyaudio.PyAudio()
-for i in range(p.get_device_count()):
-    info = p.get_device_info_by_index(i)
-    print(f"Device {i}: {info['name']}")
+print("Default Recursion Limit:", sys.getrecursionlimit())
+print("Default Thread Stack Size:", threading.stack_size())
 
 
 
