@@ -5,6 +5,7 @@ class SpeechRecognitionUtils:
     def __init__(self):
         self.r = sr.Recognizer()
         self.r.energy_threshold = 500
+        self.r.pause_threshold = 1.5
         self.mic_index = self.get_usable_mic_index()  # Auto-select usable mic
         self.mic_ready = self.test_microphone()  # Test mic once & store result
 

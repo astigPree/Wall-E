@@ -70,10 +70,10 @@ def start_listening():
 def main():
     global event 
     global listening_thread
-    if listening_thread is None or not listening_thread:
-        print("Starting listening thread...")
-        listening_thread = threading.Thread(target=start_listening)
-        listening_thread.start()
+    # if listening_thread is None:
+    #     print("Starting listening thread...")
+    #     listening_thread = threading.Thread(target=start_listening)
+    #     listening_thread.start()
         
     if len(event.user_commands) > 0 and not event.has_important_event:
         # print("Starting to analyze the commands...")
