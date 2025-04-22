@@ -153,7 +153,7 @@ def extract_filename(url):
 # print(filename)  # Output: nurse_image.jpg
 
 
-def text_to_dictionary(response: str) -> dict | None:
+def text_to_dictionary(response: str):
     if not isinstance(response, str):
         print("Response must be a string")
         return None
