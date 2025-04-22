@@ -36,10 +36,8 @@ database = DataHandler()
 ear = SpeechRecognitionUtils()
 brain = BrainUtils()
 voice = VoiceUtils()
-eyes = FacialRecognition()
 arduino = ArduinoConnection()
 arduino.initialized()
-eyes.start_camera()
 
 is_machine_open = False
 listening_thread : threading.Thread = None
@@ -476,6 +474,9 @@ if __name__ == '__main__':
     listening_thread = threading.Thread(target=start_listening)
     listening_thread.start() # start listening in a separate thread
     time.sleep(1)
+    
+    eyes = FacialRecognition()
+    eyes.start_camera()
     try:
         while not event.close_down:
             main()
