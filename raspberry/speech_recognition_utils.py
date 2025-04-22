@@ -1,46 +1,62 @@
 import speech_recognition as sr
 
-
-
 class SpeechRecognitionUtils:
     
-    
     def __init__(self):
-        # Initialize recognizer class (for recognizing the speech)
         self.r = sr.Recognizer()
         self.r.energy_threshold = 500
-        self.r.pause_threshold = 1
+        self.mic_index = self.get_usable_mic_index()  # Auto-select usable mic
+        self.mic_ready = self.test_microphone()  # Test mic once & store result
 
-    def recognize_speech(self): 
-        # Reading Microphone as source
-        # listening the speech and store in audio_text variable
+    def get_usable_mic_index(self):
+        """Finds the first available microphone index and returns it."""
+        mic_list = sr.Microphone.list_microphone_names()
+        
+        if mic_list:
+            print(f"Available Microphones: {mic_list}")
+            return 0  # Select the first available microphone
+        else:
+            print("No usable microphones detected.")
+            return None
+
+    def test_microphone(self):
+        """Tests if the microphone is working once on startup."""
+        if self.mic_index is None:
+            print("Error: No microphone available.")
+            return False
+
         try:
-            with sr.Microphone() as source:
-                print("You can start speaking.")
+            with sr.Microphone(device_index=self.mic_index) as source:
+                print(f"Testing Microphone: {self.mic_index} ({sr.Microphone.list_microphone_names()[self.mic_index]})")
                 self.r.adjust_for_ambient_noise(source)
-                audio_text = self.r.listen(source) 
-                # recoginze_() method will throw a request
-                # error if the API is unreachable,
-                # hence using exception handling
-                
+                print("Say something to test...")
+                audio_text = self.r.listen(source, timeout=5)  # Set timeout to avoid indefinite waiting
+                print("Microphone is working!")
+                return True
+        except Exception as e:
+            print(f"Microphone test failed: {e}")
+            return False
+
+    def recognize_speech(self):
+        """Recognizes speech only if the microphone has been successfully tested."""
+        if not self.mic_ready:
+            print("Skipping recognition due to microphone issue.")
+            return None
+
+        try:
+            with sr.Microphone(device_index=self.mic_index) as source:
+                print(f"Using Microphone: {self.mic_index}")
+                self.r.adjust_for_ambient_noise(source)
+                print("You can start speaking...")
+                audio_text = self.r.listen(source)
+
                 try:
-                    # using google speech recognition
-                    # print("Text: "+r.recognize_google(audio_text))
                     result = self.r.recognize_google(audio_text, language="fil-PH") 
-                    if result is not None:
-                        return result
-                except:
-                    # print("Sorry, I did not get that")
-                    pass
-        except AttributeError:
-            print("Error: Microphone stream failed to initialize.")
-            return None
-        except sr.RequestError:
-            print("Error: Could not reach the recognition API.")
-            return None
-        except sr.UnknownValueError:
-            print("Error: Unable to recognize speech.")
-            return None
+                    return result if result else "Unrecognized speech"
+                except sr.RequestError:
+                    print("Error: Could not reach the recognition API.")
+                except sr.UnknownValueError:
+                    print("Error: Unable to recognize speech.")
         except Exception as e:
             print(f"Unexpected error: {e}")
             return None
