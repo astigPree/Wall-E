@@ -19,7 +19,7 @@ class ArduinoConnection:
         time.sleep(1)
         
         
-    def read(self) -> list[str]:
+    def read(self):
         data = self.unread_data.copy()
         while self.arduino.in_waiting > 0:  # Check if there's a response
             response = self.arduino.readline().decode('utf-8').strip()
