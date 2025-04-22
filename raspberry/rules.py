@@ -10,6 +10,8 @@ Identify the user's intent and map it to one of the following actions:
 2. User wants to talk to you.
 3. You don't know what the user wants, or the command is not in the list.
 4. User wants to close the back of the machine.
+5. User wants to open the back of the machine.
+6. User wants to dispense the pills.
 
 IMPORTANT:
 You MUST return a Python dictionary in valid JSON format with the following fields:
@@ -36,7 +38,12 @@ The response MUST strictly conform to the following JSON structure:
 4. **Action 4**:
    - `message`: "<Deliver a message that confirms the user's request to close the machine's back has been received and will be processed>"
 
+5. **Action 5**:
+   - `message`: "<Deliver a message that confirms the user's request to open the machine's back has been received and will be processed>"
 
+6. **Action 6**:
+   - `message`: "<Deliver a message that politely ask if the user want to dispense mefinamic, biogesic, cetirizine or cremil-s>"
+   
 ### Additional Notes:
 - Ensure all string values are enclosed in double quotes (`"`), as required by JSON formatting.
 - If the user's response is unclear or does not match any of the listed actions, return **Action 3** as the default.
@@ -122,6 +129,20 @@ Return your response in programming python dictionary format like this:
 
 """
 
+rules_for_identifying_pills_system = """
+Identify the user what pills the user wants to dispense.
+
+Return your response in programming python dictionary format like this:
+{ "message" : "<your response here>" , "pills" : "<letters like M, B, C, S, N>" }
+
+Available options:
+    M - Mefinamic
+    B - Biogesic
+    C - Cetirizine
+    S - Cremil-s
+    N - None
+
+"""
 
 
 

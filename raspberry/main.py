@@ -142,11 +142,6 @@ def main():
             
             if is_machine_open:
                 voice.speak(decided_command.get("message", "Wait, I will slowly close the pills drawers."))
-            else:
-                voice.speak(decided_command.get("message", "Wait, I will slowly open the pills drawers."))
-            
-            # TODO: Create a logic that connect arduino and close the back of the machine
-            if is_machine_open:
                 arduino.write("LOCK")
                 time_start = time.time()
                 while time.time() - time_start < 10:
@@ -156,7 +151,14 @@ def main():
                         break
                     time.sleep(0.1)
                 is_machine_open = True
-            else: 
+            else:
+                voice.speak(decided_command.get("message", "The pills drawers are already closed."))
+            
+            # TODO: Create a logic that connect arduino and close the back of the machine
+        
+        elif decided_command.get('action') == "5" or decided_command.get('action') == 5:
+            if not is_machine_open:
+                voice.speak(decided_command.get("message", "Wait, I will slowly open the pills drawers."))
                 arduino.write("UNLOCK")
                 time_start = time.time()
                 while time.time() - time_start < 10:
@@ -166,6 +168,36 @@ def main():
                         break
                     time.sleep(0.1)
                 is_machine_open = False
+            else:
+                voice.speak(decided_command.get("message", "The pills drawers are already open."))
+                
+        
+        elif decided_command.get('action') == "6" or decided_command.get('action') == 6:
+            # TODO: Simulate the dispensing of pills 
+            print("Dispensing pills")
+            pills_response = brain.generate_cohere_response(command=user_overall_commands , system=rules.rules_for_identifying_pills_system)
+            pills_command : dict = text_to_dictionary(pills_response) 
+            if not isinstance(pills_command, dict):
+                voice.speak(random.choice(static_generated_txt.list_of_not_recognized_commands_text))
+            else:
+                pill = pills_command.get('pill', 'N')
+                if pill != 'N':
+                    voice.speak(pills_command.get('message', "Wait, I will dispense the pills"))
+                    print("[!] Start pills dispensing...")  
+                    # Drop the selected pills  
+                    arduino.write(pill) 
+                    print("[!] Start to check if the pills is dispensed...")
+                    # Wait for 10 seconds to check if the pills is dispensed
+                    start_time = time.time()  
+                    while time.time() - start_time < 60:  # 10 seconds timeout
+                        if event.stop_proccess:
+                            return False
+                        if "DROP" in arduino.read(): 
+                            break
+                        time.sleep(0.1) 
+                                
+            
+        
         
         event.user_commands = []
         
