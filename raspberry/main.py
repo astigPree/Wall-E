@@ -432,6 +432,7 @@ def main():
         event.has_important_event = False
 
 
+listening_thread = None
 
 if __name__ == '__main__': 
     # generated_response = brain.generate_cohere_response(rules.rules_for_introduction , rules.rules_for_introduction)
