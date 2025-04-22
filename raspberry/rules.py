@@ -118,7 +118,7 @@ Act as a machine named "Well-E," designed to assist with healthcare and patient 
 - Automates various healthcare and patient management tasks.
 
 Return your response in programming python dictionary format like this:
-{{ "message" : "<your response here>" }}
+{ "message" : "<your response here>" }
 
 """
 
