@@ -139,7 +139,9 @@ def main():
         event.user_commands = []
         
     else:
+        time.sleep(0.3)
         data = send_post_request()
+        time.sleep(0.1)
         if data:
             # print(f"Received data: {data}")
             nurses = data.get('nurses', None)
