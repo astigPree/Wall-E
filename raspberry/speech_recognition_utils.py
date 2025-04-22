@@ -11,13 +11,19 @@ class SpeechRecognitionUtils:
     def get_usable_mic_index(self):
         """Finds the first available microphone index and returns it."""
         mic_list = sr.Microphone.list_microphone_names()
-        
+
         if mic_list:
             print(f"Available Microphones: {mic_list}")
-            return 0  # Select the first available microphone
-        else:
-            print("No usable microphones detected.")
+
+            # Automatically select the first valid microphone (skip bcm2835 Headphones)
+            for i, mic in enumerate(mic_list):
+                if "Headphones" not in mic:  # Avoid speaker output devices
+                    print(f"Using Microphone: {mic} (Index {i})")
+                    return i  # Return first usable mic index
+
+            print("No valid microphone found.")
             return None
+
 
     def test_microphone(self):
         """Tests if the microphone is working once on startup."""
