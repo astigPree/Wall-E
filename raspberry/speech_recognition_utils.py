@@ -15,7 +15,7 @@ class SpeechRecognitionUtils:
         # Reading Microphone as source
         # listening the speech and store in audio_text variable
         try:
-            with sr.Microphone(device_index=1) as source:
+            with sr.Microphone(device_index=0) as source:
                 print("You can start speaking.")
                 self.r.adjust_for_ambient_noise(source)
                 audio_text = self.r.listen(source) 
