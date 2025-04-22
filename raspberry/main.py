@@ -141,9 +141,9 @@ def main():
             # )
             
             if is_machine_open:
-                voice.speak(data.get("message", "Wait, I will slowly close the pills drawers."))
+                voice.speak(decided_command.get("message", "Wait, I will slowly close the pills drawers."))
             else:
-                voice.speak(data.get("message", "Wait, I will slowly open the pills drawers."))
+                voice.speak(decided_command.get("message", "Wait, I will slowly open the pills drawers."))
             
             # TODO: Create a logic that connect arduino and close the back of the machine
             if is_machine_open:
