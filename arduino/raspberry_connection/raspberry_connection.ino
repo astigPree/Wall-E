@@ -81,7 +81,7 @@ void setup() {
   Serial.begin(115200);
   // Serial.setTimeout(1);
   while (!Serial);
-  Serial.println("ON Process");
+  // Serial.println("ON Process");
 
   /* Enable the SPI interface */
   SPI.begin(); 
@@ -115,13 +115,13 @@ void setup() {
   delay(2000);
 
   
-  Serial.println("Connecting Temperature . . . ");
+  // Serial.println("Connecting Temperature . . . ");
   if (!mlx.begin()) {
-    Serial.println("Error connecting to MLX90614. Check wiring.");
+    // Serial.println("Error connecting to MLX90614. Check wiring.");
     while (1); // Halt if sensor initialization fails
   }
  
-  Serial.println("MLX90614 Contactless Temperature Sensor Initialized");
+  // Serial.println("MLX90614 Contactless Temperature Sensor Initialized");
   delay(500);
   
   // Set sensor pins as outputs
@@ -156,7 +156,7 @@ void setup() {
   digitalWrite(RDirection,HIGH);
   digitalWrite(LDirection,HIGH);
 
-  Serial.print("Start the activity");
+  // Serial.print("Start the activity");
 }
 
 void loop() { 
@@ -186,19 +186,19 @@ void loop() {
       if (blue1 >= tblue && blue2 >= tblue) {
         // Both sensors detect values greater than the blue threshold, move forward
         moveForward();
-        Serial.println("Motor Action: Move Forward");
+        // Serial.println("Motor Action: Move Forward");
       } else if (blue1 < tblue) {
         // Sensor 1 detects blue (less than blue threshold), turn left
         turnLeft();
-        Serial.println("Motor Action: Turn Left");
+        // Serial.println("Motor Action: Turn Left");
       } else if (blue2 < tblue) {
         // Sensor 2 detects blue (less than blue threshold), turn right
         turnRight(); // Turn right if blue2 is below threshold
-        Serial.println("Motor Action: Turn Right");
+        // Serial.println("Motor Action: Turn Right");
       } else {
         // Fallback logic if no conditions match
         stopMotors(); // Fallback if no conditions match
-        Serial.println("Motor Action: Idle or Stop");
+        // Serial.println("Motor Action: Idle or Stop");
       }
     }
     return;
@@ -219,22 +219,22 @@ void loop() {
       if (blue1 >= tblue && blue2 >= tblue) {
         // Both sensors detect values greater than the blue threshold, move forward
         moveForward();
-        Serial.println("Motor Action: Move Forward");
+        // Serial.println("Motor Action: Move Forward");
       } else if (blue1 < tblue) {
         // Sensor 1 detects blue (less than blue threshold), turn left
         turnLeft();
-        Serial.println("Motor Action: Turn Left");
+        // Serial.println("Motor Action: Turn Left");
       } else if (blue2 < tblue) {
         // Sensor 2 detects blue (less than blue threshold), turn right
         turnRight(); // Turn right if blue2 is below threshold
-        Serial.println("Motor Action: Turn Right");
+        // Serial.println("Motor Action: Turn Right");
       } else {
         // Fallback logic if no conditions match
         stopMotors(); // Fallback if no conditions match
-        Serial.println("Motor Action: Idle or Stop");
+        // Serial.println("Motor Action: Idle or Stop");
       }
     } else {
-      Serial.println("Motor Action: Idle or Stop");
+      // Serial.println("Motor Action: Idle or Stop");
       stopMotors();
       walking_with_with_out_sensor = false;
     }
@@ -256,28 +256,28 @@ void loop() {
     }
     if (data == "LOCK"){
       if (machine_is_locked){
-        Serial.println("Machine is already Lock"); 
+        // Serial.println("Machine is already Lock"); 
         return;
       }
       machine_is_locked = true;
-      Serial.println("Locking The Back Of The Machine ..."); 
+      // Serial.println("Locking The Back Of The Machine ..."); 
       lockTheBackOfTheMachine();
       Serial.println("LOCK");
     }
 
     if (data == "UNLOCK"){
       if (!machine_is_locked){
-        Serial.println("Machine is already Unlock");
+        // Serial.println("Machine is already Unlock");
         return;
       }
       machine_is_locked = false;
-      Serial.println("Unlocking The Back Of The Machine ...");
+      // Serial.println("Unlocking The Back Of The Machine ...");
       unlockTheBackOfTheMachine();
       Serial.println("UNLOCK");
     }
 
     if (data == "B") {
-        Serial.println("Biogesic Dropping...");
+        // Serial.println("Biogesic Dropping...");
         uint8_t pills_tries = 0;
         bool pills_detected2 = false;
         pills_detected = false;
@@ -307,10 +307,10 @@ void loop() {
             }
 
             pills_tries++;
-            Serial.print("Attempts: ");
-            Serial.println(pills_tries);
-            Serial.print("Pills detected: ");
-            Serial.println(pills_detected ? "YES" : "NO");
+            // Serial.print("Attempts: ");
+            // Serial.println(pills_tries);
+            // Serial.print("Pills detected: ");
+            // Serial.println(pills_detected ? "YES" : "NO");
         }
 
         // Final result
@@ -326,7 +326,7 @@ void loop() {
 
     
     if (data == "S") {
-        Serial.println("Cremils Dropping...");
+        // Serial.println("Cremils Dropping...");
         uint8_t pills_tries = 0;
         bool pills_detected2 = false;
         pills_detected = false;
@@ -357,10 +357,10 @@ void loop() {
             }
 
             pills_tries++;
-            Serial.print("Attempts: ");
-            Serial.println(pills_tries);
-            Serial.print("Pills detected: ");
-            Serial.println(pills_detected ? "YES" : "NO");
+            // Serial.print("Attempts: ");
+            // Serial.println(pills_tries);
+            // Serial.print("Pills detected: ");
+            // Serial.println(pills_detected ? "YES" : "NO");
         }
 
         if (pills_detected || pills_detected2) {
@@ -373,7 +373,7 @@ void loop() {
     }
 
     if (data == "C") {
-      Serial.println("Citirizene Dropping...");
+      // Serial.println("Citirizene Dropping...");
       uint8_t pills_tries = 0;
       bool pills_detected2 = false;
       pills_detected = false;
@@ -403,10 +403,10 @@ void loop() {
           }
 
           pills_tries++;
-          Serial.print("Attempts: ");
-          Serial.println(pills_tries);
-          Serial.print("Pills detected: ");
-          Serial.println(pills_detected ? "YES" : "NO");
+          // Serial.print("Attempts: ");
+          // Serial.println(pills_tries);
+          // Serial.print("Pills detected: ");
+          // Serial.println(pills_detected ? "YES" : "NO");
       }
 
       // Final result
@@ -422,7 +422,7 @@ void loop() {
 
 
     if (data == "M") {
-        Serial.println("Mefenamic Dropping...");
+        // Serial.println("Mefenamic Dropping...");
         uint8_t pills_tries = 0;
         bool pills_detected2 = false;
         pills_detected = false;
@@ -452,10 +452,10 @@ void loop() {
             }
 
             pills_tries++;
-            Serial.print("Attempts: ");
-            Serial.println(pills_tries);
-            Serial.print("Pills detected: ");
-            Serial.println(pills_detected ? "YES" : "NO");
+            // Serial.print("Attempts: ");
+            // Serial.println(pills_tries);
+            // Serial.print("Pills detected: ");
+            // Serial.println(pills_detected ? "YES" : "NO");
         }
 
         // Final result
@@ -483,7 +483,7 @@ void loop() {
  
 
     if (data == "BACK") { 
-      Serial.println("Machine is going back to its original location");
+      // Serial.println("Machine is going back to its original location");
       walking_with_blue_sensor = true;
       walking_with_with_out_sensor = false;
       return;
@@ -525,23 +525,23 @@ void loop() {
       RC522.readCardSerial();
       lastDebounceTime = millis(); // Update debounce timer
 
-      Serial.println("Card detected:");
+      // Serial.println("Card detected:");
       for (int i = 0; i < 5; i++) {
-        Serial.print(RC522.serNum[i], DEC);
-        Serial.print(" ");
+        // Serial.print(RC522.serNum[i], DEC);
+        // Serial.print(" ");
       }
-      Serial.println();
+      // Serial.println();
 
       // Check if the detected UID matches any of the default UIDs
       if (compareUID(RC522.serNum, defaultUID1)) {
         // Perform actions for matched UID 1
         if (!machine_is_locked) {
           machine_is_locked = true;
-          Serial.println("Locking The Back Of The Machine ..."); 
+          // Serial.println("Locking The Back Of The Machine ..."); 
           lockTheBackOfTheMachine();
         } else {
           machine_is_locked = false;
-          Serial.println("Unlocking The Back Of The Machine ...");
+          // Serial.println("Unlocking The Back Of The Machine ...");
           unlockTheBackOfTheMachine();
         }
 
@@ -549,17 +549,17 @@ void loop() {
         // Perform actions for matched UID 2
         if (!machine_is_locked) {
           machine_is_locked = true;
-          Serial.println("Locking The Back Of The Machine ..."); 
+          // Serial.println("Locking The Back Of The Machine ..."); 
           lockTheBackOfTheMachine();
         } else {
           machine_is_locked = false;
-          Serial.println("Unlocking The Back Of The Machine ...");
+          // Serial.println("Unlocking The Back Of The Machine ...");
           unlockTheBackOfTheMachine();
         }
 
       } else {
         // Perform actions for non-matched UID
-        Serial.println("UID does not match. Access denied.");
+        // Serial.println("UID does not match. Access denied.");
       }
 
       delay(1000);  // Small delay to stabilize the system before the next read
