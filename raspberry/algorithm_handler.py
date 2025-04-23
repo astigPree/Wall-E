@@ -131,7 +131,9 @@ def algo_machine_walk(
      
     if event.stop_proccess:
         return False
-    
+
+    # Move forward to not step in red line
+    arduino.write("STEP")
     # Goto the located position based on the color
     arduino.write("WALK")
     # Check if the arduino is in the location already and timeout for 30 mins
