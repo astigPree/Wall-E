@@ -175,7 +175,7 @@ void loop() {
     // Serial.println(red2);
     // delayMicroseconds(250);
     // Stop logic: If red color is less than the threshold on both sensors
-    if (red1 < tred && red2 < tred) {
+    if (red1 < tred || red2 < tred) {
       // Serial.println("Motor Action: Stop (Red detected on both sensors)");
       stopMotors(); // Stop when red is detected
       Serial.println("ARRIVED");
