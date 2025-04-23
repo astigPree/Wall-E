@@ -164,7 +164,7 @@ def main():
                     time.sleep(0.1)
                 is_machine_open = True
             else:
-                voice.speak(decided_command.get("message", "The pills drawers are already closed."))
+                voice.speak("The pills drawers are already closed.")
             
             # TODO: Create a logic that connect arduino and close the back of the machine
         
@@ -194,7 +194,7 @@ def main():
                     time.sleep(0.1)
                 is_machine_open = False
             else:
-                voice.speak(decided_command.get("message", "The pills drawers are already open."))
+                voice.speak( "The pills drawers are already open.")
                 
         
         elif decided_command.get('action') == "6" or decided_command.get('action') == 6:

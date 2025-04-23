@@ -140,7 +140,7 @@ Available options:
     B - Biogesic
     C - Cetirizine
     S - Cremil-s
-    N - None
+    N - Not specified
 
 """
 
