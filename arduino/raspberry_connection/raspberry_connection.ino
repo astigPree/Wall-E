@@ -177,10 +177,11 @@ void loop() {
     // Serial.println(red2);
     // delayMicroseconds(250);
     // Stop logic: If red color is less than the threshold on both sensors
-    if (red1 < tred || red2 < tred2) {
+    if (red1 < tred && red2 < tred2) {
       // Serial.println("Motor Action: Stop (Red detected on both sensors)");
       stopMotors(); // Stop when red is detected
       Serial.println("ARRIVED");
+      delay(500);
       walking_with_blue_sensor = false; 
       return;
     } else{
@@ -201,6 +202,7 @@ void loop() {
         // Fallback logic if no conditions match
         stopMotors(); // Fallback if no conditions match
         Serial.println("ARRIVED");
+        delay(500);
         // Serial.println("Motor Action: Idle or Stop");
       }
     }
@@ -255,7 +257,8 @@ void loop() {
         Serial.println("CLOSE");
       } else{
         Serial.println("OPEN");
-      }
+      } 
+      delay(500);
     }
     if (data == "LOCK"){
       if (machine_is_locked){
@@ -266,6 +269,7 @@ void loop() {
       // Serial.println("Locking The Back Of The Machine ..."); 
       lockTheBackOfTheMachine();
       Serial.println("LOCK");
+      delay(500);
     }
 
     if (data == "UNLOCK"){
@@ -277,6 +281,7 @@ void loop() {
       // Serial.println("Unlocking The Back Of The Machine ...");
       unlockTheBackOfTheMachine();
       Serial.println("UNLOCK");
+      delay(500);
     }
 
     if (data == "B") {
@@ -322,6 +327,7 @@ void loop() {
         } else {
             Serial.println("EMPTY");
         }
+        delay(500);
 
         // Reset for next cycle
         pills_detected = false;
@@ -371,6 +377,7 @@ void loop() {
         } else {
             Serial.println("EMPTY");
         }
+        delay(500);
 
         pills_detected = false; // Reset for next cycle
     }
@@ -418,6 +425,7 @@ void loop() {
       } else {
           Serial.println("EMPTY");
       }
+      delay(500);
 
       // Reset for next cycle
       pills_detected = false;
@@ -467,6 +475,7 @@ void loop() {
         } else {
             Serial.println("EMPTY");
         }
+        delay(500);
 
         // Reset for next cycle
         pills_detected = false;
@@ -511,6 +520,7 @@ void loop() {
         delay(500); // Delay between readings
       }
       Serial.println("BODYTEMP");
+      delay(500);
     }
 
     delay(10);
