@@ -139,7 +139,19 @@ def main():
             #     data=decided_command,
             #     user_command=user_overall_commands
             # )
-            
+            arduino.write("DRAWER")
+            time_start = time.time()
+            while time.time() - time_start < 10:
+                if event.stop_proccess:
+                    break
+                if "CLOSE" in arduino.read():
+                    is_machine_open = False
+                    break
+                if "OPEN" in arduino.read():
+                    is_machine_open = True
+                    break
+                time.sleep(0.1)
+                
             if is_machine_open:
                 voice.speak(decided_command.get("message", "Wait, I will slowly close the pills drawers."))
                 arduino.write("LOCK")
@@ -157,6 +169,19 @@ def main():
             # TODO: Create a logic that connect arduino and close the back of the machine
         
         elif decided_command.get('action') == "5" or decided_command.get('action') == 5:
+            arduino.write("DRAWER")
+            time_start = time.time()
+            while time.time() - time_start < 10:
+                if event.stop_proccess:
+                    break
+                if "CLOSE" in arduino.read():
+                    is_machine_open = False
+                    break
+                if "OPEN" in arduino.read():
+                    is_machine_open = True
+                    break
+                time.sleep(0.1)
+                
             if not is_machine_open:
                 voice.speak(decided_command.get("message", "Wait, I will slowly open the pills drawers."))
                 arduino.write("UNLOCK")
@@ -195,6 +220,10 @@ def main():
                         if "DROP" in arduino.read(): 
                             break
                         time.sleep(0.1) 
+                else:
+                    voice.speak(pills_command.get('message', "I didn't understand which pill you want to dispense."))
+                    
+                    
                                 
             
         

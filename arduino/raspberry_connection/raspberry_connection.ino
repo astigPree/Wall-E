@@ -247,7 +247,13 @@ void loop() {
     // The '\n' character is used to mark the end of the incoming data. The readStringUntil() function reads all characters until it encounters a newline character.
     // The readStringUntil() function returns the entire string received, excluding the newline character.
     String data = Serial.readStringUntil('\n'); // Read the incoming data until a newline character
-
+    if ( data == "DRAWER"){
+      if (machine_is_locked){
+        Serial.println("CLOSE");
+      } else{
+        Serial.println("OPEN");
+      }
+    }
     if (data == "LOCK"){
       if (machine_is_locked){
         Serial.println("Machine is already Lock"); 
@@ -268,7 +274,6 @@ void loop() {
       Serial.println("Unlocking The Back Of The Machine ...");
       unlockTheBackOfTheMachine();
       Serial.println("UNLOCK");
-
     }
 
     if (data == "B") {
