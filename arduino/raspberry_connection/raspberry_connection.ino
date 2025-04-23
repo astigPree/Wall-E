@@ -54,7 +54,9 @@ unsigned long debounceDelay = 5000;    // Debounce delay time in milliseconds
 #define sensorOut2 33 
 // Color thresholds
 const int tblue = 400; // Threshold for blue detection
+const int tblue2 = 400; // Threshold for blue detection
 const int tred = 400;  // Threshold for red detection
+const int tred2 = 400; // Threshold for blue detection
 
 
 #define RWhell 36
@@ -65,7 +67,7 @@ const int tred = 400;  // Threshold for red detection
 bool walking_with_blue_sensor = false;
 bool walking_with_with_out_sensor = false;
 unsigned long last_step_time = 0;
-const unsigned long step_interval = 5000; // 1 second in milliseconds
+const unsigned long step_interval = 2000; // 1 second in milliseconds
 
 Servo lock;  // Create a servo object
 bool machine_is_locked = true;
@@ -175,7 +177,7 @@ void loop() {
     // Serial.println(red2);
     // delayMicroseconds(250);
     // Stop logic: If red color is less than the threshold on both sensors
-    if (red1 < tred || red2 < tred) {
+    if (red1 < tred || red2 < tred2) {
       // Serial.println("Motor Action: Stop (Red detected on both sensors)");
       stopMotors(); // Stop when red is detected
       Serial.println("ARRIVED");
@@ -183,7 +185,7 @@ void loop() {
       return;
     } else{
       // Motor control logic based on blue detection
-      if (blue1 >= tblue && blue2 >= tblue) {
+      if (blue1 >= tblue && blue2 >= tblue2) {
         // Both sensors detect values greater than the blue threshold, move forward
         moveForward();
         // Serial.println("Motor Action: Move Forward");
@@ -191,13 +193,14 @@ void loop() {
         // Sensor 1 detects blue (less than blue threshold), turn left
         turnLeft();
         // Serial.println("Motor Action: Turn Left");
-      } else if (blue2 < tblue) {
+      } else if (blue2 < tblue2) {
         // Sensor 2 detects blue (less than blue threshold), turn right
         turnRight(); // Turn right if blue2 is below threshold
         // Serial.println("Motor Action: Turn Right");
       } else {
         // Fallback logic if no conditions match
         stopMotors(); // Fallback if no conditions match
+        Serial.println("ARRIVED");
         // Serial.println("Motor Action: Idle or Stop");
       }
     }
@@ -216,7 +219,7 @@ void loop() {
       int blue2 = readColor(S22, S32, LOW, HIGH, sensorOut2); // Blue filter
       int red2 = readColor(S22, S32, LOW, LOW, sensorOut2);   // Red filter
 
-      if (blue1 >= tblue && blue2 >= tblue) {
+      if (blue1 >= tblue && blue2 >= tblue2) {
         // Both sensors detect values greater than the blue threshold, move forward
         moveForward();
         // Serial.println("Motor Action: Move Forward");
@@ -224,13 +227,13 @@ void loop() {
         // Sensor 1 detects blue (less than blue threshold), turn left
         turnLeft();
         // Serial.println("Motor Action: Turn Left");
-      } else if (blue2 < tblue) {
+      } else if (blue2 < tblue2) {
         // Sensor 2 detects blue (less than blue threshold), turn right
         turnRight(); // Turn right if blue2 is below threshold
         // Serial.println("Motor Action: Turn Right");
       } else {
         // Fallback logic if no conditions match
-        stopMotors(); // Fallback if no conditions match
+        // stopMotors(); // Fallback if no conditions match
         // Serial.println("Motor Action: Idle or Stop");
       }
     } else {
