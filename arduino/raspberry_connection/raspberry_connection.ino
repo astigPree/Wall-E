@@ -484,6 +484,7 @@ void loop() {
 
 
     if ( data == "WALK"){
+      // Use to move with sensoring policy
       walking_with_blue_sensor = true;
       return;
     }
@@ -496,6 +497,7 @@ void loop() {
  
 
     if (data == "BACK") { 
+      // Use to go back to the original location
       // Serial.println("Machine is going back to its original location");
       walking_with_blue_sensor = true;
       walking_with_with_out_sensor = false;
