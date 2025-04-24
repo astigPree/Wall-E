@@ -540,6 +540,15 @@ if __name__ == '__main__':
     
     eyes = FacialRecognition()
     eyes.start_camera()
+    time.sleep(1)
+    # Check arduino connection if there is an error for 10 second
+    time_start = time.time()
+    while time.time() - time_start < 10: 
+        if "ERROR" in arduino.read():
+            voice.speak("There is an error in the arduino connection. Please check the connection so I can work properly")
+            break
+        time.sleep(0.1)        
+    
     try:
         while not event.close_down:
             main()

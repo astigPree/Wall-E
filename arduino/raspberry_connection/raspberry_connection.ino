@@ -120,6 +120,7 @@ void setup() {
   // Serial.println("Connecting Temperature . . . ");
   if (!mlx.begin()) {
     // Serial.println("Error connecting to MLX90614. Check wiring.");
+    Serial.println("ERROR");
     while (1); // Halt if sensor initialization fails
   }
  
