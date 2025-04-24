@@ -375,7 +375,7 @@ def main():
             # schedule['patient_data'] = patient
 
             # print("[!] Start Camera for pills identification...")
-            voice.speak(schedule.get('message', 'Please face my camera so i can see you if you are a patient and say "Yes" if you are ready'))
+            voice.speak(schedule.get('message', 'if you are a patient and say "Yes" if you are ready while looking at the camera'))
             event.activate_scanning = True
             event.open_eyes = True
             
@@ -410,7 +410,7 @@ def main():
                     
             
      
-            voice.speak(schedule.get('message', 'Please face my camera so i can see you if you are a patient'))
+            voice.speak(schedule.get('message', 'Now please face my camera so i can see you if you are the patient'))
             # Find extact face for 5 mins 
             
             start_time = time.time()
@@ -470,7 +470,7 @@ def main():
 
             if not event.has_face_scanned:
                 # print("Failed to find face after 5 minutes")
-                voice.speak(schedule.get('message', 'I think you are not ready to receive the medication. Please try again later'))
+                voice.speak('I think you are not ready to receive the medication. Please try again later')
                 continue
             
             # TODO: Implement the machine drop pills here using arduino
@@ -510,6 +510,7 @@ def main():
         
         
         # TODO: Apply walking here using arduino going back to its original position
+        voice.speak("I will now walk back to my original position, please excuse me")
         arduino.write("STEP")
         time.sleep(2) # Give Arduino time to process and respond
         arduino.write("BACK")
