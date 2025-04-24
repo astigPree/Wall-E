@@ -546,8 +546,9 @@ if __name__ == '__main__':
     while time.time() - time_start < 10: 
         if "ERROR" in arduino.read():
             voice.speak("There is an error in the arduino connection. Please check the connection so I can work properly")
-            break
-        time.sleep(0.1)        
+            voice.speak("I will now shutdown and please restart the program so I can work properly")
+            event.close_down = True
+        time.sleep(0.1) 
     
     try:
         while not event.close_down:
