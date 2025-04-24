@@ -3,7 +3,7 @@
 /* Include the standard Arduino SPI library */
 #include <SPI.h>
 /* Include the RFID library */
-#include <RFID.h>
+// #include <RFID.h>
 
 #include <Wire.h>
 
@@ -30,10 +30,10 @@ uint8_t pills_detection_cycle = 3; // ir sensor how many times to try pills drop
 
 
 /* Create an instance of the RFID library */
-#define SDA_DIO 9
-#define RESET_DIO 8
-RFID RC522(SDA_DIO, RESET_DIO); 
-byte defaultUID1[5] = {227 , 185 , 172 , 46 , 216 }; // RFID UUID 1
+// #define SDA_DIO 9
+// #define RESET_DIO 8
+// RFID RC522(SDA_DIO, RESET_DIO); 
+// byte defaultUID1[5] = {227 , 185 , 172 , 46 , 216 }; // RFID UUID 1
 byte defaultUID2[5] = {33 , 110 , 235 , 38 , 130};  // RFID UUID 2  
 unsigned long lastDebounceTime = 0;  // The last time the button state changed
 unsigned long debounceDelay = 5000;    // Debounce delay time in milliseconds
@@ -88,8 +88,8 @@ void setup() {
   /* Enable the SPI interface */
   SPI.begin(); 
   delay(1000);
-  RC522.init();
-  delay(1000);
+  // RC522.init();
+  // delay(1000);
 
   // Locking System Setup
   lock.attach(lockservo); 
@@ -533,53 +533,53 @@ void loop() {
   
   // Serial.println("Happeming");
   // Opening Back and Clossing the back of the machine using rfid
-  if (RC522.isCard()) {
-    // Check if enough time has passed since the last action
-    if ((millis() - lastDebounceTime) > debounceDelay) {
-      RC522.readCardSerial();
-      lastDebounceTime = millis(); // Update debounce timer
+  // if (RC522.isCard()) {
+  //   // Check if enough time has passed since the last action
+  //   if ((millis() - lastDebounceTime) > debounceDelay) {
+  //     RC522.readCardSerial();
+  //     lastDebounceTime = millis(); // Update debounce timer
 
-      // Serial.println("Card detected:");
-      for (int i = 0; i < 5; i++) {
-        // Serial.print(RC522.serNum[i], DEC);
-        // Serial.print(" ");
-      }
-      // Serial.println();
+  //     // Serial.println("Card detected:");
+  //     for (int i = 0; i < 5; i++) {
+  //       // Serial.print(RC522.serNum[i], DEC);
+  //       // Serial.print(" ");
+  //     }
+  //     // Serial.println();
 
-      // Check if the detected UID matches any of the default UIDs
-      if (compareUID(RC522.serNum, defaultUID1)) {
-        // Perform actions for matched UID 1
-        if (!machine_is_locked) {
-          machine_is_locked = true;
-          // Serial.println("Locking The Back Of The Machine ..."); 
-          lockTheBackOfTheMachine();
-        } else {
-          machine_is_locked = false;
-          // Serial.println("Unlocking The Back Of The Machine ...");
-          unlockTheBackOfTheMachine();
-        }
+  //     // Check if the detected UID matches any of the default UIDs
+  //     if (compareUID(RC522.serNum, defaultUID1)) {
+  //       // Perform actions for matched UID 1
+  //       if (!machine_is_locked) {
+  //         machine_is_locked = true;
+  //         // Serial.println("Locking The Back Of The Machine ..."); 
+  //         lockTheBackOfTheMachine();
+  //       } else {
+  //         machine_is_locked = false;
+  //         // Serial.println("Unlocking The Back Of The Machine ...");
+  //         unlockTheBackOfTheMachine();
+  //       }
 
-      } else if (compareUID(RC522.serNum, defaultUID2)) {
-        // Perform actions for matched UID 2
-        if (!machine_is_locked) {
-          machine_is_locked = true;
-          // Serial.println("Locking The Back Of The Machine ..."); 
-          lockTheBackOfTheMachine();
-        } else {
-          machine_is_locked = false;
-          // Serial.println("Unlocking The Back Of The Machine ...");
-          unlockTheBackOfTheMachine();
-        }
+  //     } else if (compareUID(RC522.serNum, defaultUID2)) {
+  //       // Perform actions for matched UID 2
+  //       if (!machine_is_locked) {
+  //         machine_is_locked = true;
+  //         // Serial.println("Locking The Back Of The Machine ..."); 
+  //         lockTheBackOfTheMachine();
+  //       } else {
+  //         machine_is_locked = false;
+  //         // Serial.println("Unlocking The Back Of The Machine ...");
+  //         unlockTheBackOfTheMachine();
+  //       }
 
-      } else {
-        // Perform actions for non-matched UID
-        // Serial.println("UID does not match. Access denied.");
-      }
+  //     } else {
+  //       // Perform actions for non-matched UID
+  //       // Serial.println("UID does not match. Access denied.");
+  //     }
 
-      delay(1000);  // Small delay to stabilize the system before the next read
+  //     delay(1000);  // Small delay to stabilize the system before the next read
 
-    }
-  }
+  //   }
+  // }
 
 }
 
