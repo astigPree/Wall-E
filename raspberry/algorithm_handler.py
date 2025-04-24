@@ -440,7 +440,7 @@ def algo_user_want_to_talk(
     while True:
         print("Inside of conversation while loop")
         start_time = time.time()  # Record the start time
-        timeout = 180  # Timeout duration in seconds (3 minutes)
+        timeout = 60  # Timeout duration in seconds (1 minutes)
         if event.stop_proccess:
             return {}
         
@@ -450,7 +450,7 @@ def algo_user_want_to_talk(
                 return {}
             # Check if the timeout has been exceeded
             if time.time() - start_time > timeout:
-                print("3 minutes have passed, returning default response: {}")
+                print("1 minutes have passed, returning default response: {}")
                 return {}  # Automatically return {} if timeout is exceeded
             print("Waiting for event to be recorded or user commands to be added")
         
