@@ -89,9 +89,9 @@ def main():
         # print("Generated response by gpt4free: ", decided_command)
         # if not decided_command:
         generated_response = brain.generate_cohere_response(user_overall_commands , rules.rule_for_identifiying_command % user_overall_commands)
-        # print("Generated response by cohere: ", generated_response)
+        print("Generated response by cohere: ", generated_response)
         decided_command : dict = text_to_dictionary(generated_response)
-        # print("Generated response by cohere: ", decided_command)
+        print("Generated response by cohere: ", decided_command)
         
         # print("Decided command : ", decided_command)
         if not decided_command:
