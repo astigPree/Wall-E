@@ -376,6 +376,7 @@ def algo_check_body_temperature(
             break
         
         response = arduino.read()
+        print( "Response : " , response)
         if "BODYTEMP" in response:
             # Filter and convert to float
             temps.extend([float(temp) for temp in response if temp.replace('.', '', 1).isdigit()] )
