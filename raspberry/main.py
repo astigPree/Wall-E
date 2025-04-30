@@ -144,10 +144,11 @@ def main():
             while time.time() - time_start < 10:
                 if event.stop_proccess:
                     break
-                if "CLOSE" in arduino.read():
+                result = arduino.read()
+                if "CLOSE" in result :
                     is_machine_open = False
                     break
-                if "OPEN" in arduino.read():
+                if "OPEN" in result:
                     is_machine_open = True
                     break
                 time.sleep(0.1)
@@ -174,10 +175,11 @@ def main():
             while time.time() - time_start < 10:
                 if event.stop_proccess:
                     break
-                if "CLOSE" in arduino.read():
+                result = arduino.read()
+                if "CLOSE" in result :
                     is_machine_open = False
                     break
-                if "OPEN" in arduino.read():
+                if "OPEN" in result:
                     is_machine_open = True
                     break
                 time.sleep(0.1)
@@ -508,8 +510,6 @@ def main():
         # listening_thread = threading.Thread(target=start_listening)
         # listening_thread.start() # start listening in a separate thread
         
-    
-    
     
     # # TODO: Apply walking here using arduino going back to its original position
     # voice.speak("I will now walk back to my original position, please excuse me")
