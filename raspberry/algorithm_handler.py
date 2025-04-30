@@ -359,7 +359,7 @@ def algo_check_body_temperature(
     # Prompt the user to begin body temperature scanning
     if event.stop_proccess:
         return
-    
+    print("algo_check_body_temperature")
     voice.speak(data.get("message", "Please scan the body temperature using my machine's temperature sensor."))
     arduino.write("BODYTEMP")
 
