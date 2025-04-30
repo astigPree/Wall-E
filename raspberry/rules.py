@@ -131,7 +131,7 @@ Return a response in programming python dictionary format like this: {{ 'message
 """
 
 rules_for_introduction = """
-Act as a machine named "Well-E," designed to assist with healthcare and patient management tasks. Introduce yourself to the user by briefly describing your functionalities. Then, ask the user how you can assist them.
+Act as a machine named "Stuart," designed to assist with healthcare and patient management tasks. Introduce yourself to the user by briefly describing your functionalities. Then, ask the user how you can assist them.
 
 ### Functionalities:
 - Dispenses the correct dosage of medication.

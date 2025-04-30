@@ -18,9 +18,9 @@ SMS_TOKEN = "70b0567b2c219b0d124aae40865a3a38aed55355"
 #     "sms_provider": 1
 # }
 
-SMS_TAKEN_MEDICATION_TEXT = "Hello, this is Well-E, your AI-powered medical assistant. {patient_name} has successfully drop their scheduled medication today at {schedule_time}. Medication drop: {pill}. Thank you for trusting Well-E!"
-SMS_NOT_TAKEN_MEDICATION_TEXT = "Hello, this is Well-E, your AI-powered medical assistant. {patient_name} has not drop their scheduled medication today at {schedule_time}. Thank you for trusting Well-E!"
-SMS_MAYBE_TAKEN_OR_NOT_NEED_TO_VERIFY_TEXT = "Hello, this is Well-E, your AI-powered medical assistant. {patient_name}'s scheduled medication at {schedule_time} may or may not have been taken. Medication in question: {pill}. Please check to confirm. Thank you for trusting Well-E in your health care journey!"
+SMS_TAKEN_MEDICATION_TEXT = "Hello, this is Stuart, your AI-powered medical assistant. {patient_name} has successfully drop their scheduled medication today at {schedule_time}. Medication drop: {pill}. Thank you for trusting Stuart!"
+SMS_NOT_TAKEN_MEDICATION_TEXT = "Hello, this is Stuart, your AI-powered medical assistant. {patient_name} has not drop their scheduled medication today at {schedule_time}. Thank you for trusting Stuart!"
+SMS_MAYBE_TAKEN_OR_NOT_NEED_TO_VERIFY_TEXT = "Hello, this is Stuart, your AI-powered medical assistant. {patient_name}'s scheduled medication at {schedule_time} may or may not have been taken. Medication in question: {pill}. Please check to confirm. Thank you for trusting Stuart in your health care journey!"
 
 def send_message(message : str , phone_number : str):
     if not message or not phone_number:
