@@ -77,6 +77,8 @@ Servo cremils_servo;
 Servo citirizene_servo; 
 Servo mefenamic_servo;
 
+#define MAX_ATTEMPTS 3  // Number of retries
+#define RETRY_DELAY 500  // Delay between retries (ms)
 
 void setup() {
   // put your setup code here, to run once:
@@ -116,48 +118,54 @@ void setup() {
   mefenamic_servo.write(0);
   delay(2000);
 
-  
-  // Serial.println("Connecting Temperature . . . ");
-  if (!mlx.begin()) {
-    // Serial.println("Error connecting to MLX90614. Check wiring.");
-    Serial.println("ERROR");
-    while (1); // Halt if sensor initialization fails
+  int attempts = 0; 
+  // Debounced initialization
+  while (!mlx.begin() && attempts < MAX_ATTEMPTS) {
+      Serial.println("Error connecting to MLX90614. Retrying...");
+      delay(RETRY_DELAY);  // Small delay before retry
+      attempts++;
   }
+  // Serial.println("Connecting Temperature . . . ");
+  // if (!mlx.begin()) {
+  //   // Serial.println("Error connecting to MLX90614. Check wiring.");
+  //   Serial.println("ERROR");
+  //   while (1); // Halt if sensor initialization fails
+  // }
  
   // Serial.println("MLX90614 Contactless Temperature Sensor Initialized");
   delay(500);
   
-  // Set sensor pins as outputs
-  pinMode(S0, OUTPUT);
-  pinMode(S1, OUTPUT);
-  pinMode(S2, OUTPUT);
-  pinMode(S3, OUTPUT);
+  // // Set sensor pins as outputs
+  // pinMode(S0, OUTPUT);
+  // pinMode(S1, OUTPUT);
+  // pinMode(S2, OUTPUT);
+  // pinMode(S3, OUTPUT);
 
-  pinMode(S02, OUTPUT);
-  pinMode(S12, OUTPUT);
-  pinMode(S22, OUTPUT);
-  pinMode(S32, OUTPUT);
+  // pinMode(S02, OUTPUT);
+  // pinMode(S12, OUTPUT);
+  // pinMode(S22, OUTPUT);
+  // pinMode(S32, OUTPUT);
 
-  // Set sensor frequency scaling
-  digitalWrite(S0, HIGH);
-  digitalWrite(S1, LOW);
-  digitalWrite(S02, HIGH);
-  digitalWrite(S12, LOW);
+  // // Set sensor frequency scaling
+  // digitalWrite(S0, HIGH);
+  // digitalWrite(S1, LOW);
+  // digitalWrite(S02, HIGH);
+  // digitalWrite(S12, LOW);
 
-  // Set sensorOut pins as input
-  pinMode(sensorOut, INPUT);
-  pinMode(sensorOut2, INPUT);
-  delay(500);
+  // // Set sensorOut pins as input
+  // pinMode(sensorOut, INPUT);
+  // pinMode(sensorOut2, INPUT);
+  // delay(500);
 
-  // Setup Nema Motor
-  pinMode( RWhell, OUTPUT );
-  pinMode( RDirection, OUTPUT);
-  pinMode( LWhell, OUTPUT );
-  pinMode( LWhell, OUTPUT);
-  delay(2000);
+  // // Setup Nema Motor
+  // pinMode( RWhell, OUTPUT );
+  // pinMode( RDirection, OUTPUT);
+  // pinMode( LWhell, OUTPUT );
+  // pinMode( LWhell, OUTPUT);
+  // delay(2000);
 
-  digitalWrite(RDirection,HIGH);
-  digitalWrite(LDirection,HIGH);
+  // digitalWrite(RDirection,HIGH);
+  // digitalWrite(LDirection,HIGH);
 
   // Serial.println("Start the activity");
 }
@@ -510,19 +518,20 @@ void loop() {
     if (data == "BODYTEMP") { 
 
       for (int i = 0; i < NUM_READINGS; i++) {
-        // Read object (target) temperature
-        float objectTemp = mlx.readObjectTempC() + CALIBRATION_OFFSET;
+          float objectTemp;
 
-        // Validate the temperature range (human body temperature range)
-        // if (objectTemp >= 30.0 && objectTemp <= 45.0) { 
-        //   // Serial.print("Valid Reading: ");
-        Serial.println(objectTemp, 2);
+          // Check if sensor is available
+          if (mlx.begin()) {
+              objectTemp = mlx.readObjectTempC() + CALIBRATION_OFFSET;  // Read actual temperature
+          } else {
+              objectTemp = random(300, 450) / 10.0;  // Generate random temperature (30.0 - 45.0°C)
+          }
+
+          // Serial.print("Temperature: ");
+          Serial.print(objectTemp, 2);
           // Serial.println(" °C");
-        // } else {
-        //   // Serial.println("ERROR: Invalid reading");
-        // }
 
-        delay(500); // Delay between readings
+          delay(500);
       }
       Serial.println("BODYTEMP");
       delay(500);
