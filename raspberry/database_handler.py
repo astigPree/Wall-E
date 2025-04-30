@@ -49,9 +49,9 @@ class DataHandler:
             self.patients : dict = json.load(patients_file)
     
     def write_image_patients(self):
+        print("patients : ", self.patients)
         for patient in self.patients:
             image_url = self.patients[patient].get("face" , None)
-            print("patients : ", self.patients)
             if image_url:
                 
                 save_path = os.path.join(
