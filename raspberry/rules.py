@@ -95,12 +95,21 @@ Here is the Action Number and Response Message:
 ### Response Guidance for Each Action:
 1. **Action 1**:
    - `message`: "<Provide a response that conveys the system's readiness to check the body temperature, ensuring clarity and confidence>"
+
+2. **Action 2**:
+   - `message`: "<Respond in a way that acknowledges the user's input and encourages further engagement or conversation>"
+
 3. **Action 3**:
    - `message`: "<Offer a message that politely informs the user that their input was unclear or not recognized and prompts them to clarify>"
 
 4. **Action 4**:
    - `message`: "<Deliver a message that confirms the user's request to close the machine's back has been received and will be processed>"
 
+5. **Action 5**:
+   - `message`: "<Deliver a message that confirms the user's request to open the machine's back has been received and will be processed>"
+
+6. **Action 6**:
+   - `message`: "<No Response>"
 
 ### Additional Notes:
 - Ensure all string values are enclosed in double quotes (`"`), as required by JSON formatting.
