@@ -40,8 +40,11 @@ class VoiceUtils:
             if "male" in voice.name.lower():
                 self.engine.setProperty('voice', voice.id)
                 break
-        # Set speaking rate (optional)
-        self.engine.setProperty('rate', 150)
+        # Make the voice softer by adjusting the volume
+        self.engine.setProperty('volume', 0.5)  # Scale: 0.0 (mute) to 1.0 (max)
+
+        # Slow down speech slightly for a gentler tone
+        self.engine.setProperty('rate', 120)  # Lower value makes it more relaxed
     
     def update_text(self, text : str):
         self.text = text
