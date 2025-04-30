@@ -230,299 +230,299 @@ def main():
         
         event.user_commands = []
         
-    else:
-        time.sleep(0.3)
-        data = send_post_request()
-        time.sleep(0.1)
-        if data:
-            # # print(f"Received data: {data}")
-            nurses = data.get('nurses', None)
-            patients = data.get('patients', None)
-            schedules = data.get('schedules', None)
-            
-            
-            if nurses: 
-                database.write_image_nurses()
-            if patients:
-                database.write_image_patients()
-            
-            if nurses:
-                database.nurses = nurses
-            
-            if patients:
-                database.patients = patients
-                
-                
-            if schedules:
-                database.schedules = schedules
 
-            # TODO: Create an algorithm that check the schedule of the patients
-            # TODO: This is an important event and it should check the patient face to verify before despensing pills
-            # TODO: This is an important event and it should shout the patients name so they will be notified
-            for schedule_id , schedule in database.schedules.items():
-                # print(schedule)
+    time.sleep(0.3)
+    data = send_post_request()
+    time.sleep(0.1)
+    if data:
+        # # print(f"Received data: {data}")
+        nurses = data.get('nurses', None)
+        patients = data.get('patients', None)
+        schedules = data.get('schedules', None)
+        
+        
+        if nurses: 
+            database.write_image_nurses()
+        if patients:
+            database.write_image_patients()
+        
+        if nurses:
+            database.nurses = nurses
+        
+        if patients:
+            database.patients = patients
+            
+            
+        if schedules:
+            database.schedules = schedules
+
+        # TODO: Create an algorithm that check the schedule of the patients
+        # TODO: This is an important event and it should check the patient face to verify before despensing pills
+        # TODO: This is an important event and it should shout the patients name so they will be notified
+        for schedule_id , schedule in database.schedules.items():
+            # print(schedule)
+            
+            if schedule_id in event.done_schedule:
+                # print(f"Schedule {schedule_id} has already been executed")
+                threading.Thread(target=delete_schedule, args=(schedule_id,)).start() # delete the scheduled that already executed
+                continue
+            
+            if schedule_id in event.pending_schedule:
+                # print(f"Schedule {schedule_id} is already in pending state")
+                continue
+            
+            if schedule.get('set_date' , None):
                 
-                if schedule_id in event.done_schedule:
-                    # print(f"Schedule {schedule_id} has already been executed")
+                date_sched = my_tools.check_date_status(schedule.get('set_date' )) 
+                # print("Date scheduled is in the ", date_sched)
+                if date_sched == "Past":
+                    # If the schedule is not current date, then we need to skip the action 
                     threading.Thread(target=delete_schedule, args=(schedule_id,)).start() # delete the scheduled that already executed
                     continue
                 
-                if schedule_id in event.pending_schedule:
-                    # print(f"Schedule {schedule_id} is already in pending state")
+            if schedule.get('set_time', None):
+                
+                time_sched = my_tools.check_time_status(schedule.get('set_time') , OFFSET_MINUTE_TO_VALID)
+                
+                # print("Time scheduled is in the ", time_sched)
+                
+                if time_sched == "Past": 
+                    # If the schedule is not current time, then we need to skip the action
                     continue
-                
-                if schedule.get('set_date' , None):
-                    
-                    date_sched = my_tools.check_date_status(schedule.get('set_date' )) 
-                    # print("Date scheduled is in the ", date_sched)
-                    if date_sched == "Past":
-                        # If the schedule is not current date, then we need to skip the action 
-                        threading.Thread(target=delete_schedule, args=(schedule_id,)).start() # delete the scheduled that already executed
-                        continue
-                    
-                if schedule.get('set_time', None):
-                    
-                    time_sched = my_tools.check_time_status(schedule.get('set_time') , OFFSET_MINUTE_TO_VALID)
-                    
-                    # print("Time scheduled is in the ", time_sched)
-                    
-                    if time_sched == "Past": 
-                        # If the schedule is not current time, then we need to skip the action
-                        continue
-                    if time_sched == "Future": 
-                        # If the schedule is not current time, then we need to skip the action
-                        continue
-                
-                
-                
-                
-                patient_id = schedule.get('patient' , None)
-                if patient_id is None:
-                    # print("Schedule has no patient_id")
+                if time_sched == "Future": 
+                    # If the schedule is not current time, then we need to skip the action
                     continue
-                
-                # print("Patients Database : ", database.patients)
-                patient_data : dict = database.patients.get(str(patient_id))
-                if not patient_data:
-                    # print(f"Patient {patient_id} not found in database")
-                    continue
-                
-                if patient_id not in event.patients_to_take_medication:
-                    # print(f"Patient {patient_id} is not in list of patients to take medication, so adding it.")
-                    event.patients_to_take_medication[str(patient_id)] = patient_data
-                
-                if schedule_id not in event.pending_schedule:
-                    event.pending_schedule.append(schedule_id)
-                    event.list_of_schedule_to_take.append(schedule)
-                    
-                
-                # event.has_important_event = True 
-                # patient = database.patients.get(schedule.patient)
-                # # TODO : Check if nasa list_of_schedule_to_take then skip it
-                # if patient:
-                #     # TODO: I check kung meron pills ang selected medication
-                #     # TODO : Check if lumampas na an specific time na mag take san pills ma send san text message na wra katumar san bulong
-                #     voice.speak(f"{patient.get('name', 'No name Patient!')} IT'S TIME TO TAKE YOUR {schedule.get('pill' , 'PILLS').upper()}! DON'T FORGET YOUR MEDICATION!")
-                # event.has_important_event = False
             
             
-            # ----------------------------------------------------------------
-            # TODO: Create an algorithm that actionas the event.list_of_schedule_to_take
-            # print("Starting the main event loop")
-            print("These are the ids of the patiens to take medication : ", event.list_of_schedule_to_take)
-
-        if len(event.list_of_schedule_to_take) < 1:
-            # Do nothing if there are no schedules to take for the day
-            return None
-
-        event.has_important_event = True
-        while len(event.list_of_schedule_to_take) > 0:
-            schedule = event.list_of_schedule_to_take.pop(0)
+            
+            
             patient_id = schedule.get('patient' , None)
             if patient_id is None:
                 # print("Schedule has no patient_id")
                 continue
-            patient : dict = database.patients.get(str(patient_id))
-            if not patient:
+            
+            # print("Patients Database : ", database.patients)
+            patient_data : dict = database.patients.get(str(patient_id))
+            if not patient_data:
                 # print(f"Patient {patient_id} not found in database")
                 continue
             
-            # TODO: Apply walking here using arduino
-            # voice.speak("Walking is currently not supported! Please wait for further updates")
-            # Uncomment when the waling is implemented
-            schedule['color'] = patient.get('color' , 'RED')
-            # has_reached = algo.algo_machine_walk( 
-            #     event = event, eyes = eyes , 
-            #     voice = voice , 
-            #     recognizer=ear , brain = brain, 
-            #     arduino = arduino, data = schedule
-            # )
+            if patient_id not in event.patients_to_take_medication:
+                # print(f"Patient {patient_id} is not in list of patients to take medication, so adding it.")
+                event.patients_to_take_medication[str(patient_id)] = patient_data
             
+            if schedule_id not in event.pending_schedule:
+                event.pending_schedule.append(schedule_id)
+                event.list_of_schedule_to_take.append(schedule)
+                
             
-            # if not has_reached:
-            #     # Faild to walk to the patient location
-            #     print("Failed to walk to patient")
-            #     message = my_tools.SMS_NOT_TAKEN_MEDICATION_TEXT.format(
-            #         patient_name = patient.get('name' , 'No name'), 
-            #         schedule_time = schedule.get('set_time' , 'No time'), 
-            #         pill = schedule.get('pill' , 'No pill')
-            #     )
-            #     my_tools.send_message(message , patient.get('phone_number' , None))
-            #     continue
+            # event.has_important_event = True 
+            # patient = database.patients.get(schedule.patient)
+            # # TODO : Check if nasa list_of_schedule_to_take then skip it
+            # if patient:
+            #     # TODO: I check kung meron pills ang selected medication
+            #     # TODO : Check if lumampas na an specific time na mag take san pills ma send san text message na wra katumar san bulong
+            #     voice.speak(f"{patient.get('name', 'No name Patient!')} IT'S TIME TO TAKE YOUR {schedule.get('pill' , 'PILLS').upper()}! DON'T FORGET YOUR MEDICATION!")
+            # event.has_important_event = False
+        
+        
+        # ----------------------------------------------------------------
+        # TODO: Create an algorithm that actionas the event.list_of_schedule_to_take
+        # print("Starting the main event loop")
+        print("These are the ids of the patiens to take medication : ", event.list_of_schedule_to_take)
 
-            # Identify the face of the user before dropping the pills
-            schedule['patient_name'] = patient.get('name' , 'Patient'),
-            # schedule['patient_data'] = patient
+    if len(event.list_of_schedule_to_take) < 1:
+        # Do nothing if there are no schedules to take for the day
+        return None
 
-            # print("[!] Start Camera for pills identification...")
-            voice.speak(schedule.get('message', 'if you are a patient and say "Yes" if you are ready while looking at the camera'))
-            event.activate_scanning = True
-            event.open_eyes = True
-            
-            timeout = 180  # Timeout duration in seconds (3 minutes)
-            start_time = time.time()
-            while event.is_recording or len(event.user_commands) < 1:
-                time.sleep(0.5)
-                if event.stop_proccess:
-                    return False
-                # Check if the timeout has been exceeded
-                if time.time() - start_time > timeout:
-                    # print("3 minutes have passed, returning default response: {}")
-                    voice.speak(schedule.get('message', 'I think you are not ready to receive the medication. Please try again later'))
-                    return False  # Automatically return {} if timeout is exceeded
-                # print("Waiting for event to be recorded or user commands to be added")
-                it_has_yes = False
-                for command in event.user_commands:
-                    if "yes" in command.lower():
-                        it_has_yes = True
-                        break
-                if it_has_yes:
-                    # print("User confirmed, starting identification process...")
-                    if listening_thread is not None:
-                        # event.down_recording = True
-                        # listening_thread.join()
-                        # listening_thread = None
-                        print("Down recording")
-                    else:
-                        print("No listening thread found, skipping identification process...")
-                    time.sleep(0.5)
+    event.has_important_event = True
+    while len(event.list_of_schedule_to_take) > 0:
+        schedule = event.list_of_schedule_to_take.pop(0)
+        patient_id = schedule.get('patient' , None)
+        if patient_id is None:
+            # print("Schedule has no patient_id")
+            continue
+        patient : dict = database.patients.get(str(patient_id))
+        if not patient:
+            # print(f"Patient {patient_id} not found in database")
+            continue
+        
+        # TODO: Apply walking here using arduino
+        # voice.speak("Walking is currently not supported! Please wait for further updates")
+        # Uncomment when the waling is implemented
+        schedule['color'] = patient.get('color' , 'RED')
+        # has_reached = algo.algo_machine_walk( 
+        #     event = event, eyes = eyes , 
+        #     voice = voice , 
+        #     recognizer=ear , brain = brain, 
+        #     arduino = arduino, data = schedule
+        # )
+        
+        
+        # if not has_reached:
+        #     # Faild to walk to the patient location
+        #     print("Failed to walk to patient")
+        #     message = my_tools.SMS_NOT_TAKEN_MEDICATION_TEXT.format(
+        #         patient_name = patient.get('name' , 'No name'), 
+        #         schedule_time = schedule.get('set_time' , 'No time'), 
+        #         pill = schedule.get('pill' , 'No pill')
+        #     )
+        #     my_tools.send_message(message , patient.get('phone_number' , None))
+        #     continue
+
+        # Identify the face of the user before dropping the pills
+        schedule['patient_name'] = patient.get('name' , 'Patient'),
+        # schedule['patient_data'] = patient
+
+        # print("[!] Start Camera for pills identification...")
+        voice.speak(schedule.get('message', 'if you are a patient and say "Yes" if you are ready while looking at the camera'))
+        event.activate_scanning = True
+        event.open_eyes = True
+        
+        timeout = 180  # Timeout duration in seconds (3 minutes)
+        start_time = time.time()
+        while event.is_recording or len(event.user_commands) < 1:
+            time.sleep(0.5)
+            if event.stop_proccess:
+                return False
+            # Check if the timeout has been exceeded
+            if time.time() - start_time > timeout:
+                # print("3 minutes have passed, returning default response: {}")
+                voice.speak(schedule.get('message', 'I think you are not ready to receive the medication. Please try again later'))
+                return False  # Automatically return {} if timeout is exceeded
+            # print("Waiting for event to be recorded or user commands to be added")
+            it_has_yes = False
+            for command in event.user_commands:
+                if "yes" in command.lower():
+                    it_has_yes = True
                     break
-                    
-            
-     
-            voice.speak(schedule.get('message', 'Now please face my camera so i can see you if you are the patient'))
-            # Find extact face for 5 mins 
-            
-            start_time = time.time()
-            last_speak_time = start_time  # Track the last time the reminder was spoken
-            while time.time() - start_time < 300:  # 5 mins timeout
-                try:
-                    if event.stop_proccess:
-                        event.activate_scanning = False
-                        event.open_eyes = False
-                        return False
-
-                    frame = eyes.get_face_by_camera()
-                    if frame is None:
-                        # print("Can't Find Face =================")
-                        continue
-
-                    # print("Try To Find Face =================")
-                    # Resize the frame immediately after capturing it 
-                    
-                    conver_frame_to_rgb = frame
-                    # conver_frame_to_rgb = eyes.conver_frame_to_rgb(frame)
-                    # Validate and process the frame
-                    # patient : dict = schedule.get('patient_data', None)
-                    if patient is None:
-                        raise ValueError("Patient data is missing or invalid.")
-                    face = patient.get('face', None)
-                    # print("Check Face =================")
-                    if face is None:
-                        raise ValueError("Face data is missing or invalid.")
-                    filename = my_tools.extract_filename(face)
-                    # print(f"Face image file: {filename}")
-                    if filename:
-                        patient_face_path = os.path.join(database.patients_image_path, filename)
-                        try:
-                            event.has_face_scanned = eyes.check_face_exists_in_database(
-                                face_image=conver_frame_to_rgb, face_in_database=patient_face_path
-                            )
-                        except Exception as e:
-                            print(f"Error during face scanning: {e}")
-                        print(f"Has face scanned: {event.has_face_scanned}")
-                        if event.has_face_scanned:
-                            event.detect_patient = True
-                            break
-
-                    # Speak reminders every 60 seconds
-                    if time.time() - last_speak_time >= 60:
-                        voice.speak(f"Please take your medicine! {schedule.get('patient_name', 'Patient!')}")
-                        last_speak_time = time.time()
-
-                    # print("[!] Try To Find Face...")
-                    time.sleep(0.1)
-                except Exception as e:
-                    print(f"Error during face scanning: {e}")
+            if it_has_yes:
+                # print("User confirmed, starting identification process...")
+                if listening_thread is not None:
+                    # event.down_recording = True
+                    # listening_thread.join()
+                    # listening_thread = None
+                    print("Down recording")
+                else:
+                    print("No listening thread found, skipping identification process...")
+                time.sleep(0.5)
+                break
+                
+        
+    
+        voice.speak(schedule.get('message', 'Now please face my camera so i can see you if you are the patient'))
+        # Find extact face for 5 mins 
+        
+        start_time = time.time()
+        last_speak_time = start_time  # Track the last time the reminder was spoken
+        while time.time() - start_time < 300:  # 5 mins timeout
+            try:
+                if event.stop_proccess:
                     event.activate_scanning = False
                     event.open_eyes = False
+                    return False
+
+                frame = eyes.get_face_by_camera()
+                if frame is None:
+                    # print("Can't Find Face =================")
+                    continue
+
+                # print("Try To Find Face =================")
+                # Resize the frame immediately after capturing it 
                 
+                conver_frame_to_rgb = frame
+                # conver_frame_to_rgb = eyes.conver_frame_to_rgb(frame)
+                # Validate and process the frame
+                # patient : dict = schedule.get('patient_data', None)
+                if patient is None:
+                    raise ValueError("Patient data is missing or invalid.")
+                face = patient.get('face', None)
+                # print("Check Face =================")
+                if face is None:
+                    raise ValueError("Face data is missing or invalid.")
+                filename = my_tools.extract_filename(face)
+                # print(f"Face image file: {filename}")
+                if filename:
+                    patient_face_path = os.path.join(database.patients_image_path, filename)
+                    try:
+                        event.has_face_scanned = eyes.check_face_exists_in_database(
+                            face_image=conver_frame_to_rgb, face_in_database=patient_face_path
+                        )
+                    except Exception as e:
+                        print(f"Error during face scanning: {e}")
+                    print(f"Has face scanned: {event.has_face_scanned}")
+                    if event.has_face_scanned:
+                        event.detect_patient = True
+                        break
 
-            if not event.has_face_scanned:
-                # print("Failed to find face after 5 minutes")
-                voice.speak('I think you are not ready to receive the medication. Please try again later')
-                continue
+                # Speak reminders every 60 seconds
+                if time.time() - last_speak_time >= 60:
+                    voice.speak(f"Please take your medicine! {schedule.get('patient_name', 'Patient!')}")
+                    last_speak_time = time.time()
+
+                # print("[!] Try To Find Face...")
+                time.sleep(0.1)
+            except Exception as e:
+                print(f"Error during face scanning: {e}")
+                event.activate_scanning = False
+                event.open_eyes = False
             
-            # TODO: Implement the machine drop pills here using arduino
-            is_dropped = algo.algo_machine_drop_pills(
-                event = event, database=database, 
-                voice = voice , brain = brain, 
-                recognizer = ear , arduino = arduino, 
-                eyes = eyes, data = schedule, 
+
+        if not event.has_face_scanned:
+            # print("Failed to find face after 5 minutes")
+            voice.speak('I think you are not ready to receive the medication. Please try again later')
+            continue
+        
+        # TODO: Implement the machine drop pills here using arduino
+        is_dropped = algo.algo_machine_drop_pills(
+            event = event, database=database, 
+            voice = voice , brain = brain, 
+            recognizer = ear , arduino = arduino, 
+            eyes = eyes, data = schedule, 
+        )
+        
+        
+        
+        if not is_dropped:
+            # Faild to drop the pills
+            # print("Failed to drop the pills")
+            message = my_tools.SMS_MAYBE_TAKEN_OR_NOT_NEED_TO_VERIFY_TEXT.format(
+                patient_name = patient.get('name' , 'No name'), 
+                schedule_time = schedule.get('set_time' , 'No time'), 
+                pill = schedule.get('pill' , 'No pill')
             )
-            
-            
-            
-            if not is_dropped:
-                # Faild to drop the pills
-                # print("Failed to drop the pills")
-                message = my_tools.SMS_MAYBE_TAKEN_OR_NOT_NEED_TO_VERIFY_TEXT.format(
-                    patient_name = patient.get('name' , 'No name'), 
-                    schedule_time = schedule.get('set_time' , 'No time'), 
-                    pill = schedule.get('pill' , 'No pill')
-                )
-                my_tools.send_message(message , patient.get('phone_number' , None))
-            else:
-                message = my_tools.SMS_TAKEN_MEDICATION_TEXT.format(
-                    patient_name = patient.get('name' , 'No name'), 
-                    schedule_time = schedule.get('set_time' , 'No time'), 
-                    pill = schedule.get('pill' , 'No pill')
-                )
-                my_tools.send_message(message , patient.get('phone_number' , None))
+            my_tools.send_message(message , patient.get('phone_number' , None))
+        else:
+            message = my_tools.SMS_TAKEN_MEDICATION_TEXT.format(
+                patient_name = patient.get('name' , 'No name'), 
+                schedule_time = schedule.get('set_time' , 'No time'), 
+                pill = schedule.get('pill' , 'No pill')
+            )
+            my_tools.send_message(message , patient.get('phone_number' , None))
 
-            # print("Sent message to patient")
-            event.user_commands = []
-            time.sleep(0.5)
-            # listening_thread = threading.Thread(target=start_listening)
-            # listening_thread.start() # start listening in a separate thread
-            
+        # print("Sent message to patient")
+        event.user_commands = []
+        time.sleep(0.5)
+        # listening_thread = threading.Thread(target=start_listening)
+        # listening_thread.start() # start listening in a separate thread
         
-        
-        
-        # # TODO: Apply walking here using arduino going back to its original position
-        # voice.speak("I will now walk back to my original position, please excuse me")
-        # arduino.write("STEP")
-        # time.sleep(2) # Give Arduino time to process and respond
-        # arduino.write("BACK")
-        # start_time = time.time()
-        # while time.time() - start_time < 300:
-        #     if "ARRIVED" in arduino.read():
-        #         break
-        #     if event.stop_proccess:
-        #         break
-        #     time.sleep(0.1)
-        
-        event.has_important_event = False
+    
+    
+    
+    # # TODO: Apply walking here using arduino going back to its original position
+    # voice.speak("I will now walk back to my original position, please excuse me")
+    # arduino.write("STEP")
+    # time.sleep(2) # Give Arduino time to process and respond
+    # arduino.write("BACK")
+    # start_time = time.time()
+    # while time.time() - start_time < 300:
+    #     if "ARRIVED" in arduino.read():
+    #         break
+    #     if event.stop_proccess:
+    #         break
+    #     time.sleep(0.1)
+    
+    event.has_important_event = False
 
 if __name__ == '__main__': 
     # generated_response = brain.generate_cohere_response(rules.rules_for_introduction , rules.rules_for_introduction)
