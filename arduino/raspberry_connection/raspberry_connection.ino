@@ -24,7 +24,7 @@ const float CALIBRATION_OFFSET = 0.0; // Adjust for calibration if needed (e.g.,
 #define mefenamic 6 // servo for mefinamic pill dispenser
 #define pills_detector 40 // ir sensor for detecting pills drop
 bool pills_detected = false; // ir sensor boolean to check if the pilss has been detected
-uint8_t pills_detection_cycle = 3; // ir sensor how many times to try pills dropping
+uint8_t pills_detection_cycle = 1; // ir sensor how many times to try pills dropping
 
 #define lockservo 13 // locking system for pills lock
 
@@ -159,7 +159,7 @@ void setup() {
   digitalWrite(RDirection,HIGH);
   digitalWrite(LDirection,HIGH);
 
-  // Serial.print("Start the activity");
+  // Serial.println("Start the activity");
 }
 
 void loop() { 
@@ -246,13 +246,15 @@ void loop() {
     }
     return;
   }
-
+ 
   // Check if there is any incoming data from the serial port
   if (Serial.available() > 0) {
     // Read the incoming data from the serial port and store it in the 'data' variable
     // The '\n' character is used to mark the end of the incoming data. The readStringUntil() function reads all characters until it encounters a newline character.
     // The readStringUntil() function returns the entire string received, excluding the newline character.
     String data = Serial.readStringUntil('\n'); // Read the incoming data until a newline character
+    // Serial.print("Data Received: ");
+    // Serial.println(data);
     if ( data == "DRAWER"){
       if (machine_is_locked){
         Serial.println("CLOSE");
