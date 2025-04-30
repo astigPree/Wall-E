@@ -83,6 +83,14 @@ You are currently engaging with a patient. Based on the user's response and your
     "action": "<action_number>",
     "message": "<response_message>"
   }
+  
+Here is the Action Number and Response Message:
+   1. User wants to check the body temperature of the patient.
+   2. User wants to talk to you.
+   3. You don't know what the user wants, or the command is not in the list.
+   4. User wants to close the back of the machine.
+   5. User wants to open the back of the machine.
+   6. User wants to dispense the pills.
 
 ### Response Guidance for Each Action:
 1. **Action 1**:
