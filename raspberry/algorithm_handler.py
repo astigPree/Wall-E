@@ -474,7 +474,7 @@ def algo_user_want_to_talk(
             identify_response = my_tools.text_to_dictionary(identify_response)
             if identify_response:
                 action = identify_response.get("action", None)
-                if action is not None:
+                if action is not None and action not in ['2', '3']:
                     return identify_response
         
         data : dict = my_tools.text_to_dictionary(bot_response)
