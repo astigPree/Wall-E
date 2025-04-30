@@ -676,14 +676,14 @@ bool compareUID(byte *uid1, byte *uid2){
 void unlockTheBackOfTheMachine(){ 
   for (int pos = 90; pos >= 0; pos -= 1) { // Move servo from 180 to 0 degrees
     lock.write(pos); // Tell servo to go to position in variable 'pos'
-    delay(15); // Wait 15 ms for the servo to reach the position
+    delay(5); // Wait 15 ms for the servo to reach the position
   }
 }
 
 void lockTheBackOfTheMachine(){ 
   for (int pos = 0; pos <= 90; pos += 1) { // Move servo from 0 to 180 degrees
     lock.write(pos); // Tell servo to go to position in variable 'pos'
-    delay(15); // Wait 15 ms for the servo to reach the position
+    delay(5); // Wait 15 ms for the servo to reach the position
   }
 }
 
