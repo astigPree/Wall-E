@@ -244,8 +244,9 @@ def main():
         if nurses: 
             database.write_image_nurses()
         if patients:
-            print("Patients : ", patients)
+            print("====================")
             database.write_image_patients()
+            print("====================")
         
         if nurses:
             database.nurses = nurses
