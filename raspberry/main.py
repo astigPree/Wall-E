@@ -225,10 +225,7 @@ def main():
                 else:
                     voice.speak(pills_command.get('message', "I didn't understand which pill you want to dispense."))
                     
-                    
-                                
-            
-        
+                     
         
         event.user_commands = []
         

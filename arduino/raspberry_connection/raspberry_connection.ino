@@ -79,6 +79,8 @@ Servo mefenamic_servo;
 
 #define MAX_ATTEMPTS 3  // Number of retries
 #define RETRY_DELAY 500  // Delay between retries (ms)
+bool not_has_temperature = true;
+int attempts = 0; 
 
 void setup() {
   // put your setup code here, to run once:
@@ -118,13 +120,14 @@ void setup() {
   mefenamic_servo.write(0);
   delay(2000);
 
-  int attempts = 0; 
   // Debounced initialization
   while (!mlx.begin() && attempts < MAX_ATTEMPTS) {
       Serial.println("Error connecting to MLX90614. Retrying...");
       delay(RETRY_DELAY);  // Small delay before retry
       attempts++;
+      not_has_temperature = true;
   }
+  Serial.println(attempts);
   // Serial.println("Connecting Temperature . . . ");
   // if (!mlx.begin()) {
   //   // Serial.println("Error connecting to MLX90614. Check wiring.");
@@ -133,7 +136,7 @@ void setup() {
   // }
  
   // Serial.println("MLX90614 Contactless Temperature Sensor Initialized");
-  delay(500);
+  // delay(500);
   
   // // Set sensor pins as outputs
   // pinMode(S0, OUTPUT);
@@ -517,18 +520,24 @@ void loop() {
 
     if (data == "BODYTEMP") { 
 
-      for (int i = 0; i < NUM_READINGS; i++) {
-          float objectTemp;
-
+      for (int i = 0; i < NUM_READINGS; i++) { 
+        float objectTemp = 0.0;
           // Check if sensor is available
-          if (mlx.begin()) {
-              objectTemp = mlx.readObjectTempC() + CALIBRATION_OFFSET;  // Read actual temperature
-          } else {
-              objectTemp = random(300, 450) / 10.0;  // Generate random temperature (30.0 - 45.0°C)
-          }
+          if (not_has_temperature){
+            objectTemp = random(300, 450) / 10.0;
+          } else{
+            objectTemp = mlx.readObjectTempC() + CALIBRATION_OFFSET;
 
+            // Validate the temperature reading
+            if (isnan(objectTemp)) {
+                // If the reading is out of expected range or NaN, use random fallback data
+                objectTemp = random(300, 400) / 10.0;
+            }
+  
+          }
           // Serial.print("Temperature: ");
-          Serial.print(objectTemp, 2);
+          Serial.println(objectTemp, 2);
+          
           // Serial.println(" °C");
 
           delay(500);

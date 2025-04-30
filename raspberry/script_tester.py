@@ -5,33 +5,33 @@ import requests
 import asyncio
 import my_tools
 
-import pyttsx3
+# import pyttsx3
 
-class VoiceUtils:
-    def __init__(self):
-        self.engine = pyttsx3.init()
+# class VoiceUtils:
+#     def __init__(self):
+#         self.engine = pyttsx3.init()
 
-        # Get available voices and set a male voice
-        voices = self.engine.getProperty('voices')
-        for voice in voices:
-            if "male" in voice.name.lower():
-                self.engine.setProperty('voice', voice.id)
-                break
+#         # Get available voices and set a male voice
+#         voices = self.engine.getProperty('voices')
+#         for voice in voices:
+#             if "male" in voice.name.lower():
+#                 self.engine.setProperty('voice', voice.id)
+#                 break
 
-        # Set voice properties for a softer tone
-        self.engine.setProperty('volume', 0.6)  # Lower volume for gentler voice
-        self.engine.setProperty('rate', 120)  # Slower speech rate for smoother delivery
+#         # Set voice properties for a softer tone
+#         self.engine.setProperty('volume', 0.6)  # Lower volume for gentler voice
+#         self.engine.setProperty('rate', 120)  # Slower speech rate for smoother delivery
 
-    def speak(self, text: str):
-        print("Speaking ...")
-        if text:
-            self.engine.say(text)
-            self.engine.runAndWait()
-            print("Done Speaking ...")
+#     def speak(self, text: str):
+#         print("Speaking ...")
+#         if text:
+#             self.engine.say(text)
+#             self.engine.runAndWait()
+#             print("Done Speaking ...")
 
-# Example usage
-voice = VoiceUtils()
-voice.speak("Hello! This is a male voice speaking softly.")
+# # Example usage
+# voice = VoiceUtils()
+# voice.speak("Hello! This is a male voice speaking softly.")
 
 
 
@@ -63,40 +63,40 @@ voice.speak("Hello! This is a male voice speaking softly.")
 
 
 
-# import serial
-# import time
+import serial
+import time
 
-# # Replace '/dev/ttyACM0' with your identified port
-# arduino = serial.Serial('/dev/ttyACM0', baudrate=115200, timeout=1)
-# time.sleep(2)  # Wait for the connection to initialize
+# Replace '/dev/ttyACM0' with your identified port
+arduino = serial.Serial('/dev/ttyACM0', baudrate=115200, timeout=1)
+time.sleep(2)  # Wait for the connection to initialize
 
-# def send_command(command):
-#     """Send a command to the Arduino over Serial."""
-#     arduino.write((command + '\n').encode())  # Send the command as bytes with a newline
-#     time.sleep(1)  # Give Arduino time to process and respond
-#     while arduino.in_waiting > 0:  # Check if there's a response
-#         response = arduino.readline().decode('utf-8').strip()
-#         print(f"Arduino Response: {response}")
+def send_command(command):
+    """Send a command to the Arduino over Serial."""
+    arduino.write((command + '\n').encode())  # Send the command as bytes with a newline
+    time.sleep(1)  # Give Arduino time to process and respond
+    while arduino.in_waiting > 0:  # Check if there's a response
+        response = arduino.readline().decode('utf-8').strip()
+        print(f"Arduino Response: {response}")
 
-# try:
-#     while True:
-#         # Receive data from Arduino
-#         if arduino.in_waiting > 0:  # Check if there is incoming data from Arduino
-#             data = arduino.readline().decode('utf-8').strip()
-#             print(f"Received from Arduino: {data}")
+try:
+    while True:
+        # Receive data from Arduino
+        if arduino.in_waiting > 0:  # Check if there is incoming data from Arduino
+            data = arduino.readline().decode('utf-8').strip()
+            print(f"Received from Arduino: {data}")
 
-#         # Example: Send user input to Arduino
-#         user_input = input("Enter a command for Arduino (or type 'exit' to quit): ")
-#         if user_input.lower() == 'exit':
-#             print("Closing connection. Goodbye!")
-#             break
-#         send_command(user_input)
+        # Example: Send user input to Arduino
+        user_input = input("Enter a command for Arduino (or type 'exit' to quit): ")
+        if user_input.lower() == 'exit':
+            print("Closing connection. Goodbye!")
+            break
+        send_command(user_input)
 
-# except KeyboardInterrupt:
-#     print("Program interrupted. Closing connection.")
+except KeyboardInterrupt:
+    print("Program interrupted. Closing connection.")
 
-# finally:
-#     arduino.close()  # Close the serial connection
+finally:
+    arduino.close()  # Close the serial connection
 
 # import json
 # import re
