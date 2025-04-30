@@ -51,6 +51,7 @@ class DataHandler:
     def write_image_patients(self):
         for patient in self.patients:
             image_url = self.patients[patient].get("face" , None)
+            print("patients : ", self.patients)
             if image_url:
                 
                 save_path = os.path.join(
@@ -63,6 +64,7 @@ class DataHandler:
                     image_url = SERVER_URL + image_url, 
                     save_path = save_path
                 )
+        
             
      
     def write_image_nurses(self):
