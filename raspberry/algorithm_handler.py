@@ -365,7 +365,7 @@ def algo_check_body_temperature(
 
     # Initialize variables for collecting readings
     temps = [] 
-    TIMEOUT = 180  # Timeout in seconds
+    TIMEOUT = 20  # Timeout in seconds
     start_time = time.time()
     is_done_scanning = False
     while not is_done_scanning:
