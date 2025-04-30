@@ -21,10 +21,20 @@ class ArduinoConnection:
         
     def read(self):
         data = self.unread_data.copy()
+        
         while self.arduino.in_waiting > 0:  # Check if there's a response
-            response = self.arduino.readline().decode('utf-8').strip()
-            data.append(response)
-        self.unread_data = []
-        return data
+            response_raw = self.arduino.readline()
+            print(response_raw)  # Check raw bytes before decoding
+            
+            try:
+                response = response_raw.decode('utf-8', errors='ignore').strip()
+                data.append(response)
+            except UnicodeDecodeError:
+                print("Warning: Non-UTF-8 data received, skipping.")
+        
+        self.unread_data = []  # Clear after processing
+        
+        return data if data else []  # Return None if no new data
+
     
     

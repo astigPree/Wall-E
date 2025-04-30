@@ -549,6 +549,7 @@ if __name__ == '__main__':
             voice.speak("There is an error in the arduino connection. Please check the connection so I can work properly")
             voice.speak("I will now shutdown and please restart the program so I can work properly")
             event.close_down = True
+            break
         time.sleep(0.1) 
     
     try:
