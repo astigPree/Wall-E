@@ -340,6 +340,9 @@ def main():
         return None
 
     event.has_important_event = True
+    has_medications_to_serve = True if len(event.list_of_schedule_to_take) > 0 else False
+    if has_medications_to_serve:
+        voice.speak("Please excuse me for a moment while I prepare for the medication of the patients")
     while len(event.list_of_schedule_to_take) > 0:
         schedule = event.list_of_schedule_to_take.pop(0)
         patient_id = schedule.get('patient' , None)
@@ -525,6 +528,8 @@ def main():
     #     time.sleep(0.1)
     
     event.has_important_event = False
+    if has_medications_to_serve:
+        voice.speak("I have finished serving all medications. Im available to your inquiries")
 
 if __name__ == '__main__': 
     # generated_response = brain.generate_cohere_response(rules.rules_for_introduction , rules.rules_for_introduction)
