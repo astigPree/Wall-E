@@ -118,6 +118,8 @@ If the user's command corresponds to any of the actions below, use the respectiv
 - If the user's response does not match the predefined actions, **default to Action 3** (unclear input).  
 - Avoid including extra fields such as `data`, unnecessary comments, or responses outside the specified formats.  
 
+Here is the conversation so far:
+%s
 """
 
 rules_for_temperature = """
