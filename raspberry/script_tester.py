@@ -5,11 +5,34 @@ import requests
 import asyncio
 import my_tools
 
-from gtts import gTTS
+import pyttsx3
 
-text = "Hello World ! I am Wall-E !"
-myobj = gTTS(text, lang='fr', tld='ca')
-myobj.save('speech.mp3')
+class VoiceUtils:
+    def __init__(self):
+        self.engine = pyttsx3.init()
+
+        # Get available voices and set a male voice
+        voices = self.engine.getProperty('voices')
+        for voice in voices:
+            if "male" in voice.name.lower():
+                self.engine.setProperty('voice', voice.id)
+                break
+
+        # Set voice properties for a softer tone
+        self.engine.setProperty('volume', 0.6)  # Lower volume for gentler voice
+        self.engine.setProperty('rate', 120)  # Slower speech rate for smoother delivery
+
+    def speak(self, text: str):
+        print("Speaking ...")
+        if text:
+            self.engine.say(text)
+            self.engine.runAndWait()
+            print("Done Speaking ...")
+
+# Example usage
+voice = VoiceUtils()
+voice.speak("Hello! This is a male voice speaking softly.")
+
 
 
 # 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

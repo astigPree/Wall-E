@@ -465,9 +465,17 @@ def algo_user_want_to_talk(
         print("Thinking about the response...")
         bot_response = brain.generate_cohere_response(command=rules_for_conversation % "".join(past_conversation), system=None)
         print("Response:", bot_response)
-            
+        
+        identify_response = brain.generate_cohere_response(command=rule_for_identifiying_command % response , system=None)
         if event.stop_proccess:
             return {}
+        
+        if identify_response:
+            identify_response = my_tools.text_to_dictionary(identify_response)
+            if identify_response:
+                action = identify_response.get("action", None)
+                if action is not None:
+                    return identify_response
         
         data : dict = my_tools.text_to_dictionary(bot_response)
         if not data:
