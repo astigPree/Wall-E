@@ -62,11 +62,18 @@ class FacialRecognition:
         return cv2.resize(image, (128, 128)) 
     
     
-    
+        
     def check_face_exists_in_database(self, face_image, face_in_database):
-        # Convert both images to grayscale
+        # Convert input image to grayscale
         face_image = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
+
+        # Load the face database image
         face_database = cv2.imread(face_in_database, cv2.IMREAD_GRAYSCALE)
+
+        # Ensure the image was loaded properly
+        if face_database is None:
+            print(f"Error: Unable to load image {face_in_database}. Check the file path.")
+            return False
 
         # Resize images for consistency
         face_image = cv2.resize(face_image, (128, 128))
@@ -87,9 +94,10 @@ class FacialRecognition:
         bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
         matches = bf.match(des1, des2)
         matches = sorted(matches, key=lambda x: x.distance)
+
         print(f"Number of matches: {len(matches)}")
-        # Return the number of matches as a similarity score
         return len(matches) > 60
+
 
     # # Example usage
     # similarity_score = compare_faces_with_orb(conver_frame_to_rgb, patient_face_path)
