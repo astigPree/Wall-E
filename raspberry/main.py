@@ -82,7 +82,7 @@ def main():
         # print("Starting to analyze the commands...")
         
         user_overall_commands = " ~ ".join(event.user_commands)
-        # print("Applying commands : ", user_overall_commands)
+        print("Applying commands : ", user_overall_commands)
         # generated_response = brain.generate_response(rules.rule_for_identifiying_command % user_overall_commands)
         # print("Generated response by gpt4free: ", generated_response)
         # decided_command : dict = text_to_dictionary(generated_response)
