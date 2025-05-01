@@ -340,6 +340,9 @@ def main():
 
     event.has_important_event = True
     has_medications_to_serve = True if len(event.list_of_schedule_to_take) > 0 else False
+    
+    # TODO: Apply walking here using arduino
+    has_reached = False
     if has_medications_to_serve:
         voice.speak("Please excuse me for a moment while I prepare for the medication of the patients")
         has_reached = algo.algo_machine_walk( 
@@ -512,17 +515,18 @@ def main():
         
     
     # # TODO: Apply walking here using arduino going back to its original position
-    voice.speak("I will now walk back to my original position, please excuse me")
-    arduino.write("STEP")
-    time.sleep(2) # Give Arduino time to process and respond
-    arduino.write("BACK")
-    start_time = time.time()
-    while time.time() - start_time < 300:
-        if "ARRIVED" in arduino.read():
-            break
-        if event.stop_proccess:
-            break
-        time.sleep(0.1)
+    if has_reached:
+        voice.speak("I will now walk back to my original position, please excuse me")
+        arduino.write("STEP")
+        time.sleep(2) # Give Arduino time to process and respond
+        arduino.write("BACK")
+        start_time = time.time()
+        while time.time() - start_time < 300:
+            if "ARRIVED" in arduino.read():
+                break
+            if event.stop_proccess:
+                break
+            time.sleep(0.1)
     
     event.has_important_event = False
     if has_medications_to_serve:
