@@ -396,9 +396,13 @@ def algo_check_body_temperature(
 
     # Generate the response message
     response_message = brain.generate_cohere_response(
-        system=rules_for_temperature.format(temp1=avg_temp_celsius, temp2=avg_temp_fahrenheit)
+        command=rules_for_temperature.format(temp1=avg_temp_celsius, temp2=avg_temp_fahrenheit)
     )
     response_message = my_tools.text_to_dictionary(response_message)
+    if not response_message:
+        response_message = {
+            "message": f"The scanned body temperature is {avg_temp_celsius:.2f}°C and {avg_temp_fahrenheit:.2f}°F."
+        }
     voice.speak(
         response_message.get(
             "message", 
