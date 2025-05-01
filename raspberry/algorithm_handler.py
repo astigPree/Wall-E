@@ -462,6 +462,7 @@ def algo_user_want_to_talk(
         if event.stop_proccess:
             return {}
         
+        voice.speak("Proccessing Command! Wait a moment!")
         print("Thinking about the response...")
         bot_response = brain.generate_cohere_response(command=rules_for_conversation % "".join(past_conversation), system=None)
         print("Response:", bot_response)

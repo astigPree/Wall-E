@@ -88,6 +88,7 @@ def main():
         # decided_command : dict = text_to_dictionary(generated_response)
         # print("Generated response by gpt4free: ", decided_command)
         # if not decided_command:
+        voice.speak("Proccessing Command! Wait a moment!")
         generated_response = brain.generate_cohere_response(user_overall_commands , rules.rule_for_identifiying_command % user_overall_commands)
         print("Generated response by cohere: ", generated_response)
         decided_command : dict = text_to_dictionary(generated_response)
@@ -99,7 +100,8 @@ def main():
             event.user_commands = []
             return
         
-            
+        
+        
         if decided_command.get('action') == "2" or decided_command.get('action') == 2:
             # TODO: Simulate talking to the user based on it question
             # print("This should be the user talking")
