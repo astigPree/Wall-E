@@ -396,7 +396,8 @@ def algo_check_body_temperature(
 
     # Generate the response message
     response_message = brain.generate_cohere_response(
-        command=rules_for_temperature.format(temp1=avg_temp_celsius, temp2=avg_temp_fahrenheit)
+        command=rules_for_temperature.format(temp1=avg_temp_celsius, temp2=avg_temp_fahrenheit),
+        system=None
     )
     response_message = my_tools.text_to_dictionary(response_message)
     if not response_message:
