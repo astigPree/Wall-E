@@ -342,6 +342,11 @@ def main():
     has_medications_to_serve = True if len(event.list_of_schedule_to_take) > 0 else False
     if has_medications_to_serve:
         voice.speak("Please excuse me for a moment while I prepare for the medication of the patients")
+        has_reached = algo.algo_machine_walk( 
+            event = event,  
+            arduino = arduino,
+        )
+        
     while len(event.list_of_schedule_to_take) > 0:
         schedule = event.list_of_schedule_to_take.pop(0)
         patient_id = schedule.get('patient' , None)
@@ -356,14 +361,7 @@ def main():
         # TODO: Apply walking here using arduino
         # voice.speak("Walking is currently not supported! Please wait for further updates")
         # Uncomment when the waling is implemented
-        schedule['color'] = patient.get('color' , 'RED')
-        has_reached = algo.algo_machine_walk( 
-            event = event, eyes = eyes , 
-            voice = voice , 
-            recognizer=ear , brain = brain, 
-            arduino = arduino, data = schedule
-        )
-        
+        schedule['color'] = patient.get('color' , 'RED') 
         
         if not has_reached:
             # Faild to walk to the patient location
