@@ -57,7 +57,8 @@ const int tblue = 400; // Threshold for blue detection
 const int tblue2 = 400; // Threshold for blue detection
 const int tred = 400;  // Threshold for red detection
 const int tred2 = 400; // Threshold for blue detection
-
+bool hit1 = false;
+bool hit2 = false;
 
 #define RWhell 36
 #define RDirection 37
@@ -77,7 +78,7 @@ Servo cremils_servo;
 Servo citirizene_servo; 
 Servo mefenamic_servo;
 
-#define MAX_ATTEMPTS 3  // Number of retries
+#define MAX_ATTEMPTS 1  // Number of retries
 #define RETRY_DELAY 500  // Delay between retries (ms)
 bool not_has_temperature = true;
 int attempts = 0; 
@@ -136,41 +137,41 @@ void setup() {
   // }
  
   // Serial.println("MLX90614 Contactless Temperature Sensor Initialized");
-  // delay(500);
+  delay(500);
   
   // // Set sensor pins as outputs
-  // pinMode(S0, OUTPUT);
-  // pinMode(S1, OUTPUT);
-  // pinMode(S2, OUTPUT);
-  // pinMode(S3, OUTPUT);
+  pinMode(S0, OUTPUT);
+  pinMode(S1, OUTPUT);
+  pinMode(S2, OUTPUT);
+  pinMode(S3, OUTPUT);
 
-  // pinMode(S02, OUTPUT);
-  // pinMode(S12, OUTPUT);
-  // pinMode(S22, OUTPUT);
-  // pinMode(S32, OUTPUT);
+  pinMode(S02, OUTPUT);
+  pinMode(S12, OUTPUT);
+  pinMode(S22, OUTPUT);
+  pinMode(S32, OUTPUT);
 
-  // // Set sensor frequency scaling
-  // digitalWrite(S0, HIGH);
-  // digitalWrite(S1, LOW);
-  // digitalWrite(S02, HIGH);
-  // digitalWrite(S12, LOW);
+  // Set sensor frequency scaling
+  digitalWrite(S0, HIGH);
+  digitalWrite(S1, LOW);
+  digitalWrite(S02, HIGH);
+  digitalWrite(S12, LOW);
 
-  // // Set sensorOut pins as input
-  // pinMode(sensorOut, INPUT);
-  // pinMode(sensorOut2, INPUT);
-  // delay(500);
+  // Set sensorOut pins as input
+  pinMode(sensorOut, INPUT);
+  pinMode(sensorOut2, INPUT);
+  delay(500);
 
-  // // Setup Nema Motor
-  // pinMode( RWhell, OUTPUT );
-  // pinMode( RDirection, OUTPUT);
-  // pinMode( LWhell, OUTPUT );
-  // pinMode( LWhell, OUTPUT);
-  // delay(2000);
+  // Setup Nema Motor
+  pinMode( RWhell, OUTPUT );
+  pinMode( RDirection, OUTPUT);
+  pinMode( LWhell, OUTPUT );
+  pinMode( LWhell, OUTPUT);
+  delay(2000);
 
-  // digitalWrite(RDirection,HIGH);
-  // digitalWrite(LDirection,HIGH);
+  digitalWrite(RDirection,HIGH);
+  digitalWrite(LDirection,HIGH);
 
-  // Serial.println("Start the activity");
+  Serial.println("Start the activity");
 }
 
 void loop() { 

@@ -357,24 +357,24 @@ def main():
         # voice.speak("Walking is currently not supported! Please wait for further updates")
         # Uncomment when the waling is implemented
         schedule['color'] = patient.get('color' , 'RED')
-        # has_reached = algo.algo_machine_walk( 
-        #     event = event, eyes = eyes , 
-        #     voice = voice , 
-        #     recognizer=ear , brain = brain, 
-        #     arduino = arduino, data = schedule
-        # )
+        has_reached = algo.algo_machine_walk( 
+            event = event, eyes = eyes , 
+            voice = voice , 
+            recognizer=ear , brain = brain, 
+            arduino = arduino, data = schedule
+        )
         
         
-        # if not has_reached:
-        #     # Faild to walk to the patient location
-        #     print("Failed to walk to patient")
-        #     message = my_tools.SMS_NOT_TAKEN_MEDICATION_TEXT.format(
-        #         patient_name = patient.get('name' , 'No name'), 
-        #         schedule_time = schedule.get('set_time' , 'No time'), 
-        #         pill = schedule.get('pill' , 'No pill')
-        #     )
-        #     my_tools.send_message(message , patient.get('phone_number' , None))
-        #     continue
+        if not has_reached:
+            # Faild to walk to the patient location
+            print("Failed to walk to patient")
+            message = my_tools.SMS_NOT_TAKEN_MEDICATION_TEXT.format(
+                patient_name = patient.get('name' , 'No name'), 
+                schedule_time = schedule.get('set_time' , 'No time'), 
+                pill = schedule.get('pill' , 'No pill')
+            )
+            my_tools.send_message(message , patient.get('phone_number' , None))
+            continue
 
         # Identify the face of the user before dropping the pills
         schedule['patient_name'] = patient.get('name' , 'Patient'),
@@ -514,17 +514,17 @@ def main():
         
     
     # # TODO: Apply walking here using arduino going back to its original position
-    # voice.speak("I will now walk back to my original position, please excuse me")
-    # arduino.write("STEP")
-    # time.sleep(2) # Give Arduino time to process and respond
-    # arduino.write("BACK")
-    # start_time = time.time()
-    # while time.time() - start_time < 300:
-    #     if "ARRIVED" in arduino.read():
-    #         break
-    #     if event.stop_proccess:
-    #         break
-    #     time.sleep(0.1)
+    voice.speak("I will now walk back to my original position, please excuse me")
+    arduino.write("STEP")
+    time.sleep(2) # Give Arduino time to process and respond
+    arduino.write("BACK")
+    start_time = time.time()
+    while time.time() - start_time < 300:
+        if "ARRIVED" in arduino.read():
+            break
+        if event.stop_proccess:
+            break
+        time.sleep(0.1)
     
     event.has_important_event = False
     if has_medications_to_serve:
