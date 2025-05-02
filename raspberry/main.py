@@ -521,7 +521,7 @@ def main():
         time.sleep(2) # Give Arduino time to process and respond
         arduino.write("BACK")
         start_time = time.time()
-        while time.time() - start_time < 300:
+        while time.time() - start_time < 1800: # 30 mins timeout
             if "ARRIVED" in arduino.read():
                 break
             if event.stop_proccess:
