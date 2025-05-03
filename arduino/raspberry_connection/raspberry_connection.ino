@@ -68,7 +68,7 @@ bool hit2 = false;
 bool walking_with_blue_sensor = false;
 bool walking_with_with_out_sensor = false;
 unsigned long last_step_time = 0;
-const unsigned long step_interval = 2000; // 1 second in milliseconds
+const unsigned long step_interval = 5000; // 5 second in milliseconds
 
 Servo lock;  // Create a servo object
 bool machine_is_locked = true;
@@ -238,11 +238,11 @@ void loop() {
         // Both sensors detect values greater than the blue threshold, move forward
         moveForward();
         // Serial.println("Motor Action: Move Forward");
-      } else if (blue1 < tblue) {
+      } else if (blue1 < tblue && blue2 > tblue2) {
         // Sensor 1 detects blue (less than blue threshold), turn left
         turnLeft();
         // Serial.println("Motor Action: Turn Left");
-      } else if (blue2 < tblue2) {
+      } else if (blue2 < tblue2 && blue1 > tblue) {
         // Sensor 2 detects blue (less than blue threshold), turn right
         turnRight(); // Turn right if blue2 is below threshold
         // Serial.println("Motor Action: Turn Right");

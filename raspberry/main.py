@@ -388,6 +388,7 @@ def main():
         
         timeout = 180  # Timeout duration in seconds (3 minutes)
         start_time = time.time()
+        not_received = False
         while event.is_recording or len(event.user_commands) < 1:
             time.sleep(0.5)
             if event.stop_proccess:
@@ -396,7 +397,7 @@ def main():
             if time.time() - start_time > timeout:
                 # print("3 minutes have passed, returning default response: {}")
                 voice.speak(schedule.get('message', 'I think you are not ready to receive the medication. Please try again later'))
-                return False  # Automatically return {} if timeout is exceeded
+                not_received = False  # Automatically return {} if timeout is exceeded
             # print("Waiting for event to be recorded or user commands to be added")
             it_has_yes = False
             for command in event.user_commands:
@@ -414,7 +415,9 @@ def main():
                     print("No listening thread found, skipping identification process...")
                 time.sleep(0.5)
                 break
-                
+        
+        if not not_received: 
+            continue
         
     
         voice.speak(schedule.get('message', 'Now please face my camera so i can see you if you are the patient'))
@@ -521,7 +524,7 @@ def main():
         time.sleep(2) # Give Arduino time to process and respond
         arduino.write("BACK")
         start_time = time.time()
-        while time.time() - start_time < 300:
+        while time.time() - start_time < 1800:  # 30 mins timeout
             if "ARRIVED" in arduino.read():
                 break
             if event.stop_proccess:
