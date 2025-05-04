@@ -26,7 +26,7 @@ const float CALIBRATION_OFFSET = 0.0; // Adjust for calibration if needed (e.g.,
 bool pills_detected = false; // ir sensor boolean to check if the pilss has been detected
 uint8_t pills_detection_cycle = 1; // ir sensor how many times to try pills dropping
 
-#define lockservo 13 // locking system for pills lock
+#define lockservo 9 // locking system for pills lock
 
 
 /* Create an instance of the RFID library */
