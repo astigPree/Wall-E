@@ -399,23 +399,23 @@ def main():
                 voice.speak(schedule.get('message', 'I think you are not ready to receive the medication. Please try again later'))
                 not_received = False  # Automatically return {} if timeout is exceeded
             # print("Waiting for event to be recorded or user commands to be added")
-            it_has_yes = False
+            # it_has_yes = False
             for command in event.user_commands:
                 if "yes" in command.lower():
-                    it_has_yes = True
+                    # it_has_yes = True
                     not_received = True
                     break
-            if it_has_yes:
-                # print("User confirmed, starting identification process...")
-                if listening_thread is not None:
-                    # event.down_recording = True
-                    # listening_thread.join()
-                    # listening_thread = None
-                    print("Down recording")
-                else:
-                    print("No listening thread found, skipping identification process...")
-                time.sleep(0.5)
-                break
+            # if it_has_yes:
+            #     # print("User confirmed, starting identification process...")
+            #     if listening_thread is not None:
+            #         # event.down_recording = True
+            #         # listening_thread.join()
+            #         # listening_thread = None
+            #         print("Down recording")
+            #     else:
+            #         print("No listening thread found, skipping identification process...")
+            #     time.sleep(0.5)
+            #     break
         
         if not not_received: 
             continue
