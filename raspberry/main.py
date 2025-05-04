@@ -74,6 +74,7 @@ def main():
     global listening_thread
     global is_machine_open
     global arduino
+    global fetching_strike
     # if listening_thread is None:
     #     print("Starting listening thread...")
     #     listening_thread = threading.Thread(target=start_listening)
