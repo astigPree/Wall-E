@@ -134,16 +134,14 @@ def algo_machine_walk(
     arduino.write("WALK")
     # Check if the arduino is in the location already and timeout for 30 mins
     start_time = time.time()
-    machine_already_in_location = False
     while time.time() - start_time < 1800:  # 30 mins timeout
-        if event.stop_proccess:
-            return False
+        # if event.stop_proccess:
+        #     return False
         if "ARRIVED" in arduino.read():
-            machine_already_in_location = True
-            break
+            return True 
         time.sleep(0.1)
     
-    return machine_already_in_location
+    return False
 
 def algo_machine_drop_pills(
     event : EventHandler , 
