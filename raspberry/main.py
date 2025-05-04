@@ -41,6 +41,7 @@ arduino.initialized()
 
 is_machine_open = False
 listening_thread : threading.Thread = None
+fetching_strike = 0 
 
 def start_listening():
     global ear  
@@ -78,7 +79,8 @@ def main():
     #     listening_thread = threading.Thread(target=start_listening)
     #     listening_thread.start()
     decided_command = None
-    if len(event.user_commands) > 0 and not event.has_important_event:
+    prio_command = len(event.user_commands) > 0 and not event.has_important_event
+    if prio_command:
         # print("Starting to analyze the commands...")
         
         user_overall_commands = " ~ ".join(event.user_commands)
@@ -232,9 +234,16 @@ def main():
         event.user_commands = []
         
 
-    time.sleep(0.3)
+    if prio_command and fetching_strike != 0:
+        if (fetching_strike + 1) > 1 and (fetching_strike + 1) < 5:
+            fetching_strike += 1
+            return
+        else:
+            fetching_strike = 1
+    else:
+        fetching_strike = 1
+    
     data = send_post_request()
-    time.sleep(0.1)
     if data:
         # # print(f"Received data: {data}")
         nurses = data.get('nurses', None)
