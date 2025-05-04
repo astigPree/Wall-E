@@ -347,7 +347,7 @@ def main():
         voice.speak("Please excuse me for a moment while I prepare for the medication of the patients")
         has_reached = algo.algo_machine_walk( 
             event = event,  
-            arduino = arduino,
+            arduino = arduino
         )
         
     while len(event.list_of_schedule_to_take) > 0:

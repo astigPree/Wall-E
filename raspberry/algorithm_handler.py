@@ -116,13 +116,8 @@ RECORDING_VOICE_TIMEOUT = 3 # number of tries to recording the voice recognition
     
 
 def algo_machine_walk(
-    event : EventHandler , 
-    voice : VoiceUtils ,  
-    brain : BrainUtils, 
-    recognizer : SpeechRecognitionUtils ,  
-    arduino : ArduinoConnection,
-    eyes : FacialRecognition,
-    data : dict):
+    event : EventHandler ,  
+    arduino : ArduinoConnection):
     
     # 8. Senario in making the machine walk;
     # - The user will ask the machine to move.
