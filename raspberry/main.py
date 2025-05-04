@@ -552,9 +552,9 @@ if __name__ == '__main__':
     decided_command : dict = text_to_dictionary(generated_response)
     print("Generated response by cohere: ", decided_command)
     if isinstance(decided_command, dict):
-        introduction = decided_command.get("message" , "Hello, I am Stuart, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?")
+        introduction = decided_command.get("message" , "Hello, I am Pill-ar, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?")
     else:
-        introduction = "Hello, I am Stuart, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?"
+        introduction = "Hello, I am Pill-ar, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?"
     voice.speak(introduction)
     time.sleep(1)
     listening_thread = threading.Thread(target=start_listening)
