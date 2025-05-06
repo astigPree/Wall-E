@@ -1,9 +1,9 @@
 from my_tools import *
 import time
 import rules
-import requests
-import asyncio
-import my_tools
+# import requests
+# import asyncio
+# import my_tools
 
 # import pyttsx3
 
@@ -142,13 +142,13 @@ import cohere
 import json
 
 user = "Pakibukas ng pinto para makalagay ako ng pills"
-system_rules = rules.rule_for_identifiying_command.format(text=user)
+# system_rules = rules.rule_for_identifiying_command.format(text=user)
 
-co = cohere.ClientV2("6KXJUorIR8sWsMs5x6GTjmMDTar57vWvFUKYrakT")
+co = cohere.ClientV2("BEbGXl5pfHs41O4YjBPHPeQPhnqm4PRwpmlgrmyi")
 response = co.chat(
     model="command-r", 
     messages=[
-        {"role": "system", "content": system_rules},
+        # {"role": "system", "content": system_rules},
         {"role": "user", "content": user}
     ]
 )

@@ -81,7 +81,7 @@ def main():
     #     listening_thread.start()
     decided_command = None
     prio_command = len(event.user_commands) > 0 and not event.has_important_event
-    if prio_command:
+    if len(event.user_commands) > 0:
         # print("Starting to analyze the commands...")
         
         user_overall_commands = " ~ ".join(event.user_commands)
