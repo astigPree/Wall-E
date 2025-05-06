@@ -83,15 +83,11 @@ def main():
     prio_command = len(event.user_commands) > 0 and not event.has_important_event
     if len(event.user_commands) > 0:
         # print("Starting to analyze the commands...")
+        voice.speak("Proccessing Command! Wait a moment!")
         
         user_overall_commands = " ~ ".join(event.user_commands)
-        print("Applying commands : ", user_overall_commands)
-        # generated_response = brain.generate_response(rules.rule_for_identifiying_command % user_overall_commands)
-        # print("Generated response by gpt4free: ", generated_response)
-        # decided_command : dict = text_to_dictionary(generated_response)
-        # print("Generated response by gpt4free: ", decided_command)
-        # if not decided_command:
-        voice.speak("Proccessing Command! Wait a moment!")
+        print("Applying commands : ", user_overall_commands) 
+        
         generated_response = brain.generate_cohere_response(user_overall_commands , rules.rule_for_identifiying_command % user_overall_commands)
         print("Generated response by cohere: ", generated_response)
         decided_command : dict = text_to_dictionary(generated_response)

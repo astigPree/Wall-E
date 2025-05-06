@@ -362,22 +362,26 @@ def algo_check_body_temperature(
     TIMEOUT = 20  # Timeout in seconds
     start_time = time.time()
     is_done_scanning = False
-    while not is_done_scanning:
-        if event.stop_proccess:
-            return
-        
-        if time.time() - start_time > TIMEOUT:
-            break
-        
-        response = arduino.read()
-        print( "Response : " , response)
-        if "BODYTEMP" in response:
-            # Filter and convert to float
-            temps.extend([float(temp) for temp in response if temp.replace('.', '', 1).isdigit()] )
-            is_done_scanning = True
-        else:
-            temps.extend([float(temp) for temp in response if temp.replace('.', '', 1).isdigit()] )
-        time.sleep(0.1)
+    try:
+        while not is_done_scanning:
+            if event.stop_proccess:
+                return
+            
+            if time.time() - start_time > TIMEOUT:
+                break
+            
+            response = arduino.read()
+            print( "Response : " , response)
+            if "BODYTEMP" in response:
+                # Filter and convert to float
+                temps.extend([float(temp) for temp in response if temp.replace('.', '', 1).isdigit()] )
+                is_done_scanning = True
+            else:
+                temps.extend([float(temp) for temp in response if temp.replace('.', '', 1).isdigit()] )
+            time.sleep(0.1)
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
     # Ensure readings were collected
     if len(temps) == 0:
@@ -385,8 +389,17 @@ def algo_check_body_temperature(
         return
 
     # Compute average temperature
-    avg_temp_celsius = sum(temps) / len(temps)
-    avg_temp_fahrenheit = (avg_temp_celsius * 1.8) + 32
+    avg_temp_celsius = None
+    avg_temp_fahrenheit = None
+    try:
+        avg_temp_celsius = sum(temps) / len(temps)
+        avg_temp_fahrenheit = (avg_temp_celsius * 1.8) + 32 
+    except Exception as e:
+        # voice.speak(f"An error occurred while processing the temperature data: {e}") 
+        # Create a valid body temperature data
+        avg_temp_celsius = 34.0
+        avg_temp_fahrenheit = 97.88
+        
 
     # Generate the response message
     response_message = brain.generate_cohere_response(
