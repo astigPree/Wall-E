@@ -384,9 +384,9 @@ def algo_check_body_temperature(
         print(f"An error occurred: {e}")
 
     # Ensure readings were collected
-    if len(temps) == 0:
-        voice.speak("I couldn't detect any temperature data. Please ensure the sensor is working properly.")
-        return
+    # if len(temps) == 0:
+    #     voice.speak("I couldn't detect any temperature data. Please ensure the sensor is working properly.")
+    #     return
 
     # Compute average temperature
     avg_temp_celsius = None
