@@ -530,6 +530,7 @@ def main():
     if has_reached:
         voice.speak("I will now walk back to my original position, please excuse me")
         has_reached = False
+        time.sleep(3)
         # arduino.write("STEP")
         # time.sleep(2) # Give Arduino time to process and respond
         # arduino.write("BACK")
