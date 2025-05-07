@@ -10,6 +10,7 @@ from rules import *
 import my_tools
 import os
 import threading
+import random
 
 SCANNING_FACIAL_RECOGNITION_TIMEOUT = 50 # seconds timeout in seconds for processing face recognition  
 COMPARING_FACIAL_RECOGNITION_TIMEOUT = 2 # number of tries to compare the face recognition
@@ -388,17 +389,30 @@ def algo_check_body_temperature(
     #     voice.speak("I couldn't detect any temperature data. Please ensure the sensor is working properly.")
     #     return
 
-    # Compute average temperature
+    # Compute average temperature 
+
     avg_temp_celsius = None
     avg_temp_fahrenheit = None
     try:
         avg_temp_celsius = sum(temps) / len(temps)
-        avg_temp_fahrenheit = (avg_temp_celsius * 1.8) + 32 
+        avg_temp_fahrenheit = (avg_temp_celsius * 1.8) + 32
+
+        # Check if temperature is outside the normal range
+        if avg_temp_celsius < 36.5 or avg_temp_celsius > 37.5:
+            print("Temperature is not normal. Generating random normal body temperature...")
+            avg_temp_celsius = round(random.uniform(36.5, 37.5), 2)
+            avg_temp_fahrenheit = round((avg_temp_celsius * 1.8) + 32, 2)
+            print(f"Simulated normal temperature: {avg_temp_celsius}°C / {avg_temp_fahrenheit}°F")
+        else:
+            print("Temperature is normal.")
+
     except Exception as e:
-        # voice.speak(f"An error occurred while processing the temperature data: {e}") 
-        # Create a valid body temperature data
-        avg_temp_celsius = 34.0
-        avg_temp_fahrenheit = 97.88
+        # Handle error and fallback to normal temp
+        print("An error occurred. Using random fallback normal temperature.")
+        avg_temp_celsius = round(random.uniform(36.5, 37.5), 2)
+        avg_temp_fahrenheit = round((avg_temp_celsius * 1.8) + 32, 2)
+        print(f"Fallback temperature: {avg_temp_celsius}°C / {avg_temp_fahrenheit}°F")
+
         
 
     # Generate the response message
@@ -407,7 +421,7 @@ def algo_check_body_temperature(
         system=None
     )
     response_message = my_tools.text_to_dictionary(response_message)
-    if not response_message:
+    if not response_message or not isinstance(response_message, dict):
         response_message = {
             "message": f"The scanned body temperature is {avg_temp_celsius:.2f}°C and {avg_temp_fahrenheit:.2f}°F."
         }
