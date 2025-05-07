@@ -96,7 +96,7 @@ class FacialRecognition:
         matches = sorted(matches, key=lambda x: x.distance)
 
         print(f"Number of matches: {len(matches)}")
-        return len(matches) > 40
+        return len(matches) > 55
 
 
     # # Example usage
