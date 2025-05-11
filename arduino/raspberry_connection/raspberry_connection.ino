@@ -165,7 +165,7 @@ void setup() {
   pinMode( RWhell, OUTPUT );
   pinMode( RDirection, OUTPUT);
   pinMode( LWhell, OUTPUT );
-  pinMode( LWhell, OUTPUT);
+  pinMode( LDirection, OUTPUT);
   delay(2000);
 
   digitalWrite(RDirection,HIGH);
@@ -213,9 +213,9 @@ void loop() {
         // Serial.println("Motor Action: Turn Right");
       } else {
         // Fallback logic if no conditions match
-        stopMotors(); // Fallback if no conditions match
-        Serial.println("ARRIVED");
-        delay(500);
+        // stopMotors(); // Fallback if no conditions match
+        // Serial.println("ARRIVED");
+        // delay(500);
         // Serial.println("Motor Action: Idle or Stop");
       }
     }
