@@ -1,6 +1,9 @@
 from my_tools import *
 import time
 import rules
+
+# print(send_locking_logs_request(2, True))
+
 # import requests
 # import asyncio
 # import my_tools
@@ -138,33 +141,33 @@ import rules
 
 
 
-import cohere
-import json
+# import cohere
+# import json
 
-user = "Pakibukas ng pinto para makalagay ako ng pills"
-# system_rules = rules.rule_for_identifiying_command.format(text=user)
+# user = "Pakibukas ng pinto para makalagay ako ng pills"
+# # system_rules = rules.rule_for_identifiying_command.format(text=user)
 
-co = cohere.ClientV2("BEbGXl5pfHs41O4YjBPHPeQPhnqm4PRwpmlgrmyi")
-response = co.chat(
-    model="command-r", 
-    messages=[
-        # {"role": "system", "content": system_rules},
-        {"role": "user", "content": user}
-    ]
-)
+# co = cohere.ClientV2("BEbGXl5pfHs41O4YjBPHPeQPhnqm4PRwpmlgrmyi")
+# response = co.chat(
+#     model="command-r", 
+#     messages=[
+#         # {"role": "system", "content": system_rules},
+#         {"role": "user", "content": user}
+#     ]
+# )
 
-data = response.dict()
+# data = response.dict()
 
-for k in data:
-    print("================================")
-    print(data[k])
+# for k in data:
+#     print("================================")
+#     print(data[k])
     
-    if k == "message":
-        message: list = data[k]["content"]
-        for mes in message:
-            main_content = mes.get("text") 
-            if main_content:
-                print("Converted content : ", text_to_dictionary(main_content))
+#     if k == "message":
+#         message: list = data[k]["content"]
+#         for mes in message:
+#             main_content = mes.get("text") 
+#             if main_content:
+#                 print("Converted content : ", text_to_dictionary(main_content))
              
 
 

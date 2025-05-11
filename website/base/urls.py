@@ -9,6 +9,7 @@ urlpatterns = [
     path('login', views.login_user, name='login_user'),
     path('datamanager', views.datamanager_page, name='datamanager_page'),
     path('patient/<int:patient_id>', views.patient_page, name='patient_page'),
+    path('nurse/<int:nurse_id>', views.nurse_page, name='nurse_page'),
     
     
     
@@ -26,13 +27,14 @@ urlpatterns = [
     
     path('patient/medication/<int:patient_id>', views.get_patient_medications, name='patient_medications'),
     path('delete/medication', views.delete_schedule, name='delete_medications'),
-    
+    path("nurse/locking/", views.nurse_locking_data, name='nurse_locking'),
     
     path("controller", views.controller_get_data, name='controller'),
     path("controller/delete", views.controller_delete_schedule, name='controller_delete'),
     path("controller/taken", views.controller_taken_medicine_schedule, name='controller_taken'),
     path("controller/reset/daily", views.controller_reset_taken_medicine, name='controller_reset_daily'),
     
-    path("controller/notify", views.notify_medication, name='controller_notify')
+    path("controller/notify", views.notify_medication, name='controller_notify'),
+    path("controller/locking", views.notify_medication, name='controller_locking'),
     
 ]

@@ -9,3 +9,5 @@ admin.site.register(Patient)
 admin.site.register(Schedule)
 
 admin.site.register(Account)
+
+admin.site.register(LockingLogs)

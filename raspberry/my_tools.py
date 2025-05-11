@@ -67,6 +67,32 @@ def send_post_request():
     except Exception as e:
         print(f'Error: {e}')
         return None
+    
+    
+
+def send_locking_logs_request( nurse_id : int , is_for_lock : bool):
+    try:
+        url = SERVER_URL + '/controller/locking'  # Replace with your actual URL
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        data = {
+            'controller_token': CONTROLLER_TOKEN,  # Replace with your actual token,
+            'is_for_lock' : is_for_lock,
+            'nurse_id' : nurse_id
+        }
+        
+        response = requests.post(url, headers=headers, data=data)
+        
+        if response.ok:
+            return True
+        else:
+            print(f'Server responded with status: {response.status_code}')
+            print(f'Error: {response.json()}')
+            return None
+    except Exception as e:
+        print(f'Error: {e}')
+        return None
 
 def delete_schedule(schedule_id):
     try:

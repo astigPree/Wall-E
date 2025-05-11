@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
 
-from .models import Account, Nurse, Patient, Schedule
+from .models import Account, Nurse, Patient, Schedule, LockingLogs
 from datetime import datetime
 import requests
 
@@ -45,7 +45,7 @@ def datamanager_page(request):
     # Check if user is authenticated
     if not request.user.is_authenticated:
         return redirect('index')
-     
+      
     # Render the data manager page if authenticated
     
     return render(request, 'datamanager_page.html')
@@ -66,6 +66,21 @@ def patient_page(request, patient_id : int):
             logout(request)
             return redirect('index')
 
+def nurse_page(request, nurse_id : int):
+    
+    if not request.user.is_authenticated:
+        return redirect('index')
+    try:
+        nurse = Nurse.objects.get(id=nurse_id)
+        if nurse.account_id != request.user.id:
+            logout(request)
+            return redirect('index')
+        nurse_data = nurse.get_nurse_data() 
+        return render(request, 'nurse_page.html' , context={'nurse' : nurse_data})
+    
+    except Nurse.DoesNotExist:
+            logout(request)
+            return redirect('index')
 
 def fetch_patients_data(request):
     try:
@@ -331,6 +346,26 @@ def delete_schedule(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)   
 
 
+def nurse_locking_data(request):
+    try:
+        if request.method == "POST" and request.user.is_authenticated:
+            nurse_id = request.POST.get('nurse_id')
+            nurse = Nurse.objects.filter(id=int(nurse_id)).first()
+            date = request.POST.get('date', None)
+            if not nurse or not date:
+                return JsonResponse({'error': 'Nurse not found'}, status=404)
+            
+            converted_date = datetime.strptime(date, '%Y-%m-%d').date()
+            print("Converted Date:", converted_date)
+
+            log_objs = LockingLogs.objects.filter(nurse_id=nurse_id , created_at__date=converted_date)
+            logs = [log.get_locking_logs_data() for log in log_objs] 
+            
+            return JsonResponse({'message': 'Nurse locked successfully' , 'logs' : logs}, status=200)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 # ======================= CONTROLLERS ========================
@@ -524,3 +559,41 @@ def notify_medication(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
+@csrf_exempt
+def controller_nurse_locking_log(request):
+    try:
+        
+        if request.method == "POST":
+            controller_token = request.POST.get('controller_token')
+            
+            user = Account.objects.filter(user_token=controller_token).first()
+            print("controller ; ", controller_token)
+            if not user:
+                return JsonResponse({'error': 'User not found'}, status=404)
+            
+            nurse_id = request.POST.get('nurse_id' , None)
+            if not nurse_id:
+                return JsonResponse({'error': 'Nurse not found'}, status=404)
+            
+            nurse = Nurse.objects.filter(id=nurse_id).first()
+            if not nurse:
+                return JsonResponse({'error': 'Nurse not found'}, status=404)
+            
+            is_for_lock = request.POST.get('is_for_lock', None)
+            if not isinstance(is_for_lock, bool):
+                return JsonResponse({'error': 'is_for_lock not found'}, status=404)
+            
+            LockingLogs.objects.create(
+                nurse_id=nurse_id,
+                is_for_lock=is_for_lock,
+                logs = "Nurse locked the machine" if is_for_lock else "Nurse unlocked the machine",
+            )
+            
+            return JsonResponse({
+                'success': 'Created Nurse Locking Log successfully'
+            }, status=200)
+            
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)

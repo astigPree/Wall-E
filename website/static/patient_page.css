@@ -427,3 +427,23 @@
 .border-is-yellow{
     border: 4px solid yellow !important;
 }
+
+
+#datePicker{
+    width: fit-content;
+    padding: clamp(0.4375rem, 0.3397rem + 0.3261vw, 0.625rem) clamp(1rem, 0.8696rem + 0.4348vw, 1.25rem);
+    background-color: #003366;
+    color: #F2F2F2;
+    height: fit-content;
+    align-self: flex-end;
+    justify-self: flex-end;
+    border-radius: 8px;
+    cursor: pointer; 
+    font-size: clamp(0.75rem, 0.6848rem + 0.2174vw, 0.875rem);
+    margin-top: 20px;
+    color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(100%); /* Makes the calendar icon white */
+}

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block headblock %}
+    <link rel="stylesheet" href="{% static 'patient_page.css' %}">
+    <meta name="csrf-token" content="{{ csrf_token }}">  
+ 
+{% endblock headblock %}
+    
+
+{% block bodyblock %}
+    <section class="top-bar">
+        <div class="top-bar-title">
+            <h1 class="roboto-bold">Welcome To Well-E Data Manager</h1>
+            <svg width="65" height="60" viewBox="0 0 65 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0.00434113 26.9604L7.80138 25.6712C8.28096 24.8429 9.09691 24.1663 10.1537 23.824C10.2861 23.7813 10.4206 23.7443 10.5552 23.7132L19.2875 8.22978C18.4586 6.73841 18.3522 4.95537 19.1725 3.33761C20.6308 0.45598 24.4696 -0.800116 27.7464 0.531813L60.3299 12.4414C64.299 14.0553 66.0849 18.193 64.3185 21.6832C63.5655 23.1707 62.2895 24.2985 60.7639 24.981L48.898 51.1957L48.3946 52.3409C50.6927 54.2465 52.1314 56.9725 52.1314 60H28.838C28.838 54.2367 34.0526 49.5643 40.4847 49.5643C40.5064 49.5643 40.5259 49.5643 40.5476 49.5643L41.3788 47.5207L41.2486 47.5499L41.4764 47.2815L50.9878 23.8668L50.9965 23.7676L24.8125 12.0214L15.6158 26.0446C15.6288 26.0757 15.644 26.1048 15.6548 26.136C15.7265 26.3148 15.7829 26.4957 15.8241 26.6784L23.1546 30.6781L20.6894 32.6906L17.1175 39.5214L13.4718 40.13L14.9539 30.684L14.394 30.3826C14.0143 30.6723 13.5694 30.9076 13.0725 31.0689C11.1845 31.6814 9.12946 31.034 8.05311 29.6087L5.38176 38.7941L2.19611 37.0947L1.55811 30.402L1.25647 30.4506L0 26.9662L0.00434113 26.9604ZM58.1534 14.2283C55.3453 13.8122 52.6935 15.5136 52.2291 18.0297C51.7647 20.5457 53.6635 22.9218 56.4716 23.3379C59.2796 23.754 61.9314 22.0527 62.3958 19.5366C62.8602 17.0205 60.9614 14.6444 58.1534 14.2283ZM28.8575 6.27563C29.2047 4.39538 27.7855 2.62012 25.687 2.30901C23.9944 2.05818 22.3799 2.83595 21.6355 4.13288C21.5921 4.20871 21.5531 4.28455 21.5162 4.36232C21.5118 4.3701 21.5097 4.37788 21.5053 4.38371C21.4706 4.45954 21.4381 4.53538 21.4077 4.6151L21.4055 4.62093C21.3773 4.69676 21.3513 4.77648 21.3296 4.85426C21.3252 4.87176 21.3209 4.88926 21.3165 4.90482C21.2948 4.98454 21.2753 5.06426 21.2623 5.14592C21.1972 5.49786 21.195 5.84786 21.2471 6.18425C21.4728 7.64062 22.7292 8.86171 24.4327 9.11449C24.4957 9.12421 24.5564 9.13199 24.6172 9.13782C24.6367 9.13977 24.6563 9.14171 24.6758 9.14365C24.717 9.14754 24.7604 9.15143 24.8017 9.15338C24.8255 9.15532 24.8494 9.15532 24.8711 9.15727C24.9102 9.15921 24.947 9.16115 24.9839 9.16115C25.0078 9.16115 25.0317 9.16115 25.0577 9.16115C25.0946 9.16115 25.1315 9.16116 25.1684 9.15921C25.1923 9.15921 25.2161 9.15727 25.24 9.15727C25.2769 9.15532 25.3138 9.15338 25.3507 9.15143C25.3746 9.14949 25.3963 9.14754 25.4201 9.1456C25.4614 9.14171 25.5004 9.13782 25.5395 9.13393C25.559 9.13199 25.5785 9.13004 25.5981 9.1281C25.6567 9.12032 25.7131 9.11254 25.7717 9.10282H25.776C25.8324 9.0931 25.891 9.08143 25.9474 9.06977C25.967 9.06588 25.9865 9.06005 26.006 9.05616C26.0429 9.04838 26.082 9.03866 26.1189 9.02893C26.1406 9.0231 26.1645 9.01727 26.1862 9.01143C26.2209 9.00171 26.2534 8.99199 26.2881 8.98227C26.312 8.97449 26.3337 8.96866 26.3576 8.96088C26.3901 8.95116 26.4227 8.93949 26.4552 8.92782C26.4769 8.92005 26.5008 8.91227 26.5225 8.90449C26.5551 8.89282 26.5876 8.87921 26.6202 8.86755C26.6419 8.85977 26.6636 8.85005 26.6831 8.84227C26.7178 8.82866 26.7525 8.8131 26.7873 8.79755C26.8046 8.78977 26.822 8.78199 26.8393 8.77422C26.8893 8.75088 26.9413 8.7256 26.9891 8.70033L26.9913 8.69838C27.9504 8.19867 28.6622 7.33145 28.8575 6.27563Z" fill="#F2F2F2"/>
+            </svg>
+        </div>
+        <div class="top-bar-buttons">
+            <button class="roboto-bold default-button">PATIENT MANAGER</button>
+            <button class="roboto-bold default-button">NURSE MANAGER</button>
+        </div>
+    </section>
+
+    <section class="patient-section"  >
+        <button id="back-patient-button" class=" roboto-bold" onclick="window.location.href='../datamanager'">GO BACK</button>
+        
+        <img id="patient-face" src="{{nurse.face}}" alt="">
+        <h2 class="roboto-medium">{{nurse.name}}</h2>
+        {% comment %} <h5 class="roboto-light">{{patient.phone_number}}</h5> {% endcomment %}
+        <h5 id="date-tag" class="roboto-light"></h5>
+        
+        <script>
+            // Parse the string into a Date object
+
+
+            const originalDate = new Date("{{nurse.date_added}}");
+
+            // Format the Date object into the desired string format
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const formattedDateStr = `${monthNames[originalDate.getMonth()]} ${originalDate.getDate()}, ${originalDate.getFullYear()}`;
+            document.getElementById("date-tag").textContent = `Date Added : ${formattedDateStr}`;
+        </script>
+        <div class="medications-action-buttons">
+            <input type="date" class="roboto-medium" id="datePicker">
+        </div>  
+
+        <div class="medications-table">
+            <h4 class="roboto-light">MACHINE LOCKING SYSTEM LOGS</h4>
+            <div class="medication-row-container" id="medication-list">
+{% comment %} 
+
+                <div class="medication-row">
+                    <p class="roboto-light">One Time - Mefinamic - July 21, 2024 - 12:00</p>
+                    <button class="roboto-bold">DELETE</button>
+                </div>
+
+                <div class="medication-row">
+                    <p class="roboto-light">One Time - Mefinamic - July 21, 2024 - 12:00</p>
+                    <button class="roboto-bold">DELETE</button>
+                </div>
+
+                <div class="medication-row">
+                    <p class="roboto-light">One Time - Mefinamic - July 21, 2024 - 12:00</p>
+                    <button class="roboto-bold">DELETE</button>
+                </div> {% endcomment %}
+            </div>
+        </div>
+    
+    </section>
+ 
+    <script> 
+        let datepicker = document.getElementById("datePicker");
+        let medication_list = document.getElementById("medication-list");
+        function setCurrentDate() { 
+            let today = new Date();
+    
+            // Format the date without UTC conversion
+            let formattedDate = today.getFullYear() + "-" + 
+                                String(today.getMonth() + 1).padStart(2, '0') + "-" + 
+                                String(today.getDate()).padStart(2, '0');
+  
+            // Set the current date in the date picker
+            datepicker.value = formattedDate;
+            get_locking_data();
+        }
+
+        setTimeout(()=>{
+            setCurrentDate();
+        }, 100)
+
+        datepicker.addEventListener('change', async () => {
+            // Add daily medication logic here  
+
+            get_locking_data();
+        }); 
+
+
+        async function get_locking_data() {
+            try{
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                formData = new FormData();
+                formData.append('nurse_id', "{{nurse.id}}")
+                formData.append("date" , datepicker.value)
+                const response = await fetch("../nurse/locking/", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                    },
+                    body: formData,
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    console.log(data)
+                    medication_list.innerHTML = ''
+                    data.logs.forEach((log)=>{
+                         
+                        medication_list.insertAdjacentHTML('afterbegin', ` 
+                            <div class="medication-row">
+                                <p class="roboto-light">
+                                    ${ log.is_for_locking ? `Lock at ${log.created_at}` : `Unlock at ${log.created_at}` }
+                                </p> 
+                            </div>
+                        `)
+
+                    })
+                } else {
+                    console.error('Server responded with status:', response.status);
+                    console.error('Error:', data);
+                }
+            } catch(e){
+                console.error(e);
+            }
+
+        }
+
+        //get_locking_data();
+
+
+    </script>
+
+
+
+{% endblock bodyblock %}
