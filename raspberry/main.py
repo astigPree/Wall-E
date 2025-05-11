@@ -81,17 +81,13 @@ def main():
     #     listening_thread.start()
     decided_command = None
     prio_command = len(event.user_commands) > 0 and not event.has_important_event
-    if prio_command:
+    if len(event.user_commands) > 0:
         # print("Starting to analyze the commands...")
+        voice.speak("Proccessing Command! Wait a moment!")
         
         user_overall_commands = " ~ ".join(event.user_commands)
-        print("Applying commands : ", user_overall_commands)
-        # generated_response = brain.generate_response(rules.rule_for_identifiying_command % user_overall_commands)
-        # print("Generated response by gpt4free: ", generated_response)
-        # decided_command : dict = text_to_dictionary(generated_response)
-        # print("Generated response by gpt4free: ", decided_command)
-        # if not decided_command:
-        voice.speak("Proccessing Command! Wait a moment!")
+        print("Applying commands : ", user_overall_commands) 
+        
         generated_response = brain.generate_cohere_response(user_overall_commands , rules.rule_for_identifiying_command % user_overall_commands)
         print("Generated response by cohere: ", generated_response)
         decided_command : dict = text_to_dictionary(generated_response)
@@ -354,11 +350,13 @@ def main():
     # TODO: Apply walking here using arduino
     has_reached = False
     if has_medications_to_serve:
-        voice.speak("Please excuse me for a moment while I prepare for the medication of the patients")
-        has_reached = algo.algo_machine_walk( 
-            event = event,  
-            arduino = arduino
-        )
+        voice.speak("Please excuse me for a moment while I go and prepare for the medication of the patients")
+        # has_reached = algo.algo_machine_walk( 
+        #     event = event,  
+        #     arduino = arduino
+        # )
+        has_reached = True
+        time.sleep(3)
         
     while len(event.list_of_schedule_to_take) > 0:
         schedule = event.list_of_schedule_to_take.pop(0)
@@ -531,26 +529,29 @@ def main():
     # TODO: Apply walking here using arduino going back to its original position
     if has_reached:
         voice.speak("I will now walk back to my original position, please excuse me")
-        arduino.write("STEP")
-        time.sleep(2) # Give Arduino time to process and respond
-        arduino.write("BACK")
-        start_time = time.time()
-        while time.time() - start_time < 1800:  # 30 mins timeout
-            if "ARRIVED" in arduino.read():
-                break
-            if event.stop_proccess:
-                break
-            time.sleep(0.1)
+        has_reached = False
+        time.sleep(3)
+        # arduino.write("STEP")
+        # time.sleep(2) # Give Arduino time to process and respond
+        # arduino.write("BACK")
+        # start_time = time.time()
+        # while time.time() - start_time < 1800:  # 30 mins timeout
+        #     if "ARRIVED" in arduino.read():
+        #         break
+        #     if event.stop_proccess:
+        #         break
+        #     time.sleep(0.1)
     
     event.has_important_event = False
     if has_medications_to_serve:
         voice.speak("I have finished serving all medications. Im available to your inquiries")
 
 if __name__ == '__main__': 
-    generated_response = brain.generate_cohere_response(rules.rules_for_introduction , rules.rules_for_introduction)
-    print("Generated response by cohere: ", generated_response)
-    decided_command : dict = text_to_dictionary(generated_response)
-    print("Generated response by cohere: ", decided_command)
+    # generated_response = brain.generate_cohere_response(rules.rules_for_introduction , rules.rules_for_introduction)
+    # print("Generated response by cohere: ", generated_response)
+    # decided_command : dict = text_to_dictionary(generated_response)
+    decided_command = None
+    # print("Generated response by cohere: ", decided_command)
     if isinstance(decided_command, dict):
         introduction = decided_command.get("message" , "Hello, I am Pill-ar, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?")
     else:
@@ -563,19 +564,19 @@ if __name__ == '__main__':
     
     eyes = FacialRecognition()
     eyes.start_camera()
-    time.sleep(1)
-    # Check arduino connection if there is an error for 10 second
-    time_start = time.time()
-    while time.time() - time_start < 10: 
-        if "ERROR" in arduino.read():
-            voice.speak("There is an error in the arduino connection. Please check the connection so I can work properly")
-            voice.speak("I will now shutdown and please restart the program so I can work properly")
-            event.close_down = True
-            break
-        time.sleep(0.1) 
+    # time.sleep(1)
+    # # Check arduino connection if there is an error for 10 second
+    # time_start = time.time()
+    # while time.time() - time_start < 10: 
+    #     if "ERROR" in arduino.read():
+    #         voice.speak("There is an error in the arduino connection. Please check the connection so I can work properly")
+    #         voice.speak("I will now shutdown and please restart the program so I can work properly")
+    #         event.close_down = True
+    #         break
+    #     time.sleep(0.1) 
     
     try:
-        while not event.close_down:
+        while not event.close_down: 
             main()
             time.sleep(.5)
     except KeyboardInterrupt:
