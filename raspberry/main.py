@@ -130,16 +130,6 @@ def main():
             voice.speak(message)
         elif decided_command.get('action') == "4" or decided_command.get('action') == 4:
             # TODO: Simulate closing the back of the machine
-            # print("Closing the back of the machine")
-            # algo.algo_close_the_back_of_the_machine(
-            #     event=event,
-            #     voice=voice, 
-            #     brain=brain,
-            #     recognizer=ear,
-            #     arduino=arduino,
-            #     data=decided_command,
-            #     user_command=user_overall_commands
-            # )
             arduino.write("DRAWER")
             time_start = time.time()
             while time.time() - time_start < 10:
@@ -154,18 +144,83 @@ def main():
                     break
                 time.sleep(0.1)
                 
-            if is_machine_open:
-                voice.speak(decided_command.get("message", "Wait, I will slowly close the pills drawers."))
-                arduino.write("LOCK")
-                time_start = time.time()
-                while time.time() - time_start < 10:
-                    if event.stop_proccess:
+            nurses = [ nurse for nurse in database.nurses.values() ]
+            number_of_nurses = len(nurses)
+            if number_of_nurses < 1:
+                voice.speak("Please add nurses first to be able to close the back of the machine")
+                
+            if is_machine_open and number_of_nurses > 0:
+                # Put here the algorithm that will close the back of the machine
+                voice.speak("Before closing the back of the machine i need to scan your face")
+                voice.speak("Please put your face in front of the camera to check if you are a nurse")
+                
+                index_starting = 0
+                start_time = time.time()
+                last_speak_time = start_time  # Track the last time the reminder was spoken
+                has_face_scanned = False
+                nurse = {}
+                while time.time() - start_time < 300:  # 5 mins timeout
+                    try:
+                        if event.stop_proccess:
+                            break 
+
+                        frame = eyes.get_face_by_camera()
+                        if frame is None: 
+                            continue
+ 
+                
+                        conver_frame_to_rgb = frame 
+                        nurse = nurses[index_starting]
+                        face = nurse.get('face', None) 
+                        if face is None:
+                            raise ValueError("Face data is missing or invalid.")
+                        filename = my_tools.extract_filename(face)
+                        # print(f"Face image file: {filename}")
+                        if filename:
+                            nurse_face_path = os.path.join(database.nurses_image_path, filename)
+                            try:
+                                has_face_scanned = eyes.check_face_exists_in_database(
+                                    face_image=conver_frame_to_rgb, face_in_database=nurse_face_path
+                                )
+                            except Exception as e:
+                                print(f"Error during face scanning: {e}")
+                        
+                        if has_face_scanned:
+                            print("Face scanned successfully.")
+                            break
+                        else:
+                            if number_of_nurses > index_starting + 1:
+                                index_starting += 1
+                            else:
+                                index_starting = 0
+
+                        # Speak reminders every 60 seconds
+                        if time.time() - last_speak_time >= 60:
+                            voice.speak("Please put your face in front of the camera to check if you are a nurse")
+                            last_speak_time = time.time()
+
+                        # print("[!] Try To Find Face...")
+                        time.sleep(0.1)
+                    except Exception as e:
+                        print(f"Error during face scanning: {e}")
                         break
-                    if "LOCK" in arduino.read():
-                        break
-                    time.sleep(0.1)
-                is_machine_open = True
-            else:
+            
+                
+                if has_face_scanned:
+                    voice.speak(decided_command.get("message", "Wait, I will slowly close the pills drawers."))
+                    arduino.write("LOCK")
+                    time_start = time.time()
+                    while time.time() - time_start < 10:
+                        if event.stop_proccess:
+                            break
+                        if "LOCK" in arduino.read():
+                            break
+                        time.sleep(0.1)
+                    is_machine_open = True
+                    my_tools.send_locking_logs_request( nurse_id=nurse.get('id') , is_for_lock=is_machine_open )
+                else:
+                    voice.speak("Command to close the back of the machine canceled") 
+            elif not is_machine_open and number_of_nurses > 0:
                 voice.speak("The pills drawers are already closed.")
             
             # TODO: Create a logic that connect arduino and close the back of the machine
@@ -184,19 +239,85 @@ def main():
                     is_machine_open = True
                     break
                 time.sleep(0.1)
+            
+            nurses = [ nurse for nurse in database.nurses.values() ]
+            number_of_nurses = len(nurses)
+            if number_of_nurses < 1:
+                voice.speak("Please add nurses first to be able to open the back of the machine")
                 
-            if not is_machine_open:
-                voice.speak(decided_command.get("message", "Wait, I will slowly open the pills drawers."))
-                arduino.write("UNLOCK")
-                time_start = time.time()
-                while time.time() - time_start < 10:
-                    if event.stop_proccess:
+            if not is_machine_open and number_of_nurses > 0:
+                
+                # Put here the algorithm that will open the back of the machine
+                # Put here the algorithm that will close the back of the machine
+                voice.speak("Before opening the back of the machine i need to scan your face")
+                voice.speak("Please put your face in front of the camera to check if you are a nurse")
+                
+                index_starting = 0
+                start_time = time.time()
+                last_speak_time = start_time  # Track the last time the reminder was spoken
+                has_face_scanned = False
+                nurse = {}
+                while time.time() - start_time < 300:  # 5 mins timeout
+                    try:
+                        if event.stop_proccess:
+                            break 
+
+                        frame = eyes.get_face_by_camera()
+                        if frame is None: 
+                            continue
+ 
+                
+                        conver_frame_to_rgb = frame 
+                        nurse = nurses[index_starting]
+                        face = nurse.get('face', None) 
+                        if face is None:
+                            raise ValueError("Face data is missing or invalid.")
+                        filename = my_tools.extract_filename(face)
+                        # print(f"Face image file: {filename}")
+                        if filename:
+                            nurse_face_path = os.path.join(database.nurses_image_path, filename)
+                            try:
+                                has_face_scanned = eyes.check_face_exists_in_database(
+                                    face_image=conver_frame_to_rgb, face_in_database=nurse_face_path
+                                )
+                            except Exception as e:
+                                print(f"Error during face scanning: {e}")
+                        
+                        if has_face_scanned:
+                            print("Face scanned successfully.")
+                            break
+                        else:
+                            if number_of_nurses > index_starting + 1:
+                                index_starting += 1
+                            else:
+                                index_starting = 0
+
+                        # Speak reminders every 60 seconds
+                        if time.time() - last_speak_time >= 60:
+                            voice.speak("Please put your face in front of the camera to check if you are a nurse")
+                            last_speak_time = time.time()
+
+                        # print("[!] Try To Find Face...")
+                        time.sleep(0.1)
+                    except Exception as e:
+                        print(f"Error during face scanning: {e}")
                         break
-                    if "UNLOCK" in arduino.read():
-                        break
-                    time.sleep(0.1)
-                is_machine_open = False
-            else:
+                
+                if has_face_scanned:
+                    voice.speak(decided_command.get("message", "Wait, I will slowly open the pills drawers."))
+                    arduino.write("UNLOCK")
+                    time_start = time.time()
+                    while time.time() - time_start < 10:
+                        if event.stop_proccess:
+                            break
+                        if "UNLOCK" in arduino.read():
+                            break
+                        time.sleep(0.1)
+                    is_machine_open = False
+                    my_tools.send_locking_logs_request( nurse_id=nurse.get('id') , is_for_lock=is_machine_open )
+                else:
+                    voice.speak("Command to open the back of the machine canceled")
+            elif is_machine_open and number_of_nurses > 0:
                 voice.speak( "The pills drawers are already open.")
                 
         
