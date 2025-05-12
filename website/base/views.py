@@ -12,6 +12,8 @@ from datetime import datetime
 import requests
 
 
+
+
 def index(request):
     return render(request, 'homepage.html') 
 
