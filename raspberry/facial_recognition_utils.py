@@ -48,77 +48,77 @@ class FacialRecognition:
         return cv2.resize(image, (128, 128)) 
 
 
-    def check_face_exists_in_database(self, face_image, face_in_database):
-        # Convert input image to grayscale early
-        face_image = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
-        face_database = cv2.imread(face_in_database, cv2.IMREAD_GRAYSCALE)
+    # def check_face_exists_in_database(self, face_image, face_in_database):
+    #     # Convert input image to grayscale early
+    #     face_image = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
+    #     face_database = cv2.imread(face_in_database, cv2.IMREAD_GRAYSCALE)
 
-        if face_database is None:
-            print(f"Error: Unable to load image {face_in_database}.")
-            return False
+    #     if face_database is None:
+    #         print(f"Error: Unable to load image {face_in_database}.")
+    #         return False
 
-        # Resize images for lower memory usage
-        face_image = cv2.resize(face_image, (64, 64))
-        face_database = cv2.resize(face_database, (64, 64))
+    #     # Resize images for lower memory usage
+    #     face_image = cv2.resize(face_image, (64, 64))
+    #     face_database = cv2.resize(face_database, (64, 64))
 
-        # Compute LBP features
-        def compute_lbp(image):
-            lbp = np.zeros_like(image)
-            for i in range(1, image.shape[0] - 1):
-                for j in range(1, image.shape[1] - 1):
-                    center = image[i, j]
-                    binary_string = (image[i-1:i+2, j-1:j+2] >= center).astype(int)
-                    lbp[i, j] = np.dot(binary_string.flatten(), [1, 2, 4, 8, 16, 32, 64, 128])
-            return lbp
+    #     # Compute LBP features
+    #     def compute_lbp(image):
+    #         lbp = np.zeros_like(image)
+    #         for i in range(1, image.shape[0] - 1):
+    #             for j in range(1, image.shape[1] - 1):
+    #                 center = image[i, j]
+    #                 binary_string = (image[i-1:i+2, j-1:j+2] >= center).astype(int)
+    #                 lbp[i, j] = np.dot(binary_string.flatten(), [1, 2, 4, 8, 16, 32, 64, 128])
+    #         return lbp
 
-        lbp_face = compute_lbp(face_image)
-        lbp_database = compute_lbp(face_database)
+    #     lbp_face = compute_lbp(face_image)
+    #     lbp_database = compute_lbp(face_database)
 
-        # Compute similarity using Histogram comparison
-        hist_face = cv2.calcHist([lbp_face], [0], None, [256], [0, 256])
-        hist_database = cv2.calcHist([lbp_database], [0], None, [256], [0, 256])
+    #     # Compute similarity using Histogram comparison
+    #     hist_face = cv2.calcHist([lbp_face], [0], None, [256], [0, 256])
+    #     hist_database = cv2.calcHist([lbp_database], [0], None, [256], [0, 256])
 
-        similarity = cv2.compareHist(hist_face, hist_database, cv2.HISTCMP_CORREL)
-        print(f"Similarity Score: {similarity}")
+    #     similarity = cv2.compareHist(hist_face, hist_database, cv2.HISTCMP_CORREL)
+    #     print(f"Similarity Score: {similarity}")
 
-        return similarity > 0.85  # Threshold for match
+    #     return similarity > 0.85  # Threshold for match
 
     
         
-    # def check_face_exists_in_database(self, face_image, face_in_database):
-    #     # Convert input image to grayscale
-    #     face_image = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
+    def check_face_exists_in_database(self, face_image, face_in_database):
+        # Convert input image to grayscale
+        face_image = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
 
-    #     # Load the face database image
-    #     face_database = cv2.imread(face_in_database, cv2.IMREAD_GRAYSCALE)
+        # Load the face database image
+        face_database = cv2.imread(face_in_database, cv2.IMREAD_GRAYSCALE)
 
-    #     # Ensure the image was loaded properly
-    #     if face_database is None:
-    #         print(f"Error: Unable to load image {face_in_database}. Check the file path.")
-    #         return False
+        # Ensure the image was loaded properly
+        if face_database is None:
+            print(f"Error: Unable to load image {face_in_database}. Check the file path.")
+            return False
 
-    #     # Resize images for consistency
-    #     face_image = cv2.resize(face_image, (128, 128))
-    #     face_database = cv2.resize(face_database, (128, 128))
+        # Resize images for consistency
+        face_image = cv2.resize(face_image, (128, 128))
+        face_database = cv2.resize(face_database, (128, 128))
 
-    #     # Initialize ORB detector
-    #     orb = cv2.ORB_create()
+        # Initialize ORB detector
+        orb = cv2.ORB_create()
 
-    #     # Detect keypoints and descriptors
-    #     kp1, des1 = orb.detectAndCompute(face_image, None)
-    #     kp2, des2 = orb.detectAndCompute(face_database, None)
+        # Detect keypoints and descriptors
+        kp1, des1 = orb.detectAndCompute(face_image, None)
+        kp2, des2 = orb.detectAndCompute(face_database, None)
 
-    #     if des1 is None or des2 is None:
-    #         print("No keypoints found in one or both images.")
-    #         return False
+        if des1 is None or des2 is None:
+            print("No keypoints found in one or both images.")
+            return False
 
-    #     # Match descriptors using Brute Force Matcher
-    #     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-    #     matches = bf.match(des1, des2)
-    #     matches = sorted(matches, key=lambda x: x.distance)
+        # Match descriptors using Brute Force Matcher
+        bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+        matches = bf.match(des1, des2)
+        matches = sorted(matches, key=lambda x: x.distance)
 
-    #     print(f"Number of matches: {len(matches)}")
-    #     return len(matches) > 20
+        print(f"Number of matches: {len(matches)}")
+        return len(matches) > 20
 
 
 
