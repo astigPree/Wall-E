@@ -35,6 +35,6 @@ urlpatterns = [
     path("controller/reset/daily", views.controller_reset_taken_medicine, name='controller_reset_daily'),
     
     path("controller/notify", views.notify_medication, name='controller_notify'),
-    path("controller/locking", views.notify_medication, name='controller_locking'),
+    path("controller/locking", views.controller_nurse_locking_log, name='controller_locking'),
     
 ]

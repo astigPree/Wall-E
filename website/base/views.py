@@ -577,7 +577,7 @@ def controller_nurse_locking_log(request):
             if not nurse_id:
                 return JsonResponse({'error': 'Nurse not found'}, status=404)
             
-            nurse = Nurse.objects.filter(id=nurse_id).first()
+            nurse = Nurse.objects.filter(id=int(nurse_id)).first()
             if not nurse:
                 return JsonResponse({'error': 'Nurse not found'}, status=404)
             
