@@ -1,6 +1,9 @@
 from my_tools import *
-import time
-import rules
+# import time
+# import rules
+
+
+send_locking_logs_request(5, True)
 
 # print(send_locking_logs_request(2, True))
 

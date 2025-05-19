@@ -582,12 +582,12 @@ def controller_nurse_locking_log(request):
                 return JsonResponse({'error': 'Nurse not found'}, status=404)
             
             is_for_lock = request.POST.get('is_for_lock', None)
-            if not isinstance(is_for_lock, bool):
+            if is_for_lock is None:
                 return JsonResponse({'error': 'is_for_lock not found'}, status=404)
             
             LockingLogs.objects.create(
                 nurse_id=nurse_id,
-                is_for_lock=is_for_lock,
+                is_for_lock=True if is_for_lock else False,
                 logs = "Nurse locked the machine" if is_for_lock else "Nurse unlocked the machine",
             )
             
