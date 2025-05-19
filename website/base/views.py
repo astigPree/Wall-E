@@ -8,10 +8,14 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 from .models import Account, Nurse, Patient, Schedule, LockingLogs
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 
+from django.utils import timezone
 
+# Create your models here.
+def local_timezone():
+    return timezone.localtime(timezone.now())
 
 
 def index(request):
@@ -585,11 +589,14 @@ def controller_nurse_locking_log(request):
             if is_for_lock is None:
                 return JsonResponse({'error': 'is_for_lock not found'}, status=404)
             
-            LockingLogs.objects.create(
+            locking_obj = LockingLogs.objects.create(
                 nurse_id=nurse_id,
-                is_for_lock=True if is_for_lock else False,
+                is_for_locking=True if is_for_lock else False,
                 logs = "Nurse locked the machine" if is_for_lock else "Nurse unlocked the machine",
+                
             )
+            locking_obj.created_at = local_timezone() - timedelta(minutes=1)  # Subtracting 2 minutes
+            locking_obj.save()
             
             return JsonResponse({
                 'success': 'Created Nurse Locking Log successfully'
