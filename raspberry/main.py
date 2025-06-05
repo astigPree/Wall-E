@@ -389,15 +389,30 @@ def main():
         event.user_commands = []
         
 
-    if prio_command and fetching_strike != 0:
-        if (fetching_strike + 1) > 1 and (fetching_strike + 1) < 5:
-            fetching_strike += 1
-            return
-        else:
-            fetching_strike = 1
-    else:
-        fetching_strike = 1
-    
+    # if prio_command and fetching_strike != 0:
+    #     if (fetching_strike + 1) > 1 and (fetching_strike + 1) < 5:
+    #         fetching_strike += 1
+    #         return
+    #     else:
+    #         fetching_strike = 1
+    # else:
+    #     fetching_strike = 1
+    print("")
+    print("")
+    print("")
+    print("")
+    print("")
+    print("")
+    print("")
+    print("")
+    print(f"===================== Request Data ")
+    print("")
+    print("")
+    print("")
+    print("")
+    print("")
+    print("")
+    print("")
     data = send_post_request()
     if data:
         # # print(f"Received data: {data}")
