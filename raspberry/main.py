@@ -387,6 +387,7 @@ def main():
                      
         
         event.user_commands = []
+        voice.speak("Thank you for using the system. Don't hesitate to inquire if you have any questions.")
         
 
     if prio_command and fetching_strike != 0:
