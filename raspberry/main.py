@@ -734,7 +734,7 @@ if __name__ == '__main__':
     #     time.sleep(0.1) 
     
     try:
-        while event.close_down == False:
+        while True:
             print("")
             print("")
             print("")
