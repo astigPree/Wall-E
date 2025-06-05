@@ -163,21 +163,22 @@ def algo_machine_drop_pills(
     print("[!] Start pills dispensing...")
     pill = data.get('pill', 'Biogesic')
     print(f"[!] Drop the pills... {data.get('pill', 'Biogesic')}")
+    voice.speak("Pill was dispensed!")
     # Drop the selected pills 
     if 'Biogesic' in pill:
-        voice.speak('Please wait while i dispense the Biogesic pills')
+        # voice.speak('Please wait while i dispense the Biogesic pills')
         arduino.write("B")
     elif 'Cremil-S' in pill:
-        voice.speak('Please wait while i dispense the Cremil S pills')
+        # voice.speak('Please wait while i dispense the Cremil S pills')
         arduino.write("S")
     elif 'Citerizen' in pill:
-        voice.speak('Please wait while i dispense the Citerizen pills')
+        # voice.speak('Please wait while i dispense the Citerizen pills')
         arduino.write("C")
     elif 'Mefenamic' in pill:
-        voice.speak('Please wait while i dispense the Mefenamic pills')
+        # voice.speak('Please wait while i dispense the Mefenamic pills')
         arduino.write("M")
-    else:
-        voice.speak('Please wait while i dispense the pills')
+    # else:
+        # voice.speak('Please wait while i dispense the pills')
     
     print("[!] Start to check if the pills is dispensed...")
     # Wait for 10 seconds to check if the pills is dispensed
