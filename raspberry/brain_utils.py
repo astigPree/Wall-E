@@ -21,7 +21,7 @@ class BrainUtils:
     model = ""
     
     
-    cohere_client = cohere.ClientV2("sLE3RcbV8f6QTJ40nM4I9v72p6WbW4DxHPk8fNkG")
+    cohere_client = cohere.ClientV2("TQEWUNmSwWcbLLESVhVSwlxX1Fj47rYXUPgtshsT")
 
     debounce = 2
 
