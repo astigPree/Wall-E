@@ -734,7 +734,15 @@ if __name__ == '__main__':
     #     time.sleep(0.1) 
     
     try:
-        while event.close_down == False: 
+        while event.close_down == False:
+            print("")
+            print("")
+            print("")
+            print("")
+            print("")
+            print("")
+            print("")
+            print("Main loop")
             main()
             time.sleep(.5)
     except KeyboardInterrupt:
