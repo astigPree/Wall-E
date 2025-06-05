@@ -746,10 +746,38 @@ if __name__ == '__main__':
             main()
             time.sleep(.5)
     except KeyboardInterrupt:
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
         print("Interrupted by user.")
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
         event.close_down = True
     except Exception as e:
         event.close_down = True
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
         print(f"An error occurred: {e}")
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
+        print("")
     
     
