@@ -81,6 +81,7 @@ def main():
     #     listening_thread.start()
     decided_command = None
     prio_command = len(event.user_commands) > 0 and not event.has_important_event
+    print(f"Has Prio Command {prio_command}")
     if len(event.user_commands) > 0:
         # print("Starting to analyze the commands...")
         voice.speak("Proccessing Command! Wait a moment!")
@@ -697,7 +698,7 @@ if __name__ == '__main__':
     #     time.sleep(0.1) 
     
     try:
-        while not event.close_down: 
+        while event.close_down == False: 
             main()
             time.sleep(.5)
     except KeyboardInterrupt:
