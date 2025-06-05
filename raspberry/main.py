@@ -421,12 +421,12 @@ def main():
         schedules = data.get('schedules', None)
         
         
-        if nurses: 
-            database.write_image_nurses()
-        if patients:
-            print("====================")
-            database.write_image_patients()
-            print("====================")
+        # if nurses: 
+        #     database.write_image_nurses()
+        # if patients:
+        #     print("====================")
+        #     database.write_image_patients()
+        #     print("====================")
         
         if nurses:
             database.nurses = nurses
