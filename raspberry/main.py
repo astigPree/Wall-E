@@ -749,10 +749,12 @@ if __name__ == '__main__':
     #     time.sleep(0.1) 
     
     try:
+        strike = 0
         while True:
+            strike += 1
             print("")
             print("")
-            print("")
+            print(f"=============== {strike} ===========")
             print("")
             print("")
             print("")
