@@ -163,7 +163,7 @@ def algo_machine_drop_pills(
     print("[!] Start pills dispensing...")
     pill = data.get('pill', 'Biogesic')
     print(f"[!] Drop the pills... {data.get('pill', 'Biogesic')}")
-    voice.speak("Pill was dispensed!")
+    voice.speak(f"Please wait while i dispense the pill")
     # Drop the selected pills 
     if 'Biogesic' in pill:
         # voice.speak('Please wait while i dispense the Biogesic pills')
@@ -194,6 +194,7 @@ def algo_machine_drop_pills(
         time.sleep(0.1)
     event.has_important_event = False
     
+    voice.speak("Pill was dispensed!")
     print("[!] Done checking if the pills is dispensed...")
     if not pill_has_drop:
         event.activate_scanning = False
