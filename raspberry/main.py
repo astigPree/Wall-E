@@ -389,14 +389,14 @@ def main():
         event.user_commands = []
         
 
-    # if prio_command and fetching_strike != 0:
-    #     if (fetching_strike + 1) > 1 and (fetching_strike + 1) < 5:
-    #         fetching_strike += 1
-    #         return
-    #     else:
-    #         fetching_strike = 1
-    # else:
-    #     fetching_strike = 1
+    if prio_command and fetching_strike != 0:
+        if (fetching_strike + 1) > 1 and (fetching_strike + 1) < 5:
+            fetching_strike += 1
+            return
+        else:
+            fetching_strike = 1
+    else:
+        fetching_strike = 1
     print("")
     print("")
     print("")
@@ -723,30 +723,30 @@ if __name__ == '__main__':
     # generated_response = brain.generate_cohere_response(rules.rules_for_introduction , rules.rules_for_introduction)
     # print("Generated response by cohere: ", generated_response)
     # decided_command : dict = text_to_dictionary(generated_response)
-    # decided_command = None
-    # # print("Generated response by cohere: ", decided_command)
-    # if isinstance(decided_command, dict):
-    #     introduction = decided_command.get("message" , "Hello, I am Pill-ar, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?")
-    # else:
-    #     introduction = "Hello, I am Pill-ar, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?"
-    # voice.speak(introduction)
-    # time.sleep(1)
-    # listening_thread = threading.Thread(target=start_listening)
-    # listening_thread.start() # start listening in a separate thread
-    # time.sleep(1)
+    decided_command = None
+    # print("Generated response by cohere: ", decided_command)
+    if isinstance(decided_command, dict):
+        introduction = decided_command.get("message" , "Hello, I am Pill-ar, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?")
+    else:
+        introduction = "Hello, I am Pill-ar, your advanced healthcare assistant. I am here to ensure you take the right dosage of your medication at the correct time, monitor your body temperature for your well-being, and securely recognize you using facial recognition. You can interact with me easily through voice commands, and I automate several healthcare and patient management tasks to make your life smoother. How may I assist you today?"
+    voice.speak(introduction)
+    time.sleep(1)
+    listening_thread = threading.Thread(target=start_listening)
+    listening_thread.start() # start listening in a separate thread
+    time.sleep(1)
     
     eyes = FacialRecognition()
     eyes.start_camera()
-    # time.sleep(1)
-    # # Check arduino connection if there is an error for 10 second
-    # time_start = time.time()
-    # while time.time() - time_start < 10: 
-    #     if "ERROR" in arduino.read():
-    #         voice.speak("There is an error in the arduino connection. Please check the connection so I can work properly")
-    #         voice.speak("I will now shutdown and please restart the program so I can work properly")
-    #         event.close_down = True
-    #         break
-    #     time.sleep(0.1) 
+    time.sleep(1)
+    # Check arduino connection if there is an error for 10 second
+    time_start = time.time()
+    while time.time() - time_start < 10: 
+        if "ERROR" in arduino.read():
+            voice.speak("There is an error in the arduino connection. Please check the connection so I can work properly")
+            voice.speak("I will now shutdown and please restart the program so I can work properly")
+            event.close_down = True
+            break
+        time.sleep(0.1) 
     
     try:
         strike = 0
