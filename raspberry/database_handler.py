@@ -49,7 +49,8 @@ class DataHandler:
             self.patients : dict = json.load(patients_file)
     
     def write_image_patients(self):
-        print("patients : ", self.patients)
+        # print("patients : ", self.patients)
+        has_new_face = False
         for patient in self.patients:
             image_url = self.patients[patient].get("face" , None)
             if image_url:
@@ -60,14 +61,32 @@ class DataHandler:
                     extract_filename(image_url)
                 )
                 
-                fetch_and_save_image(
-                    image_url = SERVER_URL + image_url, 
-                    save_path = save_path
-                )
+                # If the file does not exist, download it
+                if not os.path.isfile(save_path):
+                    print("--"*20)
+                    print(f"File does not exist: {save_path}")
+                    print("--"*20)
+                    fetch_and_save_image(
+                        image_url = SERVER_URL + image_url, 
+                        save_path = save_path
+                    )
+                    has_new_face = True
+                else:
+                    print("--"*20)
+                    print(f"File already exists: {save_path}")
+                    print("--"*20)
+                
+                # fetch_and_save_image(
+                #     image_url = SERVER_URL + image_url, 
+                #     save_path = save_path
+                # )
+                
+        return has_new_face
         
             
      
     def write_image_nurses(self):
+        has_new_face = False
         for nurse in self.nurses:
             image_url = self.nurses[nurse].get("face" , None)
             
@@ -78,11 +97,28 @@ class DataHandler:
                     'nurse_faces',
                     extract_filename(image_url)
                 )
- 
-                fetch_and_save_image( 
-                    image_url = SERVER_URL + image_url,
-                    save_path=save_path
-                )
+                
+                # If the file does not exist, download it
+                if not os.path.isfile(save_path):  
+                    print("--"*20)
+                    print(f"File does not exist: {save_path}")
+                    print("--"*20)
+                    fetch_and_save_image( 
+                        image_url = SERVER_URL + image_url,
+                        save_path=save_path
+                    ) 
+                    has_new_face = True
+                else:
+                    print("--"*20)
+                    print(f"File already exists: {save_path}")
+                    print("--"*20)
+                
+                # fetch_and_save_image( 
+                #     image_url = SERVER_URL + image_url,
+                #     save_path=save_path
+                # )
+                
+        return has_new_face
                 
         
     def get_user_by_name(self, name : str):

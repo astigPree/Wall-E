@@ -155,7 +155,7 @@ def algo_machine_drop_pills(
     data : dict,
     # listening_thread : threading.Thread
     ):
-    global listening_thread
+    # global listening_thread
      
     if event.stop_proccess:
         return False
@@ -167,15 +167,19 @@ def algo_machine_drop_pills(
     # Drop the selected pills 
     if 'Biogesic' in pill:
         # voice.speak('Please wait while i dispense the Biogesic pills')
+        print("[!] Drop the pills... Biogesic")
         arduino.write("B")
     elif 'Cremil-S' in pill:
         # voice.speak('Please wait while i dispense the Cremil S pills')
+        print("[!] Drop the pills... Cremil-S")
         arduino.write("S")
     elif 'Citerizen' in pill:
         # voice.speak('Please wait while i dispense the Citerizen pills')
+        print("[!] Drop the pills... Citerizen")
         arduino.write("C")
     elif 'Mefenamic' in pill:
         # voice.speak('Please wait while i dispense the Mefenamic pills')
+        print("[!] Drop the pills... Mefenamic")
         arduino.write("M")
     # else:
         # voice.speak('Please wait while i dispense the pills')

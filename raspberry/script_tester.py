@@ -2,8 +2,30 @@ from my_tools import *
 # import time
 # import rules
 
+from database_handler import DataHandler
+data = send_post_request()
+database = DataHandler()
+if data:
+    # # print(f"Received data: {data}")
+    nurses = data.get('nurses', None)
+    patients = data.get('patients', None)
+    schedules = data.get('schedules', None)
+    
+    
+        
+    if nurses:
+        database.nurses = nurses
+    
+    if patients:
+        database.patients = patients
+    
+    if nurses: 
+        database.write_image_nurses()
+    if patients:
+        database.write_image_patients()
+    
 
-send_locking_logs_request(5, True)
+# send_locking_logs_request(5, True)
 
 # print(send_locking_logs_request(2, True))
 

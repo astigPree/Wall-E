@@ -421,19 +421,21 @@ def main():
         patients = data.get('patients', None)
         schedules = data.get('schedules', None)
         
-        
-        # if nurses: 
-        #     database.write_image_nurses()
-        # if patients:
-        #     print("====================")
-        #     database.write_image_patients()
-        #     print("====================")
-        
         if nurses:
             database.nurses = nurses
         
         if patients:
             database.patients = patients
+            
+        has_new_face = False
+        if nurses: 
+            has_new_face = database.write_image_nurses()
+        if has_new_face:
+            voice.speak("Sorry for the delay, I just updated the database with new nurse faces.")
+        if patients: 
+            has_new_face = database.write_image_patients()
+        if has_new_face:
+            voice.speak("Sorry for the delay, I just updated the database with new patient faces.")
             
             
         if schedules:
